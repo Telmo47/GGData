@@ -1,4 +1,6 @@
-﻿namespace GGData.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GGData.Models
 {
 
     /// <summary>
@@ -10,6 +12,7 @@
         /// <summary>
         /// Id do jogo
         /// </summary>
+        [Key]
         public int JogoId { get; set; }
 
         /// <summary>

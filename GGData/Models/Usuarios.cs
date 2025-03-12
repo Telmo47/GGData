@@ -1,4 +1,6 @@
-﻿namespace GGData.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GGData.Models
 {
 
     /// <summary>
@@ -10,7 +12,7 @@
         /// <summary>
         /// Identificador do Úsuário
         /// </summary>
-
+        [Key]
         public int UsuarioId { get; set; }
 
         /// <summary>

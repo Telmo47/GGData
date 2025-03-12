@@ -1,4 +1,7 @@
-﻿namespace GGData.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GGData.Models
 {
 
     /// <summary>
@@ -10,7 +13,7 @@
         /// <summary>
         /// Id das estatísticas do jogo
         /// </summary>
-
+        [Key]
         public int EstatisticaId { get; set; }
 
         /// <summary>
@@ -24,5 +27,15 @@
         /// </summary>
 
         public int TotalAvaliacoes { get; set; }
+
+        //FKs
+
+
+        /// <summary>
+        /// Chave forasteira com referência ao Jogo
+        /// </summary>
+        [ForeignKey(nameof(Jogo)]
+        public int JogoID { get; set; }
+        public Jogo Jogo { get; set; }
     }
 }
