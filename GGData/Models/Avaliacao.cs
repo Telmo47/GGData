@@ -38,6 +38,9 @@ namespace GGData.Models
         /// Tipo de usuário que deu a avaliação ao jogo, pode ser um crítico ou um usuário normal
         /// </summary>
 
+        [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
+        [StringLength(20)]
+        [Display(Name = "Tipo de Usuário")]
         public string TipoUsuario{ get; set; }
 
 
