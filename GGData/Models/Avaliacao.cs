@@ -29,13 +29,13 @@ namespace GGData.Models
         public string Comentarios { get; set; }
 
         /// <summary>
-        /// ???
+        /// Reviews dos jogos
         /// </summary>
 
         public DateTime DataReview { get; set; }
 
         /// <summary>
-        /// ???
+        /// Tipo de usuário que deu a avaliação ao jogo, pode ser um crítico ou um usuário normal
         /// </summary>
 
         public string TipoUsuario{ get; set; }

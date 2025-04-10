@@ -30,6 +30,11 @@ namespace GGData.Models
         /// </summary>
         public string Plataforma { get; set; }
 
+        /// <summary>
+        /// Data de lançamento do jogo
+        /// </summary>
+        public DateTime DataLancamento { get; set; }
+
 
     }
 }

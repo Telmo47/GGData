@@ -17,6 +17,12 @@ namespace GGData.Models
         public int EstatisticaId { get; set; }
 
         /// <summary>
+        /// Conquistas obtidas
+        /// </summary>
+
+        public string Conquistas { get; set; }
+
+        /// <summary>
         /// Tempo médio de jogo atribuido pelos utilizadores
         /// </summary>
 
@@ -34,7 +40,7 @@ namespace GGData.Models
         /// <summary>
         /// Chave forasteira com referência ao Jogo
         /// </summary>
-        [ForeignKey(nameof(Jogo)]
+        [ForeignKey(nameof(Jogo))]
         public int JogoID { get; set; }
         public Jogo Jogo { get; set; }
     }

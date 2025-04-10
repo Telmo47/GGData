@@ -35,7 +35,10 @@ namespace GGData.Models
         /// </summary>
         public string Email { get; set; }
 
-
+        /// <summary>
+        /// tipo de usuário da conta, pode ser um critico ou um usuário normal
+        /// </summary>
+        public string tipoUsuario { get; set; }
 
     }
 }
