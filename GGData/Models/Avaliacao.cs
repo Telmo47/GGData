@@ -29,15 +29,18 @@ namespace GGData.Models
         public string Comentarios { get; set; }
 
         /// <summary>
-        /// ???
+        /// Reviews dos jogos
         /// </summary>
 
         public DateTime DataReview { get; set; }
 
         /// <summary>
-        /// ???
+        /// Tipo de usuário que deu a avaliação ao jogo, pode ser um crítico ou um usuário normal
         /// </summary>
 
+        [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
+        [StringLength(20)]
+        [Display(Name = "Tipo de Usuário")]
         public string TipoUsuario{ get; set; }
 
 
@@ -48,14 +51,14 @@ namespace GGData.Models
         /// Chave forasteira com referência aos usuários
         /// </summary>
         [ForeignKey(nameof(Usuarios))]
-        public int UsuariosID { get; set; }
+        public int UsuariosId { get; set; }
         public Usuarios Usuario{ get; set; }
 
         /// <summary>
         /// Chave forasteira com referência ao jogo
         /// </summary>
         [ForeignKey(nameof(Jogo))]
-        public int JogoID { get; set; }
+        public int JogoId { get; set; }
 
         public Jogo Jogo { get; set; }
     }

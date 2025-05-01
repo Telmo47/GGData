@@ -4,6 +4,7 @@ using GGData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GGData.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250410165231_BD")]
+    partial class BD
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +34,7 @@ namespace GGData.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AvaliacaoId"));
 
                     b.Property<string>("Comentarios")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataReview")
@@ -44,8 +48,7 @@ namespace GGData.Data.Migrations
 
                     b.Property<string>("TipoUsuario")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UsuariosID")
                         .HasColumnType("int");
@@ -68,6 +71,7 @@ namespace GGData.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstatisticaId"));
 
                     b.Property<string>("Conquistas")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("JogoID")
@@ -98,12 +102,15 @@ namespace GGData.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Genero")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Plataforma")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("JogoId");
@@ -123,15 +130,19 @@ namespace GGData.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Senha")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("tipoUsuario")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UsuarioId");
