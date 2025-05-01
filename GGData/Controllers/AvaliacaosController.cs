@@ -12,6 +12,10 @@ namespace GGData.Controllers
 {
     public class AvaliacaosController : Controller
     {
+
+        /// <summary>
+        /// referência à base de dados
+        /// </summary>
         private readonly ApplicationDbContext _context;
 
         public AvaliacaosController(ApplicationDbContext context)
@@ -47,10 +51,16 @@ namespace GGData.Controllers
         }
 
         // GET: Avaliacaos/Create
+        private void PopularViewData(Avaliacao avaliacao = null)
+        {
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao?.JogoId);
+            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "Nome", avaliacao?.UsuariosId);
+        }
+
+        // GET: Avaliacaos/Create
         public IActionResult Create()
         {
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId");
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId");
+            PopularViewData();
             return View();
         }
 
@@ -59,17 +69,23 @@ namespace GGData.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AvaliacaoId,Nota,Comentarios,DataReview,TipoUsuario,UsuariosID,JogoID")] Avaliacao avaliacao)
+        public async Task<IActionResult> Create([Bind("Nota,Comentarios,DataReview,TipoUsuario,UsuariosID,JogoID")]
+ Avaliacao avaliacao)
         {
+
+            // Tarefas
+            // - ajustar o nome das variáveis
+            // - ajustar os anotadores, neste caso em concreto,
+            //    eliminar o ID do 'Bind'
+
             if (ModelState.IsValid)
             {
                 _context.Add(avaliacao);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoID);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosID);
-            return View(avaliacao);
+            PopularViewData(avaliacao);
+            return View(avaliacao); 
         }
 
         // GET: Avaliacaos/Edit/5
@@ -85,8 +101,8 @@ namespace GGData.Controllers
             {
                 return NotFound();
             }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoID);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosID);
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoId);
+            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosId);
             return View(avaliacao);
         }
 
@@ -122,8 +138,8 @@ namespace GGData.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoID);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosID);
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoId);
+            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosId);
             return View(avaliacao);
         }
 
