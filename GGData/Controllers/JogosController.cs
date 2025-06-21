@@ -10,48 +10,59 @@ using GGData.Models;
 
 namespace GGData.Controllers
 {
-    public class JogoesController : Controller
+    public class JogosController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public JogoesController(ApplicationDbContext context)
+        public JogosController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Jogoes
-        public async Task<IActionResult> Index()
+        /// <summary>
+        /// Lista todos os jogos, com opção de filtrar por género.
+        /// </summary>
+        /// <param name="genero">Género a pesquisar (opcional).</param>
+        /// <returns>View com lista de jogos filtrados (ou todos se vazio).</returns>
+        public async Task<IActionResult> Index(string genero)
         {
-            return View(await _context.Jogo.ToListAsync());
+            // Consulta base (todos os jogos)
+            var jogos = from j in _context.Jogo select j;
+
+            // Aplica filtro se houver género indicado
+            if (!string.IsNullOrEmpty(genero))
+            {
+                jogos = jogos.Where(j => j.Genero.Contains(genero));
+            }
+
+            // Envia os resultados para a view
+            return View(await jogos.ToListAsync());
         }
 
-        // GET: Jogoes/Details/5
+        /// <summary>
+        /// Mostra detalhes de um jogo específico.
+        /// </summary>
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var jogo = await _context.Jogo
-                .FirstOrDefaultAsync(m => m.JogoId == id);
-            if (jogo == null)
-            {
-                return NotFound();
-            }
+            var jogo = await _context.Jogo.FirstOrDefaultAsync(m => m.JogoId == id);
+            if (jogo == null) return NotFound();
 
             return View(jogo);
         }
 
-        // GET: Jogoes/Create
+        /// <summary>
+        /// Formulário de criação de novo jogo.
+        /// </summary>
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Jogoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Recebe e guarda os dados de um novo jogo.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("JogoId,Nome,Genero,Plataforma,DataLancamento")] Jogo jogo)
@@ -65,33 +76,27 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        // GET: Jogoes/Edit/5
+        /// <summary>
+        /// Formulário para editar um jogo existente.
+        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var jogo = await _context.Jogo.FindAsync(id);
-            if (jogo == null)
-            {
-                return NotFound();
-            }
+            if (jogo == null) return NotFound();
+
             return View(jogo);
         }
 
-        // POST: Jogoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Recebe alterações de um jogo e guarda no banco de dados.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("JogoId,Nome,Genero,Plataforma,DataLancamento")] Jogo jogo)
         {
-            if (id != jogo.JogoId)
-            {
-                return NotFound();
-            }
+            if (id != jogo.JogoId) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -102,39 +107,30 @@ namespace GGData.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!JogoExists(jogo.JogoId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!JogoExists(jogo.JogoId)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(jogo);
         }
 
-        // GET: Jogoes/Delete/5
+        /// <summary>
+        /// Mostra confirmação para eliminar jogo.
+        /// </summary>
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var jogo = await _context.Jogo
-                .FirstOrDefaultAsync(m => m.JogoId == id);
-            if (jogo == null)
-            {
-                return NotFound();
-            }
+            var jogo = await _context.Jogo.FirstOrDefaultAsync(m => m.JogoId == id);
+            if (jogo == null) return NotFound();
 
             return View(jogo);
         }
 
-        // POST: Jogoes/Delete/5
+        /// <summary>
+        /// Confirma e elimina jogo.
+        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -143,12 +139,15 @@ namespace GGData.Controllers
             if (jogo != null)
             {
                 _context.Jogo.Remove(jogo);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Verifica se um jogo com o ID especificado existe.
+        /// </summary>
         private bool JogoExists(int id)
         {
             return _context.Jogo.Any(e => e.JogoId == id);

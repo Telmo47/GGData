@@ -33,7 +33,9 @@ namespace GGData.Models
         /// <summary>
         /// Data de lançamento do jogo
         /// </summary>
+        [DataType(DataType.Date)]
         public DateTime DataLancamento { get; set; }
+
 
 
     }
