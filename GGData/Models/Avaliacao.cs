@@ -51,8 +51,11 @@ namespace GGData.Models
         /// Chave forasteira com referência aos usuários
         /// </summary>
         [ForeignKey(nameof(Usuarios))]
-        public int UsuariosId { get; set; }
-        public Usuarios Usuario{ get; set; }
+
+        public string UsuariosID { get; set; }
+        public Usuarios Usuario { get; set; }
+
+
 
         /// <summary>
         /// Chave forasteira com referência ao jogo

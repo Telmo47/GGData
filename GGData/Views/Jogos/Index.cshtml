@@ -1,0 +1,61 @@
+﻿@model IEnumerable<GGData.Models.Jogo>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<!-- Filtro por género -->
+<form method="get" asp-controller="Jogos" asp-action="Index" class="form-inline mb-3">
+    <input type="text" name="genero" value="@Context.Request.Query["genero"]" placeholder="Filtrar por género" class="form-control mr-2" />
+    <button type="submit" class="btn btn-secondary">Pesquisar</button>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Genero)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Plataforma)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().DataLancamento)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genero)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Plataforma)
+                </td>
+                <td>
+                    @item.DataLancamento.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.JogoId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.JogoId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.JogoId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
