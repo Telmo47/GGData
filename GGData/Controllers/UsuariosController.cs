@@ -67,8 +67,17 @@ namespace GGData.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,DataRegistro,Email,tipoUsuario")] Usuarios usuarios)
+        public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,Email,tipoUsuario")] Usuarios usuarios)
         {
+            // Preencher automaticamente a data de registo
+            usuarios.DataRegistro = DateTime.Now;
+
+            // Verifica se o email já está em uso
+            if (_context.Usuarios.Any(u => u.Email == usuarios.Email))
+            {
+                ModelState.AddModelError("Email", "Já existe um utilizador com este email.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(usuarios);
@@ -174,4 +183,3 @@ namespace GGData.Controllers
         }
     }
 }
-
