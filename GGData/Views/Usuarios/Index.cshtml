@@ -1,0 +1,38 @@
+﻿@model IEnumerable<GGData.Models.Usuarios>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Lista de Utilizadores</h1>
+
+<p>
+    <a class="btn btn-success" asp-action="Create">Criar Novo Utilizador</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Nome)</th>
+            <th>@Html.DisplayNameFor(model => model.Email)</th>
+            <th>@Html.DisplayNameFor(model => model.tipoUsuario)</th>
+            <th>@Html.DisplayNameFor(model => model.DataRegistro)</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>@Html.DisplayFor(modelItem => item.tipoUsuario)</td>
+                <td>@item.DataRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.UsuarioId">Editar</a>
+                    <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.UsuarioId">Detalhes</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.UsuarioId">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
