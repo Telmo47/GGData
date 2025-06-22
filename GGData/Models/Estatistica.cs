@@ -35,13 +35,13 @@ namespace GGData.Models
         /// <summary>
         /// Média das notas dadas pelos utilizadores comuns
         /// </summary>
-        [Range(0, 10, ErrorMessage = "A média de notas dos utilizadores deve estar entre 0 e 10.")]
+        [Range(0, 100, ErrorMessage = "A média de notas dos utilizadores deve estar entre 0 e 100.")]
         public decimal MediaNotaUtilizadores { get; set; }
 
         /// <summary>
         /// Média das notas dadas pelos críticos
         /// </summary>
-        [Range(0, 10, ErrorMessage = "A média de notas dos críticos deve estar entre 0 e 10.")]
+        [Range(0, 100, ErrorMessage = "A média de notas dos críticos deve estar entre 0 e 100.")]
         public decimal MediaNotaCriticos { get; set; }
 
         // FK
