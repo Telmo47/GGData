@@ -33,7 +33,6 @@ namespace GGData.Controllers
         /// <returns>View com lista de Estatísticas</returns>
         public async Task<IActionResult> Index()
         {
-            // Inclui os dados do Jogo para evitar queries adicionais na view
             var applicationDbContext = _context.Estatistica.Include(e => e.Jogo);
             return View(await applicationDbContext.ToListAsync());
         }
@@ -67,8 +66,8 @@ namespace GGData.Controllers
         /// <returns>View de criação</returns>
         public IActionResult Create()
         {
-            // Popula dropdown com jogos existentes pelo seu ID
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId");
+            // Popula dropdown com jogos existentes pelo seu nome para melhor usabilidade
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome");
             return View();
         }
 
@@ -87,7 +86,7 @@ namespace GGData.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", estatistica.JogoID);
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", estatistica.JogoID);
             return View(estatistica);
         }
 
@@ -108,7 +107,7 @@ namespace GGData.Controllers
             {
                 return NotFound();
             }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", estatistica.JogoID);
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", estatistica.JogoID);
             return View(estatistica);
         }
 
@@ -147,7 +146,7 @@ namespace GGData.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", estatistica.JogoID);
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", estatistica.JogoID);
             return View(estatistica);
         }
 
