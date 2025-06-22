@@ -4,6 +4,7 @@ using GGData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GGData.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250622155226_EstatisticasNotas")]
+    partial class EstatisticasNotas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +34,7 @@ namespace GGData.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AvaliacaoId"));
 
                     b.Property<string>("Comentarios")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataReview")
@@ -44,21 +48,16 @@ namespace GGData.Data.Migrations
 
                     b.Property<string>("TipoUsuario")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsuariosID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UsuariosID")
+                        .HasColumnType("int");
 
                     b.HasKey("AvaliacaoId");
 
                     b.HasIndex("JogoID");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("UsuariosID");
 
                     b.ToTable("Avaliacao");
                 });
@@ -72,6 +71,7 @@ namespace GGData.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstatisticaId"));
 
                     b.Property<string>("Conquistas")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("JogoID")
@@ -109,18 +109,15 @@ namespace GGData.Data.Migrations
 
                     b.Property<string>("Genero")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Plataforma")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("JogoId");
 
@@ -139,15 +136,19 @@ namespace GGData.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Senha")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("tipoUsuario")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UsuarioId");
@@ -367,7 +368,7 @@ namespace GGData.Data.Migrations
 
                     b.HasOne("GGData.Models.Usuarios", "Usuario")
                         .WithMany()
-                        .HasForeignKey("UsuarioId")
+                        .HasForeignKey("UsuariosID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

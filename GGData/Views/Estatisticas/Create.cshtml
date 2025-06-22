@@ -1,0 +1,69 @@
+﻿@model GGData.Models.Estatistica
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Estatistica</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Conquistas" class="control-label"></label>
+                <input asp-for="Conquistas" class="form-control" />
+                <span asp-validation-for="Conquistas" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TempoMedioJogo" class="control-label"></label>
+                <input asp-for="TempoMedioJogo" class="form-control" />
+                <span asp-validation-for="TempoMedioJogo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TotalAvaliacoes" class="control-label"></label>
+                <input asp-for="TotalAvaliacoes" class="form-control" />
+                <span asp-validation-for="TotalAvaliacoes" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MediaNotaUtilizadores" class="control-label"></label>
+                <input asp-for="MediaNotaUtilizadores" class="form-control" />
+                <span asp-validation-for="MediaNotaUtilizadores" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MediaNotaCriticos" class="control-label"></label>
+                <input asp-for="MediaNotaCriticos" class="form-control" />
+                <span asp-validation-for="MediaNotaCriticos" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="JogoID" class="control-label"></label>
+                <select asp-for="JogoID" class="form-control" asp-items="ViewBag.JogoID">
+                    <option value="">Selecione um jogo</option>
+                </select>
+                <span asp-validation-for="JogoID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

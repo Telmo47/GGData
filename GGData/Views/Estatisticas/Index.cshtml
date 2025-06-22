@@ -1,0 +1,65 @@
+﻿@model IEnumerable<GGData.Models.Estatistica>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Conquistas)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TempoMedioJogo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalAvaliacoes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MediaNotaUtilizadores)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MediaNotaCriticos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Jogo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Conquistas)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TempoMedioJogo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalAvaliacoes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MediaNotaUtilizadores)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MediaNotaCriticos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Jogo.JogoId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.EstatisticaId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.EstatisticaId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.EstatisticaId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
