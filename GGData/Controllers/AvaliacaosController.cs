@@ -54,7 +54,7 @@ namespace GGData.Controllers
         private void PopularViewData(Avaliacao avaliacao = null)
         {
             ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao?.JogoId);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "Nome", avaliacao?.UsuariosId);
+            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "Nome", avaliacao?.UsuariosID);
         }
 
         // GET: Avaliacaos/Create
@@ -102,7 +102,7 @@ namespace GGData.Controllers
                 return NotFound();
             }
             ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoId);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosId);
+            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosID);
             return View(avaliacao);
         }
 
@@ -139,7 +139,7 @@ namespace GGData.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoId);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosId);
+            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosID);
             return View(avaliacao);
         }
 
