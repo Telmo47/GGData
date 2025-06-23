@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http; // Necessário para HttpContext.Session
 using GGData.Data;
 using GGData.Models;
 
@@ -24,26 +25,23 @@ namespace GGData.Controllers
         }
 
         // GET: Usuarios
-        /// <summary>
-        /// Lista todos os utilizadores registados.
-        /// </summary>
         public async Task<IActionResult> Index()
         {
+            var nome = HttpContext.Session.GetString("UltimoUsuarioEditadoNome");
+            if (!string.IsNullOrEmpty(nome))
+            {
+                ViewBag.Mensagem = $"Último utilizador editado: {nome}";
+            }
             return View(await _context.Usuarios.ToListAsync());
         }
 
         // GET: Usuarios/Details/5
-        /// <summary>
-        /// Mostra os detalhes de um utilizador específico.
-        /// </summary>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
                 return NotFound();
 
-            var usuarios = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.UsuarioId == id);
-
+            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
             if (usuarios == null)
                 return NotFound();
 
@@ -51,28 +49,19 @@ namespace GGData.Controllers
         }
 
         // GET: Usuarios/Create
-        /// <summary>
-        /// Apresenta o formulário para criar um novo utilizador.
-        /// </summary>
         public IActionResult Create()
         {
-            // Envia a lista de tipos para a View, útil se usares DropDownListFor
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" });
             return View();
         }
 
         // POST: Usuarios/Create
-        /// <summary>
-        /// Processa a criação de um novo utilizador.
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,Email,tipoUsuario")] Usuarios usuarios)
         {
-            // Preencher automaticamente a data de registo
             usuarios.DataRegistro = DateTime.Now;
 
-            // Verifica se o email já está em uso
             if (_context.Usuarios.Any(u => u.Email == usuarios.Email))
             {
                 ModelState.AddModelError("Email", "Já existe um utilizador com este email.");
@@ -90,9 +79,6 @@ namespace GGData.Controllers
         }
 
         // GET: Usuarios/Edit/5
-        /// <summary>
-        /// Apresenta o formulário para editar um utilizador existente.
-        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -102,14 +88,15 @@ namespace GGData.Controllers
             if (usuarios == null)
                 return NotFound();
 
+            // Guardar dados para proteção
+            HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
+            HttpContext.Session.SetString("Acao", "Usuarios/Edit");
+
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
             return View(usuarios);
         }
 
         // POST: Usuarios/Edit/5
-        /// <summary>
-        /// Processa a edição dos dados do utilizador.
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,tipoUsuario")] Usuarios usuarios)
@@ -117,12 +104,31 @@ namespace GGData.Controllers
             if (id != usuarios.UsuarioId)
                 return NotFound();
 
+            var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
+            var acao = HttpContext.Session.GetString("Acao");
+
+            if (usuarioIDSessao == null || string.IsNullOrEmpty(acao))
+            {
+                ModelState.AddModelError("", "Demorou muito tempo. Já não consegue alterar o utilizador. Tem de reiniciar o processo.");
+                ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+                return View(usuarios);
+            }
+
+            if (usuarioIDSessao != usuarios.UsuarioId || acao != "Usuarios/Edit")
+            {
+                return RedirectToAction("Index");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(usuarios);
                     await _context.SaveChangesAsync();
+
+                    // Limpar sessão após sucesso
+                    HttpContext.Session.Remove("UsuarioID");
+                    HttpContext.Session.Remove("Acao");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,44 +145,55 @@ namespace GGData.Controllers
         }
 
         // GET: Usuarios/Delete/5
-        /// <summary>
-        /// Confirmação para eliminar um utilizador.
-        /// </summary>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
                 return NotFound();
 
-            var usuarios = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.UsuarioId == id);
-
+            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
             if (usuarios == null)
                 return NotFound();
+
+            // Guardar dados para proteção
+            HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
+            HttpContext.Session.SetString("Acao", "Usuarios/Delete");
 
             return View(usuarios);
         }
 
         // POST: Usuarios/Delete/5
-        /// <summary>
-        /// Elimina um utilizador após confirmação.
-        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var usuarios = await _context.Usuarios.FindAsync(id);
+
+            var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
+            var acao = HttpContext.Session.GetString("Acao");
+
+            if (usuarioIDSessao == null || string.IsNullOrEmpty(acao))
+            {
+                ModelState.AddModelError("", "Demorou muito tempo. Já não consegue eliminar o utilizador. Tem de reiniciar o processo.");
+                return View(usuarios);
+            }
+
+            if (usuarioIDSessao != id || acao != "Usuarios/Delete")
+            {
+                return RedirectToAction("Index");
+            }
+
             if (usuarios != null)
             {
                 _context.Usuarios.Remove(usuarios);
                 await _context.SaveChangesAsync();
+
+                HttpContext.Session.Remove("UsuarioID");
+                HttpContext.Session.Remove("Acao");
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        /// <summary>
-        /// Verifica se um utilizador existe com o ID fornecido.
-        /// </summary>
         private bool UsuariosExists(int id)
         {
             return _context.Usuarios.Any(e => e.UsuarioId == id);
