@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +12,6 @@ namespace GGData.Controllers
 {
     /// <summary>
     /// Controlador responsável por gerir os utilizadores do sistema.
-    /// Inclui operações CRUD: listar, criar, editar, ver detalhes e eliminar.
     /// </summary>
     public class UsuariosController : Controller
     {
@@ -38,12 +36,12 @@ namespace GGData.Controllers
         // GET: Usuarios/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
-            if (usuarios == null)
-                return NotFound();
+
+            if (usuarios == null) return NotFound();
+
 
             return View(usuarios);
         }
@@ -58,7 +56,7 @@ namespace GGData.Controllers
         // POST: Usuarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,Email,tipoUsuario")] Usuarios usuarios)
+        public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,Email,TipoUsuario")] Usuarios usuarios)
         {
             usuarios.DataRegistro = DateTime.Now;
 
@@ -74,35 +72,34 @@ namespace GGData.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
             return View(usuarios);
         }
 
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FindAsync(id);
-            if (usuarios == null)
-                return NotFound();
+            if (usuarios == null) return NotFound();
+
 
             // Guardar dados para proteção
             HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
             HttpContext.Session.SetString("Acao", "Usuarios/Edit");
 
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+
             return View(usuarios);
         }
 
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,tipoUsuario")] Usuarios usuarios)
+        public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,TipoUsuario")] Usuarios usuarios)
         {
-            if (id != usuarios.UsuarioId)
-                return NotFound();
+            if (id != usuarios.UsuarioId) return NotFound();
 
             var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
             var acao = HttpContext.Session.GetString("Acao");
@@ -132,27 +129,24 @@ namespace GGData.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsuariosExists(usuarios.UsuarioId))
-                        return NotFound();
-                    else
-                        throw;
+                    if (!_context.Usuarios.Any(e => e.UsuarioId == id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
             return View(usuarios);
         }
 
         // GET: Usuarios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
-            if (usuarios == null)
-                return NotFound();
+
+            if (usuarios == null) return NotFound();
+
 
             // Guardar dados para proteção
             HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
@@ -190,13 +184,14 @@ namespace GGData.Controllers
                 HttpContext.Session.Remove("UsuarioID");
                 HttpContext.Session.Remove("Acao");
             }
-
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool UsuariosExists(int id)
         {
             return _context.Usuarios.Any(e => e.UsuarioId == id);
         }
+
     }
 }
