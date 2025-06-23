@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http; // Necessário para HttpContext.Session
 using GGData.Data;
 using GGData.Models;
 
@@ -24,6 +25,11 @@ namespace GGData.Controllers
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
+            var nome = HttpContext.Session.GetString("UltimoUsuarioEditadoNome");
+            if (!string.IsNullOrEmpty(nome))
+            {
+                ViewBag.Mensagem = $"Último utilizador editado: {nome}";
+            }
             return View(await _context.Usuarios.ToListAsync());
         }
 
@@ -33,7 +39,9 @@ namespace GGData.Controllers
             if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
+
             if (usuarios == null) return NotFound();
+
 
             return View(usuarios);
         }
@@ -76,7 +84,13 @@ namespace GGData.Controllers
             var usuarios = await _context.Usuarios.FindAsync(id);
             if (usuarios == null) return NotFound();
 
-            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
+
+            // Guardar dados para proteção
+            HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
+            HttpContext.Session.SetString("Acao", "Usuarios/Edit");
+
+            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+
             return View(usuarios);
         }
 
@@ -87,12 +101,31 @@ namespace GGData.Controllers
         {
             if (id != usuarios.UsuarioId) return NotFound();
 
+            var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
+            var acao = HttpContext.Session.GetString("Acao");
+
+            if (usuarioIDSessao == null || string.IsNullOrEmpty(acao))
+            {
+                ModelState.AddModelError("", "Demorou muito tempo. Já não consegue alterar o utilizador. Tem de reiniciar o processo.");
+                ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+                return View(usuarios);
+            }
+
+            if (usuarioIDSessao != usuarios.UsuarioId || acao != "Usuarios/Edit")
+            {
+                return RedirectToAction("Index");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(usuarios);
                     await _context.SaveChangesAsync();
+
+                    // Limpar sessão após sucesso
+                    HttpContext.Session.Remove("UsuarioID");
+                    HttpContext.Session.Remove("Acao");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -111,7 +144,13 @@ namespace GGData.Controllers
             if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
+
             if (usuarios == null) return NotFound();
+
+
+            // Guardar dados para proteção
+            HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
+            HttpContext.Session.SetString("Acao", "Usuarios/Delete");
 
             return View(usuarios);
         }
@@ -122,12 +161,37 @@ namespace GGData.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var usuarios = await _context.Usuarios.FindAsync(id);
+
+            var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
+            var acao = HttpContext.Session.GetString("Acao");
+
+            if (usuarioIDSessao == null || string.IsNullOrEmpty(acao))
+            {
+                ModelState.AddModelError("", "Demorou muito tempo. Já não consegue eliminar o utilizador. Tem de reiniciar o processo.");
+                return View(usuarios);
+            }
+
+            if (usuarioIDSessao != id || acao != "Usuarios/Delete")
+            {
+                return RedirectToAction("Index");
+            }
+
             if (usuarios != null)
             {
                 _context.Usuarios.Remove(usuarios);
                 await _context.SaveChangesAsync();
+
+                HttpContext.Session.Remove("UsuarioID");
+                HttpContext.Session.Remove("Acao");
             }
             return RedirectToAction(nameof(Index));
         }
+
+
+        private bool UsuariosExists(int id)
+        {
+            return _context.Usuarios.Any(e => e.UsuarioId == id);
+        }
+
     }
 }

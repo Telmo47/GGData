@@ -13,9 +13,23 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Identidade (login/register)
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddControllersWithViews();
+
+// ----------------------
+// Configuração de cookies (sessão)
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // ou TimeSpan.FromSeconds(60) se quiseres testar rápido
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+// ----------------------
 
 var app = builder.Build();
 
@@ -27,7 +41,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -36,7 +49,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication(); // Garantir login funciona corretamente
 app.UseAuthorization();
+
+// ----------------------
+// Ativar cookies de sessão
+app.UseSession();
+// ----------------------
 
 app.MapControllerRoute(
     name: "default",
