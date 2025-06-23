@@ -25,33 +25,23 @@ namespace GGData.Controllers
         }
 
         // GET: Usuarios
-        /// <summary>
-        /// Lista todos os utilizadores registados.
-        /// </summary>
         public async Task<IActionResult> Index()
         {
-            // Verificar se existe informação de sessão para o último utilizador editado
             var nome = HttpContext.Session.GetString("UltimoUsuarioEditadoNome");
             if (!string.IsNullOrEmpty(nome))
             {
                 ViewBag.Mensagem = $"Último utilizador editado: {nome}";
             }
-
             return View(await _context.Usuarios.ToListAsync());
         }
 
         // GET: Usuarios/Details/5
-        /// <summary>
-        /// Mostra os detalhes de um utilizador específico.
-        /// </summary>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
                 return NotFound();
 
-            var usuarios = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.UsuarioId == id);
-
+            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
             if (usuarios == null)
                 return NotFound();
 
@@ -59,9 +49,6 @@ namespace GGData.Controllers
         }
 
         // GET: Usuarios/Create
-        /// <summary>
-        /// Apresenta o formulário para criar um novo utilizador.
-        /// </summary>
         public IActionResult Create()
         {
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" });
@@ -69,9 +56,6 @@ namespace GGData.Controllers
         }
 
         // POST: Usuarios/Create
-        /// <summary>
-        /// Processa a criação de um novo utilizador.
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,Email,tipoUsuario")] Usuarios usuarios)
@@ -95,9 +79,6 @@ namespace GGData.Controllers
         }
 
         // GET: Usuarios/Edit/5
-        /// <summary>
-        /// Apresenta o formulário para editar um utilizador existente.
-        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -107,21 +88,15 @@ namespace GGData.Controllers
             if (usuarios == null)
                 return NotFound();
 
-            // Guardar os dados do último utilizador editado na sessão
-            HttpContext.Session.SetInt32("UltimoUsuarioEditadoID", usuarios.UsuarioId);
-            HttpContext.Session.SetString("UltimoUsuarioEditadoNome", usuarios.Nome);
-
-            // Guardar ID para proteção contra adulteração (igual ao passo 3 do professor)
+            // Guardar dados para proteção
             HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
+            HttpContext.Session.SetString("Acao", "Usuarios/Edit");
 
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
             return View(usuarios);
         }
 
         // POST: Usuarios/Edit/5
-        /// <summary>
-        /// Processa a edição dos dados do utilizador.
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,tipoUsuario")] Usuarios usuarios)
@@ -129,19 +104,18 @@ namespace GGData.Controllers
             if (id != usuarios.UsuarioId)
                 return NotFound();
 
-            // Ler o ID guardado na sessão para comparar
             var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
+            var acao = HttpContext.Session.GetString("Acao");
 
-            if (usuarioIDSessao == null)
+            if (usuarioIDSessao == null || string.IsNullOrEmpty(acao))
             {
                 ModelState.AddModelError("", "Demorou muito tempo. Já não consegue alterar o utilizador. Tem de reiniciar o processo.");
                 ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
                 return View(usuarios);
             }
 
-            if (usuarioIDSessao != usuarios.UsuarioId)
+            if (usuarioIDSessao != usuarios.UsuarioId || acao != "Usuarios/Edit")
             {
-                // Tentativa de adulteração
                 return RedirectToAction("Index");
             }
 
@@ -152,8 +126,9 @@ namespace GGData.Controllers
                     _context.Update(usuarios);
                     await _context.SaveChangesAsync();
 
-                    // Limpar ID da sessão após sucesso
+                    // Limpar sessão após sucesso
                     HttpContext.Session.Remove("UsuarioID");
+                    HttpContext.Session.Remove("Acao");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -175,11 +150,13 @@ namespace GGData.Controllers
             if (id == null)
                 return NotFound();
 
-            var usuarios = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.UsuarioId == id);
-
+            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
             if (usuarios == null)
                 return NotFound();
+
+            // Guardar dados para proteção
+            HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
+            HttpContext.Session.SetString("Acao", "Usuarios/Delete");
 
             return View(usuarios);
         }
@@ -190,10 +167,28 @@ namespace GGData.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var usuarios = await _context.Usuarios.FindAsync(id);
+
+            var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
+            var acao = HttpContext.Session.GetString("Acao");
+
+            if (usuarioIDSessao == null || string.IsNullOrEmpty(acao))
+            {
+                ModelState.AddModelError("", "Demorou muito tempo. Já não consegue eliminar o utilizador. Tem de reiniciar o processo.");
+                return View(usuarios);
+            }
+
+            if (usuarioIDSessao != id || acao != "Usuarios/Delete")
+            {
+                return RedirectToAction("Index");
+            }
+
             if (usuarios != null)
             {
                 _context.Usuarios.Remove(usuarios);
                 await _context.SaveChangesAsync();
+
+                HttpContext.Session.Remove("UsuarioID");
+                HttpContext.Session.Remove("Acao");
             }
 
             return RedirectToAction(nameof(Index));

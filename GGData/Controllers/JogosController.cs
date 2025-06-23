@@ -20,11 +20,6 @@ namespace GGData.Controllers
             _context = context;
         }
 
-        /// <summary>
-        /// Lista todos os jogos, com opção de filtrar por género.
-        /// </summary>
-        /// <param name="genero">Género a pesquisar (opcional).</param>
-        /// <returns>View com lista de jogos filtrados (ou todos se vazio).</returns>
         public async Task<IActionResult> Index(string genero)
         {
             var jogos = from j in _context.Jogo select j;
@@ -37,9 +32,6 @@ namespace GGData.Controllers
             return View(await jogos.ToListAsync());
         }
 
-        /// <summary>
-        /// Mostra detalhes de um jogo específico.
-        /// </summary>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -50,17 +42,11 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        /// <summary>
-        /// Formulário de criação de novo jogo.
-        /// </summary>
         public IActionResult Create()
         {
             return View();
         }
 
-        /// <summary>
-        /// Recebe e guarda os dados de um novo jogo.
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("JogoId,Nome,Genero,Plataforma,DataLancamento")] Jogo jogo)
@@ -74,9 +60,6 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        /// <summary>
-        /// Formulário para editar um jogo existente.
-        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -84,15 +67,13 @@ namespace GGData.Controllers
             var jogo = await _context.Jogo.FindAsync(id);
             if (jogo == null) return NotFound();
 
-            // Guardar na sessão o ID do jogo a editar
+            // Guardar na sessão o ID do jogo a editar e ação
             HttpContext.Session.SetInt32("JogoID", jogo.JogoId);
+            HttpContext.Session.SetString("Acao", "Jogos/Edit");
 
             return View(jogo);
         }
 
-        /// <summary>
-        /// Recebe alterações de um jogo e guarda no banco de dados.
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("JogoId,Nome,Genero,Plataforma,DataLancamento")] Jogo jogo)
@@ -100,16 +81,16 @@ namespace GGData.Controllers
             if (id != jogo.JogoId) return NotFound();
 
             var jogoIDSessao = HttpContext.Session.GetInt32("JogoID");
+            var acao = HttpContext.Session.GetString("Acao");
 
-            if (jogoIDSessao == null)
+            if (jogoIDSessao == null || string.IsNullOrEmpty(acao))
             {
                 ModelState.AddModelError("", "Demorou muito tempo. Já não consegue alterar o jogo. Tem de reiniciar o processo.");
                 return View(jogo);
             }
 
-            if (jogoIDSessao != jogo.JogoId)
+            if (jogoIDSessao != jogo.JogoId || acao != "Jogos/Edit")
             {
-                // Tentativa de adulteração
                 return RedirectToAction("Index");
             }
 
@@ -120,8 +101,8 @@ namespace GGData.Controllers
                     _context.Update(jogo);
                     await _context.SaveChangesAsync();
 
-                    // Limpar o ID da sessão após a edição com sucesso
                     HttpContext.Session.Remove("JogoID");
+                    HttpContext.Session.Remove("Acao");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -133,9 +114,6 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        /// <summary>
-        /// Mostra confirmação para eliminar jogo.
-        /// </summary>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -143,21 +121,40 @@ namespace GGData.Controllers
             var jogo = await _context.Jogo.FirstOrDefaultAsync(m => m.JogoId == id);
             if (jogo == null) return NotFound();
 
+            // Guardar na sessão o ID do jogo a eliminar e ação
+            HttpContext.Session.SetInt32("JogoID", jogo.JogoId);
+            HttpContext.Session.SetString("Acao", "Jogos/Delete");
+
             return View(jogo);
         }
 
-        /// <summary>
-        /// Confirma e elimina jogo.
-        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var jogo = await _context.Jogo.FindAsync(id);
+
+            var jogoIDSessao = HttpContext.Session.GetInt32("JogoID");
+            var acao = HttpContext.Session.GetString("Acao");
+
+            if (jogoIDSessao == null || string.IsNullOrEmpty(acao))
+            {
+                ModelState.AddModelError("", "Demorou muito tempo. Já não consegue eliminar o jogo. Tem de reiniciar o processo.");
+                return View(jogo);
+            }
+
+            if (jogoIDSessao != id || acao != "Jogos/Delete")
+            {
+                return RedirectToAction("Index");
+            }
+
             if (jogo != null)
             {
                 _context.Jogo.Remove(jogo);
                 await _context.SaveChangesAsync();
+
+                HttpContext.Session.Remove("JogoID");
+                HttpContext.Session.Remove("Acao");
             }
 
             return RedirectToAction(nameof(Index));
