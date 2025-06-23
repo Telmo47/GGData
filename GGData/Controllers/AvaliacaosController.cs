@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +11,24 @@ namespace GGData.Controllers
 {
     public class AvaliacaosController : Controller
     {
-
-        /// <summary>
-        /// referência à base de dados
-        /// </summary>
         private readonly ApplicationDbContext _context;
 
         public AvaliacaosController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        private void PopularViewData(Avaliacao avaliacao = null)
+        {
+            // Dropdown para escolher o jogo pelo nome
+            ViewData["JogoId"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao?.JogoId);
+
+            // Dropdown para escolher o usuário pelo nome
+            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "UsuarioId", "Nome", avaliacao?.UsuarioId);
+
+            // Dropdown fixo para o tipo de usuário
+            var tiposUsuario = new[] { "Crítico", "Utilizador" };
+            ViewData["TipoUsuario"] = new SelectList(tiposUsuario, avaliacao?.TipoUsuario);
         }
 
         // GET: Avaliacaos
@@ -34,27 +42,17 @@ namespace GGData.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var avaliacao = await _context.Avaliacao
                 .Include(a => a.Jogo)
                 .Include(a => a.Usuario)
                 .FirstOrDefaultAsync(m => m.AvaliacaoId == id);
+
             if (avaliacao == null)
-            {
                 return NotFound();
-            }
 
             return View(avaliacao);
-        }
-
-        // GET: Avaliacaos/Create
-        private void PopularViewData(Avaliacao avaliacao = null)
-        {
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao?.JogoId);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "Nome", avaliacao?.UsuariosID);
         }
 
         // GET: Avaliacaos/Create
@@ -65,18 +63,12 @@ namespace GGData.Controllers
         }
 
         // POST: Avaliacaos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nota,Comentarios,DataReview,TipoUsuario,UsuariosID,JogoID")]
- Avaliacao avaliacao)
+        public async Task<IActionResult> Create([Bind("Nota,Comentarios,TipoUsuario,UsuarioId,JogoId")] Avaliacao avaliacao)
         {
-
-            // Tarefas
-            // - ajustar o nome das variáveis
-            // - ajustar os anotadores, neste caso em concreto,
-            //    eliminar o ID do 'Bind'
+            // Preenche a data automaticamente ao criar
+            avaliacao.DataReview = DateTime.Now;
 
             if (ModelState.IsValid)
             {
@@ -84,39 +76,33 @@ namespace GGData.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             PopularViewData(avaliacao);
-            return View(avaliacao); 
+            return View(avaliacao);
         }
 
         // GET: Avaliacaos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var avaliacao = await _context.Avaliacao.FindAsync(id);
+
             if (avaliacao == null)
-            {
                 return NotFound();
-            }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoId);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosID);
+
+            PopularViewData(avaliacao);
             return View(avaliacao);
         }
 
         // POST: Avaliacaos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AvaliacaoId,Nota,Comentarios,DataReview,TipoUsuario,UsuariosID,JogoID")] Avaliacao avaliacao)
+        public async Task<IActionResult> Edit(int id, [Bind("AvaliacaoId,Nota,Comentarios,DataReview,TipoUsuario,UsuarioId,JogoId")] Avaliacao avaliacao)
         {
             if (id != avaliacao.AvaliacaoId)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -127,19 +113,15 @@ namespace GGData.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AvaliacaoExists(avaliacao.AvaliacaoId))
-                    {
+                    if (!_context.Avaliacao.Any(e => e.AvaliacaoId == id))
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoId);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosID);
+
+            PopularViewData(avaliacao);
             return View(avaliacao);
         }
 
@@ -147,18 +129,15 @@ namespace GGData.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var avaliacao = await _context.Avaliacao
                 .Include(a => a.Jogo)
                 .Include(a => a.Usuario)
                 .FirstOrDefaultAsync(m => m.AvaliacaoId == id);
+
             if (avaliacao == null)
-            {
                 return NotFound();
-            }
 
             return View(avaliacao);
         }
@@ -169,10 +148,9 @@ namespace GGData.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var avaliacao = await _context.Avaliacao.FindAsync(id);
+
             if (avaliacao != null)
-            {
                 _context.Avaliacao.Remove(avaliacao);
-            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

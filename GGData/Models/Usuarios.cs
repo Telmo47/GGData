@@ -1,50 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace GGData.Models
 {
     /// <summary>
-    /// Usuários que entrarão no site
+    /// Representa um utilizador registado no sistema.
     /// </summary>
     public class Usuarios
     {
-        /// <summary>
-        /// Identificador do Úsuário
-        /// </summary>
         [Key]
         public int UsuarioId { get; set; }
 
-        /// <summary>
-        /// Nome do Usuário
-        /// </summary>
         [Required(ErrorMessage = "O nome é obrigatório.")]
+        [StringLength(150, ErrorMessage = "O nome não pode ter mais de 150 caracteres.")]
         public string Nome { get; set; }
 
-        /// <summary>
-        /// Password do utilizador
-        /// </summary>
         [Required(ErrorMessage = "A senha é obrigatória.")]
         [DataType(DataType.Password)]
         public string Senha { get; set; }
 
-        /// <summary>
-        /// Data de registro do utilizador
-        /// </summary>
         [Required(ErrorMessage = "A data de registo é obrigatória.")]
         [DataType(DataType.Date)]
         public DateTime DataRegistro { get; set; }
 
-        /// <summary>
-        /// Email do utilizador
-        /// </summary>
         [Required(ErrorMessage = "O email é obrigatório.")]
         [EmailAddress(ErrorMessage = "O email inserido não é válido.")]
         public string Email { get; set; }
 
-        /// <summary>
-        /// tipo de usuário da conta, pode ser um critico ou um usuário normal
-        /// </summary>
         [Required(ErrorMessage = "O tipo de utilizador é obrigatório.")]
-        public string tipoUsuario { get; set; }
+        [StringLength(20)]
+        public string TipoUsuario { get; set; }
+
+        [ValidateNever]
+        public ICollection<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
     }
 }
