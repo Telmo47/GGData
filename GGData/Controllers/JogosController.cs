@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http; // Para HttpContext.Session
 using GGData.Data;
 using GGData.Models;
 
@@ -26,16 +27,13 @@ namespace GGData.Controllers
         /// <returns>View com lista de jogos filtrados (ou todos se vazio).</returns>
         public async Task<IActionResult> Index(string genero)
         {
-            // Consulta base (todos os jogos)
             var jogos = from j in _context.Jogo select j;
 
-            // Aplica filtro se houver género indicado
             if (!string.IsNullOrEmpty(genero))
             {
                 jogos = jogos.Where(j => j.Genero.Contains(genero));
             }
 
-            // Envia os resultados para a view
             return View(await jogos.ToListAsync());
         }
 
@@ -86,6 +84,9 @@ namespace GGData.Controllers
             var jogo = await _context.Jogo.FindAsync(id);
             if (jogo == null) return NotFound();
 
+            // Guardar na sessão o ID do jogo a editar
+            HttpContext.Session.SetInt32("JogoID", jogo.JogoId);
+
             return View(jogo);
         }
 
@@ -98,12 +99,29 @@ namespace GGData.Controllers
         {
             if (id != jogo.JogoId) return NotFound();
 
+            var jogoIDSessao = HttpContext.Session.GetInt32("JogoID");
+
+            if (jogoIDSessao == null)
+            {
+                ModelState.AddModelError("", "Demorou muito tempo. Já não consegue alterar o jogo. Tem de reiniciar o processo.");
+                return View(jogo);
+            }
+
+            if (jogoIDSessao != jogo.JogoId)
+            {
+                // Tentativa de adulteração
+                return RedirectToAction("Index");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(jogo);
                     await _context.SaveChangesAsync();
+
+                    // Limpar o ID da sessão após a edição com sucesso
+                    HttpContext.Session.Remove("JogoID");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -145,13 +163,9 @@ namespace GGData.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        /// <summary>
-        /// Verifica se um jogo com o ID especificado existe.
-        /// </summary>
         private bool JogoExists(int id)
         {
             return _context.Jogo.Any(e => e.JogoId == id);
         }
     }
 }
-

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http; // Necessário para usar HttpContext.Session
+using Microsoft.AspNetCore.Http; // Necessário para HttpContext.Session
 using GGData.Data;
 using GGData.Models;
 
@@ -111,6 +111,9 @@ namespace GGData.Controllers
             HttpContext.Session.SetInt32("UltimoUsuarioEditadoID", usuarios.UsuarioId);
             HttpContext.Session.SetString("UltimoUsuarioEditadoNome", usuarios.Nome);
 
+            // Guardar ID para proteção contra adulteração (igual ao passo 3 do professor)
+            HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
+
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
             return View(usuarios);
         }
@@ -126,12 +129,31 @@ namespace GGData.Controllers
             if (id != usuarios.UsuarioId)
                 return NotFound();
 
+            // Ler o ID guardado na sessão para comparar
+            var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
+
+            if (usuarioIDSessao == null)
+            {
+                ModelState.AddModelError("", "Demorou muito tempo. Já não consegue alterar o utilizador. Tem de reiniciar o processo.");
+                ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+                return View(usuarios);
+            }
+
+            if (usuarioIDSessao != usuarios.UsuarioId)
+            {
+                // Tentativa de adulteração
+                return RedirectToAction("Index");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(usuarios);
                     await _context.SaveChangesAsync();
+
+                    // Limpar ID da sessão após sucesso
+                    HttpContext.Session.Remove("UsuarioID");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
