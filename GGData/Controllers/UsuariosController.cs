@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http; // Necessário para usar HttpContext.Session
 using GGData.Data;
 using GGData.Models;
 
@@ -29,6 +30,13 @@ namespace GGData.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
+            // Verificar se existe informação de sessão para o último utilizador editado
+            var nome = HttpContext.Session.GetString("UltimoUsuarioEditadoNome");
+            if (!string.IsNullOrEmpty(nome))
+            {
+                ViewBag.Mensagem = $"Último utilizador editado: {nome}";
+            }
+
             return View(await _context.Usuarios.ToListAsync());
         }
 
@@ -56,7 +64,6 @@ namespace GGData.Controllers
         /// </summary>
         public IActionResult Create()
         {
-            // Envia a lista de tipos para a View, útil se usares DropDownListFor
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" });
             return View();
         }
@@ -69,10 +76,8 @@ namespace GGData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,Email,tipoUsuario")] Usuarios usuarios)
         {
-            // Preencher automaticamente a data de registo
             usuarios.DataRegistro = DateTime.Now;
 
-            // Verifica se o email já está em uso
             if (_context.Usuarios.Any(u => u.Email == usuarios.Email))
             {
                 ModelState.AddModelError("Email", "Já existe um utilizador com este email.");
@@ -101,6 +106,10 @@ namespace GGData.Controllers
             var usuarios = await _context.Usuarios.FindAsync(id);
             if (usuarios == null)
                 return NotFound();
+
+            // Guardar os dados do último utilizador editado na sessão
+            HttpContext.Session.SetInt32("UltimoUsuarioEditadoID", usuarios.UsuarioId);
+            HttpContext.Session.SetString("UltimoUsuarioEditadoNome", usuarios.Nome);
 
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
             return View(usuarios);
@@ -139,9 +148,6 @@ namespace GGData.Controllers
         }
 
         // GET: Usuarios/Delete/5
-        /// <summary>
-        /// Confirmação para eliminar um utilizador.
-        /// </summary>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -157,9 +163,6 @@ namespace GGData.Controllers
         }
 
         // POST: Usuarios/Delete/5
-        /// <summary>
-        /// Elimina um utilizador após confirmação.
-        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -174,9 +177,6 @@ namespace GGData.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        /// <summary>
-        /// Verifica se um utilizador existe com o ID fornecido.
-        /// </summary>
         private bool UsuariosExists(int id)
         {
             return _context.Usuarios.Any(e => e.UsuarioId == id);
