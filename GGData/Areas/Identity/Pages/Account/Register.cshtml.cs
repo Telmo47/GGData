@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -21,6 +23,7 @@ namespace GGData.Areas.Identity.Pages.Account
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserStore<IdentityUser> _userStore;
+        private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
@@ -36,6 +39,7 @@ namespace GGData.Areas.Identity.Pages.Account
         {
             _userManager = userManager;
             _userStore = userStore;
+            _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
@@ -50,26 +54,36 @@ namespace GGData.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required, StringLength(150)]
+            [Required(ErrorMessage = "O nome é obrigatório.")]
+            [StringLength(150)]
             public string Nome { get; set; }
 
-            [Required, EmailAddress]
+            [Required(ErrorMessage = "O email é obrigatório.")]
+            [EmailAddress(ErrorMessage = "Tem de inserir um email válido.")]
             public string Email { get; set; }
 
-            [Required, StringLength(20, MinimumLength = 6)]
+            [Required(ErrorMessage = "A password é obrigatória.")]
+            [StringLength(20, MinimumLength = 6, ErrorMessage = "A password tem de ter entre 6 e 20 caracteres.")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
+            [Display(Name = "Confirmar password")]
             [Compare("Password", ErrorMessage = "As passwords não coincidem.")]
             public string ConfirmPassword { get; set; }
 
-            [Required]
-            public string TipoUsuario { get; set; }
+            [Required(ErrorMessage = "O tipo de utilizador é obrigatório.")]
+            [Display(Name = "Tipo de utilizador")]
+            public string TipoUsuario { get; set; } // "Normal" ou "Critico"
 
-            // Campos exclusivos para críticos
+            // Campos exclusivos para críticos (opcionais para utilizadores normais)
+            [Display(Name = "Instituição")]
             public string Instituicao { get; set; }
+
+            [Display(Name = "Website Profissional")]
             public string WebsiteProfissional { get; set; }
+
+            [Display(Name = "Descrição Profissional")]
             public string DescricaoProfissional { get; set; }
         }
 
@@ -84,6 +98,17 @@ namespace GGData.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
+            // Validação extra para campos de críticos
+            if (Input.TipoUsuario == "Critico")
+            {
+                if (string.IsNullOrWhiteSpace(Input.Instituicao))
+                    ModelState.AddModelError("Input.Instituicao", "A instituição é obrigatória para críticos.");
+                if (string.IsNullOrWhiteSpace(Input.WebsiteProfissional))
+                    ModelState.AddModelError("Input.WebsiteProfissional", "O website profissional é obrigatório para críticos.");
+                if (string.IsNullOrWhiteSpace(Input.DescricaoProfissional))
+                    ModelState.AddModelError("Input.DescricaoProfissional", "A descrição profissional é obrigatória para críticos.");
+            }
+
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
@@ -93,47 +118,78 @@ namespace GGData.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("Conta criada com sucesso.");
 
-                    // Criar o utilizador na tabela 'Usuarios'
                     var novoUsuario = new Usuarios
                     {
                         Nome = Input.Nome,
                         Email = Input.Email,
-                        Senha = Input.Password,
                         DataRegistro = DateTime.Now,
                         TipoUsuario = Input.TipoUsuario,
                         UserName = user.UserName
                     };
 
-                    // Opcionalmente guardar os dados extra dos críticos
                     if (Input.TipoUsuario == "Critico")
                     {
-                        novoUsuario.Email += " [Verificação Pendente]";
-                        // Podes guardar outros dados num novo modelo se quiseres
+                        novoUsuario.Instituicao = Input.Instituicao;
+                        novoUsuario.WebsiteProfissional = Input.WebsiteProfissional;
+                        novoUsuario.DescricaoProfissional = Input.DescricaoProfissional;
+                        // Aqui podes adicionar flags para indicar que o crítico está pendente de verificação
                     }
 
-                    _context.Usuarios.Add(novoUsuario);
-                    await _context.SaveChangesAsync();
+                    bool haErro = false;
+                    try
+                    {
+                        _context.Usuarios.Add(novoUsuario);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        haErro = true;
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page("/Account/ConfirmEmail", null, new { area = "Identity", userId, code }, Request.Scheme);
+                        // Apagar o utilizador Identity criado pois a BD falhou
+                        await _userManager.DeleteAsync(user);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirmação de Conta",
-                        $"Confirme a sua conta clicando <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aqui</a>.");
+                        // Registar o erro (log)
+                        _logger.LogError(ex, "Erro ao guardar dados do utilizador na BD");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
+                        ModelState.AddModelError(string.Empty, "Ocorreu um erro interno. Por favor, tenta novamente mais tarde.");
+                    }
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
+                    if (!haErro)
+                    {
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page("/Account/ConfirmEmail", null,
+                            new { area = "Identity", userId, code, returnUrl },
+                            Request.Scheme);
+
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirmação de Conta",
+                            $"Confirme a sua conta clicando <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aqui</a>.");
+
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
+
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
                 }
-
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
+                else
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
+            // Se chegar aqui, houve erro, mostrar a página com mensagens de erro
             return Page();
+        }
+
+        private IUserEmailStore<IdentityUser> GetEmailStore()
+        {
+            if (!_userManager.SupportsUserEmail)
+                throw new NotSupportedException("A store de utilizadores tem de suportar email.");
+
+            return (IUserEmailStore<IdentityUser>)_userStore;
         }
     }
 }
