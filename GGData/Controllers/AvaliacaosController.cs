@@ -20,6 +20,12 @@ namespace GGData.Controllers
             _context = context;
         }
 
+        private int GetCurrentUserId()
+        {
+            var username = User.Identity.Name;
+            return _context.Usuarios.Where(u => u.UserName == username).Select(u => u.UsuarioId).FirstOrDefault();
+        }
+
         // Lista todas as avaliações
         public async Task<IActionResult> Index()
         {
@@ -27,14 +33,7 @@ namespace GGData.Controllers
                 .Include(a => a.Jogo)
                 .Include(a => a.Usuario);
 
-            // Obter o userId do utilizador autenticado para uso na view
-            var username = User.Identity.Name;
-            var userId = _context.Usuarios
-                .Where(u => u.UserName == username)
-                .Select(u => u.UsuarioId)
-                .FirstOrDefault();
-
-            ViewBag.CurrentUserId = userId;
+            ViewBag.CurrentUserId = GetCurrentUserId();
 
             return View(await avaliacoes.ToListAsync());
         }
@@ -68,13 +67,7 @@ namespace GGData.Controllers
         {
             if (ModelState.IsValid)
             {
-                var username = User.Identity.Name;
-                var userId = _context.Usuarios
-                    .Where(u => u.UserName == username)
-                    .Select(u => u.UsuarioId)
-                    .FirstOrDefault();
-
-                avaliacao.UsuariosID = userId;
+                avaliacao.UsuariosID = GetCurrentUserId();
 
                 _context.Add(avaliacao);
                 await _context.SaveChangesAsync();
@@ -85,24 +78,19 @@ namespace GGData.Controllers
             return View(avaliacao);
         }
 
-        // Edit (GET) - só autor ou admin pode editar
+        // Edit (GET) - só dono ou admin pode editar
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
-
-            var avaliacao = await _context.Avaliacao.FindAsync(id);
-            if (avaliacao == null) return NotFound();
+            if (id == null) return RedirectToAction(nameof(Index));
 
             var username = User.Identity.Name;
-            var userId = _context.Usuarios
-                .Where(u => u.UserName == username)
-                .Select(u => u.UsuarioId)
-                .FirstOrDefault();
+            var isAdmin = User.IsInRole("Administrador");
 
-            if (avaliacao.UsuariosID != userId && !User.IsInRole("Administrador"))
-            {
-                return Forbid();
-            }
+            var avaliacao = await _context.Avaliacao
+                .Include(a => a.Usuario)
+                .FirstOrDefaultAsync(a => a.AvaliacaoId == id && (isAdmin || a.Usuario.UserName == username));
+
+            if (avaliacao == null) return RedirectToAction(nameof(Index));
 
             ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao.JogoId);
             return View(avaliacao);
@@ -115,13 +103,10 @@ namespace GGData.Controllers
         {
             if (id != avaliacao.AvaliacaoId) return NotFound();
 
-            var username = User.Identity.Name;
-            var userId = _context.Usuarios
-                .Where(u => u.UserName == username)
-                .Select(u => u.UsuarioId)
-                .FirstOrDefault();
+            var currentUserId = GetCurrentUserId();
+            var isAdmin = User.IsInRole("Administrador");
 
-            if (avaliacao.UsuariosID != userId && !User.IsInRole("Administrador"))
+            if (avaliacao.UsuariosID != currentUserId && !isAdmin)
             {
                 return Forbid();
             }
@@ -142,32 +127,25 @@ namespace GGData.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao.JogoId);
             return View(avaliacao);
         }
 
-        // Delete (GET) - só autor ou admin
+        // Delete (GET) - só dono ou admin
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) return RedirectToAction(nameof(Index));
+
+            var username = User.Identity.Name;
+            var isAdmin = User.IsInRole("Administrador");
 
             var avaliacao = await _context.Avaliacao
                 .Include(a => a.Jogo)
                 .Include(a => a.Usuario)
-                .FirstOrDefaultAsync(m => m.AvaliacaoId == id);
+                .FirstOrDefaultAsync(a => a.AvaliacaoId == id && (isAdmin || a.Usuario.UserName == username));
 
-            if (avaliacao == null) return NotFound();
-
-            var username = User.Identity.Name;
-            var userId = _context.Usuarios
-                .Where(u => u.UserName == username)
-                .Select(u => u.UsuarioId)
-                .FirstOrDefault();
-
-            if (avaliacao.UsuariosID != userId && !User.IsInRole("Administrador"))
-            {
-                return Forbid();
-            }
+            if (avaliacao == null) return RedirectToAction(nameof(Index));
 
             return View(avaliacao);
         }
@@ -177,20 +155,14 @@ namespace GGData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var avaliacao = await _context.Avaliacao.FindAsync(id);
+            var currentUserId = GetCurrentUserId();
+            var isAdmin = User.IsInRole("Administrador");
 
-            var username = User.Identity.Name;
-            var userId = _context.Usuarios
-                .Where(u => u.UserName == username)
-                .Select(u => u.UsuarioId)
-                .FirstOrDefault();
+            var avaliacao = await _context.Avaliacao
+                .Include(a => a.Usuario)
+                .FirstOrDefaultAsync(a => a.AvaliacaoId == id && (isAdmin || a.Usuario.UsuarioId == currentUserId));
 
-            if (avaliacao == null) return NotFound();
-
-            if (avaliacao.UsuariosID != userId && !User.IsInRole("Administrador"))
-            {
-                return Forbid();
-            }
+            if (avaliacao == null) return RedirectToAction(nameof(Index));
 
             _context.Avaliacao.Remove(avaliacao);
             await _context.SaveChangesAsync();
