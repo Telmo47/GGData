@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-﻿using System;
+using System;
 using System.Linq;
-=======
-﻿using System.Linq;
->>>>>>> Autentication
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,13 +11,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GGData.Controllers
 {
-<<<<<<< HEAD
     /// <summary>
     /// Controlador responsável por gerir os utilizadores do sistema.
     /// </summary>
-=======
     [Authorize(Roles = "Administrador")]
->>>>>>> Autentication
     public class UsuariosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -31,10 +24,7 @@ namespace GGData.Controllers
             _context = context;
         }
 
-<<<<<<< HEAD
         // GET: Usuarios
-=======
->>>>>>> Autentication
         public async Task<IActionResult> Index()
         {
             var nome = HttpContext.Session.GetString("UltimoUsuarioEditadoNome");
@@ -45,27 +35,18 @@ namespace GGData.Controllers
             return View(await _context.Usuarios.ToListAsync());
         }
 
-<<<<<<< HEAD
         // GET: Usuarios/Details/5
-=======
->>>>>>> Autentication
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
-<<<<<<< HEAD
 
             if (usuarios == null) return NotFound();
-
-=======
-            if (usuarios == null) return NotFound();
->>>>>>> Autentication
 
             return View(usuarios);
         }
 
-<<<<<<< HEAD
         // GET: Usuarios/Create
         public IActionResult Create()
         {
@@ -97,40 +78,28 @@ namespace GGData.Controllers
         }
 
         // GET: Usuarios/Edit/5
-=======
->>>>>>> Autentication
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FindAsync(id);
             if (usuarios == null) return NotFound();
-<<<<<<< HEAD
 
-
-            // Guardar dados para proteção
+            // Guardar dados para proteção da sessão
             HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
             HttpContext.Session.SetString("Acao", "Usuarios/Edit");
 
-            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
 
             return View(usuarios);
         }
 
         // POST: Usuarios/Edit/5
-=======
-
-            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
-            return View(usuarios);
-        }
-
->>>>>>> Autentication
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,TipoUsuario")] Usuarios usuarios)
         {
             if (id != usuarios.UsuarioId) return NotFound();
-<<<<<<< HEAD
 
             var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
             var acao = HttpContext.Session.GetString("Acao");
@@ -138,7 +107,7 @@ namespace GGData.Controllers
             if (usuarioIDSessao == null || string.IsNullOrEmpty(acao))
             {
                 ModelState.AddModelError("", "Demorou muito tempo. Já não consegue alterar o utilizador. Tem de reiniciar o processo.");
-                ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+                ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
                 return View(usuarios);
             }
 
@@ -146,8 +115,6 @@ namespace GGData.Controllers
             {
                 return RedirectToAction("Index");
             }
-=======
->>>>>>> Autentication
 
             if (ModelState.IsValid)
             {
@@ -162,52 +129,33 @@ namespace GGData.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-<<<<<<< HEAD
-                    if (!_context.Usuarios.Any(e => e.UsuarioId == id)) return NotFound();
-=======
                     if (!UsuariosExists(usuarios.UsuarioId))
                         return NotFound();
->>>>>>> Autentication
                     else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-<<<<<<< HEAD
-=======
 
->>>>>>> Autentication
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
             return View(usuarios);
         }
 
-<<<<<<< HEAD
         // GET: Usuarios/Delete/5
-=======
->>>>>>> Autentication
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
-<<<<<<< HEAD
-
             if (usuarios == null) return NotFound();
 
-
-            // Guardar dados para proteção
+            // Guardar dados para proteção da sessão
             HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
             HttpContext.Session.SetString("Acao", "Usuarios/Delete");
-=======
-            if (usuarios == null) return NotFound();
->>>>>>> Autentication
 
             return View(usuarios);
         }
 
-<<<<<<< HEAD
         // POST: Usuarios/Delete/5
-=======
->>>>>>> Autentication
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -232,24 +180,16 @@ namespace GGData.Controllers
             {
                 _context.Usuarios.Remove(usuarios);
                 await _context.SaveChangesAsync();
-<<<<<<< HEAD
 
                 HttpContext.Session.Remove("UsuarioID");
                 HttpContext.Session.Remove("Acao");
-=======
->>>>>>> Autentication
             }
             return RedirectToAction(nameof(Index));
         }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> Autentication
         private bool UsuariosExists(int id)
         {
             return _context.Usuarios.Any(e => e.UsuarioId == id);
         }
-
     }
 }
