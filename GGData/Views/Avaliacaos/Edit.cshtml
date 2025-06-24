@@ -35,7 +35,11 @@
 
             <div class="form-group">
                 <label asp-for="UsuarioId" class="control-label"></label>
+<<<<<<< HEAD
                 <select asp-for="UsuarioId" class="form-control" asp-items="@(ViewData["UsuarioId"] as IEnumerable<SelectListItem>)"></select>
+=======
+                <select asp-for="UsuarioId" class="form-control" asp-items="ViewBag.UsuariosID"></select>
+>>>>>>> Autentication
                 <span asp-validation-for="UsuarioId" class="text-danger"></span>
             </div>
 

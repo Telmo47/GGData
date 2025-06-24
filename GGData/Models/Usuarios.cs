@@ -26,6 +26,7 @@ namespace GGData.Models
 
         /// <summary>
         /// Palavra-passe do utilizador.
+        /// Nota: idealmente não se deve guardar em texto claro.
         /// </summary>
         [Required(ErrorMessage = "A senha é obrigatória.")]
         [DataType(DataType.Password)]
@@ -53,13 +54,26 @@ namespace GGData.Models
         public string TipoUsuario { get; set; }
 
         /// <summary>
-        /// Nome de utilizador que serve para fazer a ponte 
-        /// entre o utilizador do sistema e a autenticação do ASP.NET Identity.
-        /// Este valor deverá ser único e corresponder ao UserName do Identity.
+        /// Nome de utilizador para autenticação (normalmente o email).
         /// </summary>
         [Required(ErrorMessage = "O nome de utilizador (UserName) é obrigatório.")]
         [StringLength(50, ErrorMessage = "O UserName não pode ter mais de 50 caracteres.")]
-        public string UserName { get; set; } = string.Empty;
+        public string UserName { get; set; }
+
+        /// <summary>
+        /// Instituição para utilizadores do tipo Crítico (opcional, usado para verificação).
+        /// </summary>
+        public string? Instituicao { get; set; }
+
+        /// <summary>
+        /// Website profissional para críticos (opcional).
+        /// </summary>
+        public string? WebsiteProfissional { get; set; }
+
+        /// <summary>
+        /// Descrição profissional para críticos (opcional).
+        /// </summary>
+        public string? DescricaoProfissional { get; set; }
 
         /// <summary>
         /// Coleção de avaliações feitas pelo utilizador.

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http; // Para HttpContext.Session
 using GGData.Data;
@@ -11,6 +9,7 @@ using GGData.Models;
 
 namespace GGData.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class JogosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,9 +19,19 @@ namespace GGData.Controllers
             _context = context;
         }
 
+<<<<<<< HEAD
         public async Task<IActionResult> Index(string genero)
         {
             var jogos = from j in _context.Jogo select j;
+=======
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string genero)
+        {
+            var jogos = _context.Jogo
+                .Include(j => j.Avaliacoes)
+                .Include(j => j.Estatisticas)
+                .AsQueryable();
+>>>>>>> Autentication
 
             if (!string.IsNullOrEmpty(genero))
             {
@@ -32,6 +41,10 @@ namespace GGData.Controllers
             return View(await jogos.ToListAsync());
         }
 
+<<<<<<< HEAD
+=======
+        [AllowAnonymous]
+>>>>>>> Autentication
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -118,7 +131,11 @@ namespace GGData.Controllers
         {
             if (id == null) return NotFound();
 
-            var jogo = await _context.Jogo.FirstOrDefaultAsync(m => m.JogoId == id);
+            var jogo = await _context.Jogo
+                .Include(j => j.Avaliacoes)
+                .Include(j => j.Estatisticas)
+                .FirstOrDefaultAsync(m => m.JogoId == id);
+
             if (jogo == null) return NotFound();
 
             // Guardar na sessão o ID do jogo a eliminar e ação
@@ -132,6 +149,7 @@ namespace GGData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+<<<<<<< HEAD
             var jogo = await _context.Jogo.FindAsync(id);
 
             var jogoIDSessao = HttpContext.Session.GetInt32("JogoID");
@@ -149,6 +167,14 @@ namespace GGData.Controllers
             }
 
             if (jogo != null)
+=======
+            var jogo = await _context.Jogo
+                .Include(j => j.Avaliacoes)
+                .Include(j => j.Estatisticas)
+                .FirstOrDefaultAsync(j => j.JogoId == id);
+
+            if (jogo != null && jogo.Avaliacoes.Count == 0 && jogo.Estatisticas.Count == 0)
+>>>>>>> Autentication
             {
                 _context.Jogo.Remove(jogo);
                 await _context.SaveChangesAsync();

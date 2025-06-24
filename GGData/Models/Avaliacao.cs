@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
@@ -17,9 +18,10 @@ namespace GGData.Models
         public int AvaliacaoId { get; set; }
 
         /// <summary>
-        /// Nota dada pelo utilizador, de 0 a 100.
+        /// Nota dada pelo utilizador, de 1 a 10.
         /// </summary>
-        [Range(0, 100, ErrorMessage = "A nota deve estar entre 0 e 100.")]
+        [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
+        [Range(1, 10, ErrorMessage = "A nota deve estar entre 1 e 10")]
         public int Nota { get; set; }
 
         /// <summary>
@@ -27,43 +29,49 @@ namespace GGData.Models
         /// Pode ser uma mensagem livre, até 5000 caracteres.
         /// </summary>
         [StringLength(5000, ErrorMessage = "O comentário não pode exceder 5000 caracteres.")]
+        [Display(Name = "Comentários")]
         public string? Comentarios { get; set; }
 
         /// <summary>
-        /// Data em que a avaliação foi feita.
+        /// Data da review feita pelo utilizador.
         /// </summary>
+        [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
+        [Display(Name = "Data da Review")]
+        [DataType(DataType.Date)]
         public DateTime DataReview { get; set; }
 
         /// <summary>
         /// Tipo de usuário que deu a avaliação (Crítico ou Utilizador).
         /// </summary>
-        [Required(ErrorMessage = "O tipo de usuário é obrigatório.")]
+        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
         [StringLength(20)]
         [Display(Name = "Tipo de Usuário")]
         public string TipoUsuario { get; set; }
 
-        // FKs e navegações
+        // Foreign Keys e Navegações
 
         /// <summary>
-        /// FK para o utilizador que fez a avaliação.
+        /// Chave estrangeira com referência ao utilizador que fez a avaliação.
         /// </summary>
         [ForeignKey(nameof(Usuario))]
+        [Display(Name = "Utilizador")]
         public int UsuarioId { get; set; }
 
         /// <summary>
-        /// Navegação para o utilizador.
+        /// Navegação para o utilizador que fez a avaliação.
         /// </summary>
         [ValidateNever]
         public Usuarios Usuario { get; set; }
 
         /// <summary>
-        /// FK para o jogo avaliado.
+        /// Chave estrangeira com referência ao jogo avaliado.
         /// </summary>
         [ForeignKey(nameof(Jogo))]
+        [Display(Name = "Jogo")]
         public int JogoId { get; set; }
 
         /// <summary>
-        /// Navegação para o jogo.
+        /// Navegação para o jogo avaliado.
         /// </summary>
         [ValidateNever]
         public Jogo Jogo { get; set; }
