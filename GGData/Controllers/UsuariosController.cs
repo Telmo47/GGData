@@ -85,7 +85,7 @@ namespace GGData.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
             return View(usuarios);
         }
 
@@ -102,7 +102,7 @@ namespace GGData.Controllers
             if (usuarios == null)
                 return NotFound();
 
-            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
             return View(usuarios);
         }
 
@@ -134,7 +134,7 @@ namespace GGData.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
             return View(usuarios);
         }
 
