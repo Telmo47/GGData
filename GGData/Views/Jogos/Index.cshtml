@@ -4,13 +4,15 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Jogos</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (User.IsInRole("Administrador"))
+    {
+        <a asp-action="Create" class="btn btn-primary">Criar Novo Jogo</a>
+    }
 </p>
 
-<!-- Filtro por género -->
 <form method="get" asp-controller="Jogos" asp-action="Index" class="form-inline mb-3">
     <input type="text" name="genero" value="@Context.Request.Query["genero"]" placeholder="Filtrar por género" class="form-control mr-2" />
     <button type="submit" class="btn btn-secondary">Pesquisar</button>
@@ -19,41 +21,36 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Genero)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Plataforma)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().DataLancamento)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.First().Nome)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Genero)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Plataforma)</th>
+            <th>@Html.DisplayNameFor(model => model.First().DataLancamento)</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+                <td>@Html.DisplayFor(modelItem => item.Genero)</td>
+                <td>@Html.DisplayFor(modelItem => item.Plataforma)</td>
+                <td>@item.DataLancamento.ToString("yyyy-MM-dd")</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Genero)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Plataforma)
-                </td>
-                <td>
-                    @item.DataLancamento.ToString("yyyy-MM-dd")
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.JogoId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.JogoId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.JogoId">Delete</a>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.JogoId">Editar</a>
+                
+                        <text> | </text>
+                        <a asp-action="Details" asp-route-id="@item.JogoId">Detalhes</a>
+
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.JogoId">Apagar</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Details" asp-route-id="@item.JogoId">Detalhes</a>
+                    }
                 </td>
             </tr>
         }

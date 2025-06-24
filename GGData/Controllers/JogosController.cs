@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using GGData.Models;
 
 namespace GGData.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class JogosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,29 +21,22 @@ namespace GGData.Controllers
             _context = context;
         }
 
-        /// <summary>
-        /// Lista todos os jogos, com opção de filtrar por género.
-        /// </summary>
-        /// <param name="genero">Género a pesquisar (opcional).</param>
-        /// <returns>View com lista de jogos filtrados (ou todos se vazio).</returns>
+        // Público: lista jogos com filtro opcional
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string genero)
         {
-            // Consulta base (todos os jogos)
             var jogos = from j in _context.Jogo select j;
 
-            // Aplica filtro se houver género indicado
             if (!string.IsNullOrEmpty(genero))
             {
                 jogos = jogos.Where(j => j.Genero.Contains(genero));
             }
 
-            // Envia os resultados para a view
             return View(await jogos.ToListAsync());
         }
 
-        /// <summary>
-        /// Mostra detalhes de um jogo específico.
-        /// </summary>
+        // Público: detalhes jogo
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -52,17 +47,12 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        /// <summary>
-        /// Formulário de criação de novo jogo.
-        /// </summary>
+        // Criar jogo - só admin
         public IActionResult Create()
         {
             return View();
         }
 
-        /// <summary>
-        /// Recebe e guarda os dados de um novo jogo.
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("JogoId,Nome,Genero,Plataforma,DataLancamento")] Jogo jogo)
@@ -76,9 +66,7 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        /// <summary>
-        /// Formulário para editar um jogo existente.
-        /// </summary>
+        // Editar jogo - só admin
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -89,9 +77,6 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        /// <summary>
-        /// Recebe alterações de um jogo e guarda no banco de dados.
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("JogoId,Nome,Genero,Plataforma,DataLancamento")] Jogo jogo)
@@ -115,9 +100,7 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        /// <summary>
-        /// Mostra confirmação para eliminar jogo.
-        /// </summary>
+        // Delete jogo - só admin
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -128,9 +111,6 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        /// <summary>
-        /// Confirma e elimina jogo.
-        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -145,13 +125,9 @@ namespace GGData.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        /// <summary>
-        /// Verifica se um jogo com o ID especificado existe.
-        /// </summary>
         private bool JogoExists(int id)
         {
             return _context.Jogo.Any(e => e.JogoId == id);
         }
     }
 }
-

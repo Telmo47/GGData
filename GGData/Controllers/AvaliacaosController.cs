@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,15 +6,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GGData.Data;
 using GGData.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GGData.Controllers
 {
+    [Authorize]
     public class AvaliacaosController : Controller
     {
-
-        /// <summary>
-        /// referência à base de dados
-        /// </summary>
         private readonly ApplicationDbContext _context;
 
         public AvaliacaosController(ApplicationDbContext context)
@@ -23,99 +20,110 @@ namespace GGData.Controllers
             _context = context;
         }
 
-        // GET: Avaliacaos
+        // Lista todas as avaliações
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Avaliacao.Include(a => a.Jogo).Include(a => a.Usuario);
-            return View(await applicationDbContext.ToListAsync());
+            var avaliacoes = _context.Avaliacao
+                .Include(a => a.Jogo)
+                .Include(a => a.Usuario);
+
+            // Obter o userId do utilizador autenticado para uso na view
+            var username = User.Identity.Name;
+            var userId = _context.Usuarios
+                .Where(u => u.UserName == username)
+                .Select(u => u.UsuarioId)
+                .FirstOrDefault();
+
+            ViewBag.CurrentUserId = userId;
+
+            return View(await avaliacoes.ToListAsync());
         }
 
-        // GET: Avaliacaos/Details/5
+        // Detalhes avaliação
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var avaliacao = await _context.Avaliacao
                 .Include(a => a.Jogo)
                 .Include(a => a.Usuario)
                 .FirstOrDefaultAsync(m => m.AvaliacaoId == id);
-            if (avaliacao == null)
-            {
-                return NotFound();
-            }
+
+            if (avaliacao == null) return NotFound();
 
             return View(avaliacao);
         }
 
-        // GET: Avaliacaos/Create
-        private void PopularViewData(Avaliacao avaliacao = null)
-        {
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao?.JogoId);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "Nome", avaliacao?.UsuariosID);
-        }
-
-        // GET: Avaliacaos/Create
+        // Create (GET)
         public IActionResult Create()
         {
-            PopularViewData();
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome");
             return View();
         }
 
-        // POST: Avaliacaos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Create (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nota,Comentarios,DataReview,TipoUsuario,UsuariosID,JogoID")]
- Avaliacao avaliacao)
+        public async Task<IActionResult> Create([Bind("Nota,Comentarios,DataReview,TipoUsuario,JogoId")] Avaliacao avaliacao)
         {
-
-            // Tarefas
-            // - ajustar o nome das variáveis
-            // - ajustar os anotadores, neste caso em concreto,
-            //    eliminar o ID do 'Bind'
-
             if (ModelState.IsValid)
             {
+                var username = User.Identity.Name;
+                var userId = _context.Usuarios
+                    .Where(u => u.UserName == username)
+                    .Select(u => u.UsuarioId)
+                    .FirstOrDefault();
+
+                avaliacao.UsuariosID = userId;
+
                 _context.Add(avaliacao);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            PopularViewData(avaliacao);
-            return View(avaliacao); 
-        }
 
-        // GET: Avaliacaos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var avaliacao = await _context.Avaliacao.FindAsync(id);
-            if (avaliacao == null)
-            {
-                return NotFound();
-            }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoId);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosID);
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao.JogoId);
             return View(avaliacao);
         }
 
-        // POST: Avaliacaos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Edit (GET) - só autor ou admin pode editar
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var avaliacao = await _context.Avaliacao.FindAsync(id);
+            if (avaliacao == null) return NotFound();
+
+            var username = User.Identity.Name;
+            var userId = _context.Usuarios
+                .Where(u => u.UserName == username)
+                .Select(u => u.UsuarioId)
+                .FirstOrDefault();
+
+            if (avaliacao.UsuariosID != userId && !User.IsInRole("Administrador"))
+            {
+                return Forbid();
+            }
+
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao.JogoId);
+            return View(avaliacao);
+        }
+
+        // Edit (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AvaliacaoId,Nota,Comentarios,DataReview,TipoUsuario,UsuariosID,JogoID")] Avaliacao avaliacao)
+        public async Task<IActionResult> Edit(int id, [Bind("AvaliacaoId,Nota,Comentarios,DataReview,TipoUsuario,UsuariosID,JogoId")] Avaliacao avaliacao)
         {
-            if (id != avaliacao.AvaliacaoId)
+            if (id != avaliacao.AvaliacaoId) return NotFound();
+
+            var username = User.Identity.Name;
+            var userId = _context.Usuarios
+                .Where(u => u.UserName == username)
+                .Select(u => u.UsuarioId)
+                .FirstOrDefault();
+
+            if (avaliacao.UsuariosID != userId && !User.IsInRole("Administrador"))
             {
-                return NotFound();
+                return Forbid();
             }
 
             if (ModelState.IsValid)
@@ -128,52 +136,63 @@ namespace GGData.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!AvaliacaoExists(avaliacao.AvaliacaoId))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "JogoId", avaliacao.JogoId);
-            ViewData["UsuariosID"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuariosID);
+            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao.JogoId);
             return View(avaliacao);
         }
 
-        // GET: Avaliacaos/Delete/5
+        // Delete (GET) - só autor ou admin
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var avaliacao = await _context.Avaliacao
                 .Include(a => a.Jogo)
                 .Include(a => a.Usuario)
                 .FirstOrDefaultAsync(m => m.AvaliacaoId == id);
-            if (avaliacao == null)
+
+            if (avaliacao == null) return NotFound();
+
+            var username = User.Identity.Name;
+            var userId = _context.Usuarios
+                .Where(u => u.UserName == username)
+                .Select(u => u.UsuarioId)
+                .FirstOrDefault();
+
+            if (avaliacao.UsuariosID != userId && !User.IsInRole("Administrador"))
             {
-                return NotFound();
+                return Forbid();
             }
 
             return View(avaliacao);
         }
 
-        // POST: Avaliacaos/Delete/5
+        // Delete (POST)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var avaliacao = await _context.Avaliacao.FindAsync(id);
-            if (avaliacao != null)
+
+            var username = User.Identity.Name;
+            var userId = _context.Usuarios
+                .Where(u => u.UserName == username)
+                .Select(u => u.UsuarioId)
+                .FirstOrDefault();
+
+            if (avaliacao == null) return NotFound();
+
+            if (avaliacao.UsuariosID != userId && !User.IsInRole("Administrador"))
             {
-                _context.Avaliacao.Remove(avaliacao);
+                return Forbid();
             }
 
+            _context.Avaliacao.Remove(avaliacao);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

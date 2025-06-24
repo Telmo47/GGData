@@ -1,65 +1,53 @@
 ﻿@model IEnumerable<GGData.Models.Avaliacao>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Avaliações";
+    var currentUserId = (int)(ViewBag.CurrentUserId ?? 0);
 }
 
-<h1>Index</h1>
+<h1>Avaliações</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Criar Nova Avaliação</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nota)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comentarios)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataReview)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TipoUsuario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Usuario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Jogo)
-            </th>
-            <th></th>
+            <th>Nota</th>
+            <th>Comentários</th>
+            <th>Data Review</th>
+            <th>Tipo Usuário</th>
+            <th>Usuário</th>
+            <th>Jogo</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nota)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comentarios)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataReview)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TipoUsuario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Usuario.UsuarioId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Jogo.JogoId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AvaliacaoId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AvaliacaoId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AvaliacaoId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nota</td>
+                <td>@item.Comentarios</td>
+                <td>@item.DataReview</td>
+                <td>@item.TipoUsuario</td>
+                <td>@item.Usuario.UsuarioId</td>
+                <td>@item.Jogo.Nome</td>
+                <td>
+                    @if (item.UsuariosID == currentUserId || User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.AvaliacaoId">Editar</a>
+                        <text> | </text>
+                        <a asp-action="Details" asp-route-id="@item.AvaliacaoId">Detalhes</a>
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.AvaliacaoId">Apagar</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Details" asp-route-id="@item.AvaliacaoId">Detalhes</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
