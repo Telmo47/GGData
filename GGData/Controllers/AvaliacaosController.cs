@@ -33,10 +33,11 @@ namespace GGData.Controllers
                 .Include(a => a.Jogo)
                 .Include(a => a.Usuario);
 
-            ViewBag.CurrentUserId = GetCurrentUserId();
+            ViewBag.CurrentUserName = User.Identity.Name;
 
             return View(await avaliacoes.ToListAsync());
         }
+
 
         // Detalhes avaliação
         public async Task<IActionResult> Details(int? id)

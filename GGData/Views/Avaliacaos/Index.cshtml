@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Avaliações";
-    var currentUserId = (int)(ViewBag.CurrentUserId ?? 0);
+    var currentUserName = (string)ViewBag.CurrentUserName;
 }
 
 <h1>Avaliações</h1>
@@ -31,10 +31,10 @@
                 <td>@item.Comentarios</td>
                 <td>@item.DataReview</td>
                 <td>@item.TipoUsuario</td>
-                <td>@item.Usuario.UsuarioId</td>
+                <td>@item.Usuario.UserName</td>
                 <td>@item.Jogo.Nome</td>
                 <td>
-                    @if (item.UsuariosID == currentUserId || User.IsInRole("Administrador"))
+                    @if (User.Identity.IsAuthenticated && (item.Usuario.UserName == currentUserName || User.IsInRole("Administrador")))
                     {
                         <a asp-action="Edit" asp-route-id="@item.AvaliacaoId">Editar</a>
                         <text> | </text>
