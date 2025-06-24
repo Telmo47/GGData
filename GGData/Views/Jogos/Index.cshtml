@@ -40,12 +40,12 @@
                     @if (User.IsInRole("Administrador"))
                     {
                         <a asp-action="Edit" asp-route-id="@item.JogoId">Editar</a>
-                
                         <text> | </text>
                         <a asp-action="Details" asp-route-id="@item.JogoId">Detalhes</a>
-
-                        <text> | </text>
-                        <a asp-action="Delete" asp-route-id="@item.JogoId">Apagar</a>
+                        @if ((item.Avaliacoes?.Count ?? 0) == 0 && (item.Estatisticas?.Count ?? 0) == 0)
+                        {
+                            <text> | <a asp-action="Delete" asp-route-id="@item.JogoId">Apagar</a></text>
+                        }
                     }
                     else
                     {

@@ -68,7 +68,7 @@ namespace GGData.Controllers
         {
             if (ModelState.IsValid)
             {
-                avaliacao.UsuariosID = GetCurrentUserId();
+                avaliacao.UsuarioId = GetCurrentUserId();
 
                 _context.Add(avaliacao);
                 await _context.SaveChangesAsync();
@@ -107,7 +107,7 @@ namespace GGData.Controllers
             var currentUserId = GetCurrentUserId();
             var isAdmin = User.IsInRole("Administrador");
 
-            if (avaliacao.UsuariosID != currentUserId && !isAdmin)
+            if (avaliacao.UsuarioId != currentUserId && !isAdmin)
             {
                 return Forbid();
             }

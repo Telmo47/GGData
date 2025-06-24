@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GGData.Data;
 using GGData.Models;
@@ -21,11 +18,13 @@ namespace GGData.Controllers
             _context = context;
         }
 
-        // Público: lista jogos com filtro opcional
         [AllowAnonymous]
         public async Task<IActionResult> Index(string genero)
         {
-            var jogos = from j in _context.Jogo select j;
+            var jogos = _context.Jogo
+                .Include(j => j.Avaliacoes)
+                .Include(j => j.Estatisticas)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(genero))
             {
@@ -35,7 +34,6 @@ namespace GGData.Controllers
             return View(await jogos.ToListAsync());
         }
 
-        // Público: detalhes jogo
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
@@ -47,7 +45,6 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        // Criar jogo - só admin
         public IActionResult Create()
         {
             return View();
@@ -66,7 +63,6 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        // Editar jogo - só admin
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -100,12 +96,15 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
-        // Delete jogo - só admin
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            var jogo = await _context.Jogo.FirstOrDefaultAsync(m => m.JogoId == id);
+            var jogo = await _context.Jogo
+                .Include(j => j.Avaliacoes)
+                .Include(j => j.Estatisticas)
+                .FirstOrDefaultAsync(m => m.JogoId == id);
+
             if (jogo == null) return NotFound();
 
             return View(jogo);
@@ -115,8 +114,12 @@ namespace GGData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var jogo = await _context.Jogo.FindAsync(id);
-            if (jogo != null)
+            var jogo = await _context.Jogo
+                .Include(j => j.Avaliacoes)
+                .Include(j => j.Estatisticas)
+                .FirstOrDefaultAsync(j => j.JogoId == id);
+
+            if (jogo != null && jogo.Avaliacoes.Count == 0 && jogo.Estatisticas.Count == 0)
             {
                 _context.Jogo.Remove(jogo);
                 await _context.SaveChangesAsync();

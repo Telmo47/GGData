@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;  // necessário para List<>
 using System.ComponentModel.DataAnnotations;
 
 namespace GGData.Models
@@ -42,6 +43,15 @@ namespace GGData.Models
         [Display(Name = "Data de Lançamento")]
         [Required(ErrorMessage = "A data de lançamento é obrigatória.")]
         public DateTime DataLancamento { get; set; }
+
+        /// <summary>
+        /// Lista das avaliações associadas a este jogo
+        /// </summary>
+        public virtual ICollection<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
+
+        /// <summary>
+        /// Lista das estatísticas associadas a este jogo
+        /// </summary>
+        public virtual ICollection<Estatistica> Estatisticas { get; set; } = new List<Estatistica>();
     }
 }
-

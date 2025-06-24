@@ -50,7 +50,7 @@ namespace GGData.Models
         /// </summary>
         [ForeignKey(nameof(Usuario))]
         [Display(Name = "Utilizador")]
-        public int UsuariosID { get; set; }
+        public int UsuarioId { get; set; }
 
         /// <summary>
         /// Navegação para o utilizador que fez a avaliação
