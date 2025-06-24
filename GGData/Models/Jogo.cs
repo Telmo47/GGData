@@ -1,9 +1,5 @@
 ﻿using System;
-<<<<<<< HEAD
-using System.Collections.Generic;
-=======
 using System.Collections.Generic;  // necessário para List<>
->>>>>>> Autentication
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
@@ -50,28 +46,17 @@ namespace GGData.Models
         public DateTime DataLancamento { get; set; }
 
         /// <summary>
-<<<<<<< HEAD
         /// Avaliações que o jogo recebeu.
         /// Uma coleção para facilitar navegação e agregação das avaliações.
         /// </summary>
         [ValidateNever]
-        public ICollection<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
-
-        /// <summary>
-        /// Estatísticas agregadas do jogo.
-        /// Será um objeto com dados derivados das avaliações únicas dos utilizadores.
-        /// </summary>
-        [ValidateNever]
-        public Estatistica Estatistica { get; set; }
-=======
-        /// Lista das avaliações associadas a este jogo
-        /// </summary>
         public virtual ICollection<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
 
         /// <summary>
-        /// Lista das estatísticas associadas a este jogo
+        /// Estatísticas agregadas do jogo.
+        /// Uma coleção para permitir múltiplas estatísticas (se aplicável).
         /// </summary>
+        [ValidateNever]
         public virtual ICollection<Estatistica> Estatisticas { get; set; } = new List<Estatistica>();
->>>>>>> Autentication
     }
 }

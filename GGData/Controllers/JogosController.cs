@@ -19,11 +19,6 @@ namespace GGData.Controllers
             _context = context;
         }
 
-<<<<<<< HEAD
-        public async Task<IActionResult> Index(string genero)
-        {
-            var jogos = from j in _context.Jogo select j;
-=======
         [AllowAnonymous]
         public async Task<IActionResult> Index(string genero)
         {
@@ -31,7 +26,6 @@ namespace GGData.Controllers
                 .Include(j => j.Avaliacoes)
                 .Include(j => j.Estatisticas)
                 .AsQueryable();
->>>>>>> Autentication
 
             if (!string.IsNullOrEmpty(genero))
             {
@@ -41,10 +35,7 @@ namespace GGData.Controllers
             return View(await jogos.ToListAsync());
         }
 
-<<<<<<< HEAD
-=======
         [AllowAnonymous]
->>>>>>> Autentication
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -81,7 +72,7 @@ namespace GGData.Controllers
             if (jogo == null) return NotFound();
 
             // Guardar na sessão o ID do jogo a editar e ação
-            HttpContext.Session.SetInt32("JogoID", jogo.JogoId);
+            HttpContext.Session.SetInt32("JogoId", jogo.JogoId);
             HttpContext.Session.SetString("Acao", "Jogos/Edit");
 
             return View(jogo);
@@ -93,7 +84,7 @@ namespace GGData.Controllers
         {
             if (id != jogo.JogoId) return NotFound();
 
-            var jogoIDSessao = HttpContext.Session.GetInt32("JogoID");
+            var jogoIDSessao = HttpContext.Session.GetInt32("JogoId");
             var acao = HttpContext.Session.GetString("Acao");
 
             if (jogoIDSessao == null || string.IsNullOrEmpty(acao))
@@ -114,7 +105,7 @@ namespace GGData.Controllers
                     _context.Update(jogo);
                     await _context.SaveChangesAsync();
 
-                    HttpContext.Session.Remove("JogoID");
+                    HttpContext.Session.Remove("JogoId");
                     HttpContext.Session.Remove("Acao");
                 }
                 catch (DbUpdateConcurrencyException)
@@ -139,7 +130,7 @@ namespace GGData.Controllers
             if (jogo == null) return NotFound();
 
             // Guardar na sessão o ID do jogo a eliminar e ação
-            HttpContext.Session.SetInt32("JogoID", jogo.JogoId);
+            HttpContext.Session.SetInt32("JogoId", jogo.JogoId);
             HttpContext.Session.SetString("Acao", "Jogos/Delete");
 
             return View(jogo);
@@ -149,10 +140,12 @@ namespace GGData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-<<<<<<< HEAD
-            var jogo = await _context.Jogo.FindAsync(id);
+            var jogo = await _context.Jogo
+                .Include(j => j.Avaliacoes)
+                .Include(j => j.Estatisticas)
+                .FirstOrDefaultAsync(j => j.JogoId == id);
 
-            var jogoIDSessao = HttpContext.Session.GetInt32("JogoID");
+            var jogoIDSessao = HttpContext.Session.GetInt32("JogoId");
             var acao = HttpContext.Session.GetString("Acao");
 
             if (jogoIDSessao == null || string.IsNullOrEmpty(acao))
@@ -166,20 +159,12 @@ namespace GGData.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (jogo != null)
-=======
-            var jogo = await _context.Jogo
-                .Include(j => j.Avaliacoes)
-                .Include(j => j.Estatisticas)
-                .FirstOrDefaultAsync(j => j.JogoId == id);
-
             if (jogo != null && jogo.Avaliacoes.Count == 0 && jogo.Estatisticas.Count == 0)
->>>>>>> Autentication
             {
                 _context.Jogo.Remove(jogo);
                 await _context.SaveChangesAsync();
 
-                HttpContext.Session.Remove("JogoID");
+                HttpContext.Session.Remove("JogoId");
                 HttpContext.Session.Remove("Acao");
             }
 

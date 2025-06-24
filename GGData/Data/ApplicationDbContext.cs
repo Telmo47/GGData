@@ -61,7 +61,7 @@ namespace GGData.Data
             modelBuilder.Entity<Estatistica>()
                 .HasOne(e => e.Jogo)
                 .WithMany(j => j.Estatisticas)
-                .HasForeignKey(e => e.JogoID)
+                .HasForeignKey(e => e.JogoId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
