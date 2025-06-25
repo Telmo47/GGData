@@ -1,35 +1,43 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using GGData.Data;
-using GGData.Data.Seed;  // Para o seed
-using GGData.Services;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using System.Text.Json.Serialization;
 
+using GGData.Data;
+using GGData.Data.Seed;
+using GGData.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Lê a connection string do appsettings.json
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+// Configura o Entity Framework para SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// Página de erros detalhados para base de dados
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Configura Identity com roles
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Configura JWT
+// =====================
+// Configuração do JWT
+// =====================
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = "Bearer";
-    options.DefaultChallengeScheme = "Bearer";
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddCookie("Cookies", options =>
 {
@@ -52,6 +60,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<TokenService>();
 
+// Evita erros com ciclos de referência nas relações 1-N
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -67,12 +76,11 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+// Ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-
-    // Invocar o seed da BD no arranque (só no desenvolvimento)
-    app.UseItToSeedSqlServer();
+    app.UseItToSeedSqlServer(); // Só em dev
 }
 else
 {
@@ -85,6 +93,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Ordem correta: autenticação antes da sessão
 app.UseAuthentication();
 app.UseAuthorization();
 

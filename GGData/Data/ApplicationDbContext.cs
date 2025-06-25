@@ -28,6 +28,7 @@ namespace GGData.Data
         /// Tabela Avaliação
         /// </summary>
         public DbSet<Avaliacao> Avaliacao { get; set; }
+        public DbSet<Jogo> Jogos { get; set; }
 
         /// <summary>
         /// Tabela Estatistica
@@ -105,6 +106,7 @@ namespace GGData.Data
                     UserId = "admin"
                 }
             );
+
         }
     }
 }

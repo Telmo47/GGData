@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace GGData.Data.Seed
@@ -12,11 +13,12 @@ namespace GGData.Data.Seed
 
             try
             {
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                context.Database.EnsureCreated(); // Garante que a BD existe
                 DbInitializer.SeedAsync(services).Wait();
             }
             catch (Exception ex)
             {
-                // Aqui podes fazer log do erro, se quiseres
                 throw;
             }
 
