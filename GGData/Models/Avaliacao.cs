@@ -43,10 +43,12 @@ namespace GGData.Models
         /// <summary>
         /// Tipo de usuário que deu a avaliação (Crítico ou Utilizador).
         /// </summary>
-        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
+
         [StringLength(20)]
         [Display(Name = "Tipo de Usuário")]
-        public string TipoUsuario { get; set; }
+        [ValidateNever]
+        public string? TipoUsuario { get; set; }  // <-- Adiciona o `?` para aceitar null
+
 
         // Foreign Keys e Navegações
 

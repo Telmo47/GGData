@@ -38,7 +38,7 @@ namespace GGData.Data
         /// <summary>
         /// Tabela Jogo
         /// </summary>
-        public DbSet<Jogo> Jogo { get; set; }
+        
 
         /// <summary>
         /// Tabela Usuários
@@ -66,6 +66,11 @@ namespace GGData.Data
                 .WithMany(j => j.Estatisticas)
                 .HasForeignKey(e => e.JogoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Avaliacao>()
+                .Property(a => a.TipoUsuario)
+                .IsRequired(false);
+
 
             // -----------------------------------------------
             // Seed de Role e Utilizador Admin para autenticação

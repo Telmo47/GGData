@@ -4,6 +4,7 @@ using GGData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GGData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250625174312_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,6 +47,7 @@ namespace GGData.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TipoUsuario")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -301,15 +305,15 @@ namespace GGData.Migrations
                         {
                             Id = "admin",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f152000d-a22c-40cc-baf3-1da753da3c9a",
+                            ConcurrencyStamp = "f9dd8ec2-b34d-46d9-b9b9-fbea34a9aa60",
                             Email = "admin@mail.pt",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.PT",
                             NormalizedUserName = "ADMIN@MAIL.PT",
-                            PasswordHash = "AQAAAAIAAYagAAAAECx3FYOVfqPphlNVCuDd4AHOHpAwZEH37NHgKfBW3ZFH6g4OAy1t6HEXE19L+huoog==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELmVmQtGSnG9F1xL8XQ/UtZFpID+s0xsrVSwe1lbFsTLxZ7c3mAW5+fBLmS35wHBEg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "06a0c3f5-238b-45e8-97b7-a580df417e60",
+                            SecurityStamp = "4cd36f4d-14a8-4bae-854a-171dd806556b",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.pt"
                         });

@@ -51,7 +51,7 @@ namespace GGData.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Jogo",
+                name: "Jogos",
                 columns: table => new
                 {
                     JogoId = table.Column<int>(type: "int", nullable: false)
@@ -63,7 +63,7 @@ namespace GGData.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Jogo", x => x.JogoId);
+                    table.PrimaryKey("PK_Jogos", x => x.JogoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,9 +210,9 @@ namespace GGData.Migrations
                 {
                     table.PrimaryKey("PK_Estatistica", x => x.EstatisticaId);
                     table.ForeignKey(
-                        name: "FK_Estatistica_Jogo_JogoId",
+                        name: "FK_Estatistica_Jogos_JogoId",
                         column: x => x.JogoId,
-                        principalTable: "Jogo",
+                        principalTable: "Jogos",
                         principalColumn: "JogoId",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -234,9 +234,9 @@ namespace GGData.Migrations
                 {
                     table.PrimaryKey("PK_Avaliacao", x => x.AvaliacaoId);
                     table.ForeignKey(
-                        name: "FK_Avaliacao_Jogo_JogoId",
+                        name: "FK_Avaliacao_Jogos_JogoId",
                         column: x => x.JogoId,
-                        principalTable: "Jogo",
+                        principalTable: "Jogos",
                         principalColumn: "JogoId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -255,7 +255,7 @@ namespace GGData.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "admin", 0, "67d80a15-8923-44aa-afd8-f7ee2a74e4e7", "admin@mail.pt", true, false, null, "ADMIN@MAIL.PT", "ADMIN@MAIL.PT", "AQAAAAIAAYagAAAAEEReDQOkXHtrApMninnrXOFQpckMIXf2OWRdrWoZdP+lCDITmK0Z6lyXwbIzqW2jmQ==", null, false, "ee91e59b-db00-4b53-bb4d-c3e0a98345cd", false, "admin@mail.pt" });
+                values: new object[] { "admin", 0, "f9dd8ec2-b34d-46d9-b9b9-fbea34a9aa60", "admin@mail.pt", true, false, null, "ADMIN@MAIL.PT", "ADMIN@MAIL.PT", "AQAAAAIAAYagAAAAELmVmQtGSnG9F1xL8XQ/UtZFpID+s0xsrVSwe1lbFsTLxZ7c3mAW5+fBLmS35wHBEg==", null, false, "4cd36f4d-14a8-4bae-854a-171dd806556b", false, "admin@mail.pt" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -351,7 +351,7 @@ namespace GGData.Migrations
                 name: "Usuarios");
 
             migrationBuilder.DropTable(
-                name: "Jogo");
+                name: "Jogos");
         }
     }
 }
