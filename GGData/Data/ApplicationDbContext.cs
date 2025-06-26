@@ -1,6 +1,8 @@
 ﻿using GGData.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace GGData.Data
 {
@@ -26,6 +28,7 @@ namespace GGData.Data
         /// Tabela Avaliação
         /// </summary>
         public DbSet<Avaliacao> Avaliacao { get; set; }
+        public DbSet<Jogo> Jogos { get; set; }
 
         /// <summary>
         /// Tabela Estatistica
@@ -35,7 +38,7 @@ namespace GGData.Data
         /// <summary>
         /// Tabela Jogo
         /// </summary>
-        public DbSet<Jogo> Jogo { get; set; }
+        
 
         /// <summary>
         /// Tabela Usuários
@@ -63,6 +66,52 @@ namespace GGData.Data
                 .WithMany(j => j.Estatisticas)
                 .HasForeignKey(e => e.JogoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Avaliacao>()
+                .Property(a => a.TipoUsuario)
+                .IsRequired(false);
+
+
+            // -----------------------------------------------
+            // Seed de Role e Utilizador Admin para autenticação
+            // -----------------------------------------------
+
+            // Criar a role Administrador
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole
+                {
+                    Id = "a", // ID arbitrário
+                    Name = "Administrador",
+                    NormalizedName = "ADMINISTRADOR"
+                }
+            );
+
+            // Criar o utilizador admin
+            var hasher = new PasswordHasher<IdentityUser>();
+            modelBuilder.Entity<IdentityUser>().HasData(
+                new IdentityUser
+                {
+                    Id = "admin", // ID arbitrário
+                    UserName = "admin@mail.pt",
+                    NormalizedUserName = "ADMIN@MAIL.PT",
+                    Email = "admin@mail.pt",
+                    NormalizedEmail = "ADMIN@MAIL.PT",
+                    EmailConfirmed = true,
+                    PasswordHash = hasher.HashPassword(null, "Aa0_aa"), // password segura
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                }
+            );
+
+            // Associar o utilizador admin à role Administrador
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    RoleId = "a",
+                    UserId = "admin"
+                }
+            );
+
         }
     }
 }

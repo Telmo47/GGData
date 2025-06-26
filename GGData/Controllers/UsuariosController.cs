@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GGData.Controllers
 {
+    /// <summary>
+    /// Controlador responsável por gerir os utilizadores do sistema.
+    /// </summary>
     [Authorize(Roles = "Administrador")]
     public class UsuariosController : Controller
     {
@@ -81,11 +84,12 @@ namespace GGData.Controllers
             var usuarios = await _context.Usuarios.FindAsync(id);
             if (usuarios == null) return NotFound();
 
-            // Guardar dados na sessão para proteção
+            // Guardar dados para proteção da sessão
             HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
             HttpContext.Session.SetString("Acao", "Usuarios/Edit");
 
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
+
             return View(usuarios);
         }
 
@@ -134,6 +138,7 @@ namespace GGData.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
             return View(usuarios);
         }
@@ -146,7 +151,7 @@ namespace GGData.Controllers
             var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
             if (usuarios == null) return NotFound();
 
-            // Guardar dados para proteção
+            // Guardar dados para proteção da sessão
             HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
             HttpContext.Session.SetString("Acao", "Usuarios/Delete");
 
@@ -191,3 +196,4 @@ namespace GGData.Controllers
         }
     }
 }
+

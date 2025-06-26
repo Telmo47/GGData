@@ -7,6 +7,8 @@ using System.Text;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using GGData.Data;
+using GGData.Data.Seed;
+using GGData.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,17 +16,19 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+// DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Identity com roles
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// JWT config
+// JWT setup
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not configured."));
 
@@ -52,6 +56,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddScoped<TokenService>();
+
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -65,14 +71,14 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Swagger configuration
+// Swagger com comentÃ¡rios XML
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "GGData API",
         Version = "v1",
-        Description = "API para gestão de videojogos, avaliações e utilizadores"
+        Description = "API para gestÃ£o de videojogos, avaliaÃ§Ãµes e utilizadores"
     });
 
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -83,16 +89,17 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // Se for publicar numa subpasta (opcional)
-app.UsePathBase("/ggdata");
+// app.UsePathBase("/ggdata");
 
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.UseItToSeedSqlServer();
 
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/ggdata/swagger/v1/swagger.json", "GGData API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "GGData API v1");
         c.RoutePrefix = string.Empty;
     });
 }

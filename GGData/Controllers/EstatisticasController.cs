@@ -41,7 +41,7 @@ namespace GGData.Controllers
 
         public IActionResult Create()
         {
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome");
+            ViewData["JogoID"] = new SelectList(_context.Jogos, "JogoId", "Nome");
             return View();
         }
 
@@ -56,7 +56,7 @@ namespace GGData.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", estatistica.JogoId);
+            ViewData["JogoID"] = new SelectList(_context.Jogos, "JogoId", "Nome", estatistica.JogoId);
             return View(estatistica);
         }
 
@@ -67,7 +67,7 @@ namespace GGData.Controllers
             var estatistica = await _context.Estatistica.FindAsync(id);
             if (estatistica == null) return NotFound();
 
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", estatistica.JogoId);
+            ViewData["JogoID"] = new SelectList(_context.Jogos, "JogoId", "Nome", estatistica.JogoId);
             return View(estatistica);
         }
 
@@ -92,7 +92,7 @@ namespace GGData.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["JogoID"] = new SelectList(_context.Jogo, "JogoId", "Nome", estatistica.JogoId);
+            ViewData["JogoID"] = new SelectList(_context.Jogos, "JogoId", "Nome", estatistica.JogoId);
             return View(estatistica);
         }
 
