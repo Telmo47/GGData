@@ -32,7 +32,7 @@ namespace GGData.Controllers
         // Método auxiliar para popular dropdowns no Create/Edit (se quiseres incluir tipo usuário)
         private void PopularViewData(Avaliacao avaliacao = null)
         {
-            ViewData["JogoId"] = new SelectList(_context.Jogo, "JogoId", "Nome", avaliacao?.JogoId);
+            ViewData["JogoId"] = new SelectList(_context.Jogos, "JogoId", "Nome", avaliacao?.JogoId);
 
             ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "UsuarioId", "Nome", avaliacao?.UsuarioId);
 

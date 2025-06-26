@@ -4,6 +4,7 @@ using GGData.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GGData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250625180858_TipoUsuarioNullable")]
+    partial class TipoUsuarioNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,6 +47,7 @@ namespace GGData.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TipoUsuario")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -119,12 +123,7 @@ namespace GGData.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("UtilizadorId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("JogoId");
-
-                    b.HasIndex("UtilizadorId");
 
                     b.ToTable("Jogos");
                 });
@@ -306,15 +305,15 @@ namespace GGData.Migrations
                         {
                             Id = "admin",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cb039fc6-c875-42c1-8435-babfe42830f2",
+                            ConcurrencyStamp = "8fef583f-1c2e-47e8-b818-7b54942e3c58",
                             Email = "admin@mail.pt",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.PT",
                             NormalizedUserName = "ADMIN@MAIL.PT",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN9xMO7hEx6pdgGRJgC+UAN2mCQviNxrP3xUEOP0oOEUg6pxPnbK0kIpY6f1ZrAkKw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGcmyynnKYZTG3sACBK47OWFPWXE0A6wXVCZKfYal5XJwdVmypJj0PACDP3ozOVVpw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "96e40a62-81ff-423c-992c-9bd5f83566d5",
+                            SecurityStamp = "3f854a05-ab3e-4697-8992-54105f2ec1e5",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.pt"
                         });
@@ -440,15 +439,6 @@ namespace GGData.Migrations
                         .IsRequired();
 
                     b.Navigation("Jogo");
-                });
-
-            modelBuilder.Entity("GGData.Models.Jogo", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Utilizador")
-                        .WithMany()
-                        .HasForeignKey("UtilizadorId");
-
-                    b.Navigation("Utilizador");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
