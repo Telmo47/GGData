@@ -28,17 +28,39 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tempo de inatividade antes da sessão expirar
-    options.Cookie.HttpOnly = true;                 // Cookie inacessível via JavaScript
-    options.Cookie.IsEssential = true;              // Cookie essencial para a aplicação
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// Swagger com comentários XML
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "GGData API",
+        Version = "v1",
+        Description = "API para gestão de videojogos, avaliações e utilizadores"
+    });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
 var app = builder.Build();
 
-// Configuração do pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.UseItToSeedSqlServer();
+
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "GGData API v1");
+        c.RoutePrefix = string.Empty;
+    });
 }
 else
 {
