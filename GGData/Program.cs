@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -74,6 +75,17 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// ** Configuração do Swagger **
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "GGData API",
+        Version = "v1",
+        Description = "API para gestão de videojogos, avaliações e utilizadores"
+    });
+});
+
 var app = builder.Build();
 
 // Ambiente de desenvolvimento
@@ -81,6 +93,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
     app.UseItToSeedSqlServer(); // Só em dev
+
+    // Middleware Swagger
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "GGData API v1");
+        c.RoutePrefix = string.Empty; // Swagger na raiz da aplicação
+    });
 }
 else
 {
