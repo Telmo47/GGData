@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace GGData.Controllers.API
@@ -24,10 +25,13 @@ namespace GGData.Controllers.API
 
         // GET: api/JogosAuth
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JogoDTO>>> GetJogos()
+        public async Task<ActionResult<IEnumerable<JogoDTObyUser>>> GetJogos()
         {
+            string? nomePessoaAutenticada = User.Identity?.Name;
+
             var jogos = await _context.Jogos
-                .Select(j => new JogoDTO
+                .Where(j => j.Utilizador.UserName == nomePessoaAutenticada)
+                .Select(j => new JogoDTObyUser
                 {
                     JogoId = j.JogoId,
                     Nome = j.Nome,
@@ -45,18 +49,27 @@ namespace GGData.Controllers.API
         [Authorize(Roles = "Administrador")]  // Apenas admins podem adicionar jogos
         public async Task<ActionResult<JogoDTO>> CreateJogo(JogoDTO jogoDTO)
         {
+            string? nomePessoaAutenticada = User.Identity?.Name;
+            var utilizador = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserName == nomePessoaAutenticada);
+
+            if (utilizador == null)
+            {
+                return Unauthorized("Utilizador não encontrado.");
+            }
+
             var jogo = new Jogo
             {
                 Nome = jogoDTO.Nome,
                 Genero = jogoDTO.Genero,
                 Plataforma = jogoDTO.Plataforma,
-                DataLancamento = jogoDTO.DataLancamento
+                DataLancamento = jogoDTO.DataLancamento,
+                Utilizador = utilizador
             };
 
             _context.Jogos.Add(jogo);
             await _context.SaveChangesAsync();
 
-            // Retorna 201 Created com o jogo criado
             return CreatedAtAction(nameof(GetJogos), new { id = jogo.JogoId }, jogoDTO);
         }
     }
