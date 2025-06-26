@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http; // Necessário para HttpContext.Session
+using Microsoft.AspNetCore.Http; // Para HttpContext.Session
 using GGData.Data;
 using GGData.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -41,7 +41,6 @@ namespace GGData.Controllers
             if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
-
             if (usuarios == null) return NotFound();
 
             return View(usuarios);
@@ -126,12 +125,16 @@ namespace GGData.Controllers
                     // Limpar sessão após sucesso
                     HttpContext.Session.Remove("UsuarioID");
                     HttpContext.Session.Remove("Acao");
+
+                    // Guardar nome do último editado para mensagem
+                    HttpContext.Session.SetString("UltimoUsuarioEditadoNome", usuarios.Nome);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!UsuariosExists(usuarios.UsuarioId))
                         return NotFound();
-                    else throw;
+                    else
+                        throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -193,3 +196,4 @@ namespace GGData.Controllers
         }
     }
 }
+

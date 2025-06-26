@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Reflection;
-
+using System.Text.Json.Serialization;
 using GGData.Data;
 using GGData.Data.Seed;
 using GGData.Services;
@@ -31,7 +30,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 
 // JWT setup
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not configured."));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -72,14 +71,14 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Swagger com comentários XML
+// Swagger com comentÃ¡rios XML
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "GGData API",
         Version = "v1",
-        Description = "API para gestão de videojogos, avaliações e utilizadores"
+        Description = "API para gestÃ£o de videojogos, avaliaÃ§Ãµes e utilizadores"
     });
 
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -88,6 +87,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+// Se for publicar numa subpasta (opcional)
+// app.UsePathBase("/ggdata");
 
 if (app.Environment.IsDevelopment())
 {
