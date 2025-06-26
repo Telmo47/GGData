@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Reflection;
 
 using GGData.Data;
 using GGData.Data.Seed;
@@ -12,26 +13,23 @@ using GGData.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Lê a connection string do appsettings.json
+// Connection string
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-// Configura o Entity Framework para SQL Server
+// DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Página de erros detalhados para base de dados
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Configura Identity com roles
+// Identity com roles
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// =====================
-// Configuração do JWT
-// =====================
+// JWT setup
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
@@ -61,7 +59,6 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<TokenService>();
 
-// Evita erros com ciclos de referência nas relações 1-N
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -75,7 +72,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// ** Configuração do Swagger **
+// Swagger com comentários XML
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -84,22 +81,24 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API para gestão de videojogos, avaliações e utilizadores"
     });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
 var app = builder.Build();
 
-// Ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    app.UseItToSeedSqlServer(); // Só em dev
+    app.UseItToSeedSqlServer();
 
-    // Middleware Swagger
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "GGData API v1");
-        c.RoutePrefix = string.Empty; // Swagger na raiz da aplicação
+        c.RoutePrefix = string.Empty;
     });
 }
 else
@@ -113,7 +112,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Ordem correta: autenticação antes da sessão
 app.UseAuthentication();
 app.UseAuthorization();
 
