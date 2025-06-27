@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GGData.Migrations
 {
     /// <inheritdoc />
-    public partial class CorrigirEstatistica : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,22 +48,6 @@ namespace GGData.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Jogo",
-                columns: table => new
-                {
-                    JogoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Genero = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Plataforma = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataLancamento = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Jogo", x => x.JogoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -194,6 +178,59 @@ namespace GGData.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Jogos",
+                columns: table => new
+                {
+                    JogoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Genero = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Plataforma = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DataLancamento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UtilizadorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ImagemUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Jogos", x => x.JogoId);
+                    table.ForeignKey(
+                        name: "FK_Jogos_AspNetUsers_UtilizadorId",
+                        column: x => x.UtilizadorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Avaliacao",
+                columns: table => new
+                {
+                    AvaliacaoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nota = table.Column<int>(type: "int", nullable: false),
+                    Comentarios = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
+                    DataReview = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TipoUsuario = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    JogoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Avaliacao", x => x.AvaliacaoId);
+                    table.ForeignKey(
+                        name: "FK_Avaliacao_Jogos_JogoId",
+                        column: x => x.JogoId,
+                        principalTable: "Jogos",
+                        principalColumn: "JogoId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Avaliacao_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "UsuarioId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Estatistica",
                 columns: table => new
                 {
@@ -210,42 +247,27 @@ namespace GGData.Migrations
                 {
                     table.PrimaryKey("PK_Estatistica", x => x.EstatisticaId);
                     table.ForeignKey(
-                        name: "FK_Estatistica_Jogo_JogoId",
+                        name: "FK_Estatistica_Jogos_JogoId",
                         column: x => x.JogoId,
-                        principalTable: "Jogo",
+                        principalTable: "Jogos",
                         principalColumn: "JogoId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Avaliacao",
-                columns: table => new
-                {
-                    AvaliacaoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nota = table.Column<int>(type: "int", nullable: false),
-                    Comentarios = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: true),
-                    DataReview = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TipoUsuario = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    JogoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Avaliacao", x => x.AvaliacaoId);
-                    table.ForeignKey(
-                        name: "FK_Avaliacao_Jogo_JogoId",
-                        column: x => x.JogoId,
-                        principalTable: "Jogo",
-                        principalColumn: "JogoId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Avaliacao_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "UsuarioId",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "a", null, "Administrador", "ADMINISTRADOR" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "admin", 0, "bb5fbadf-4714-47a0-8f5e-2b4084550151", "admin@mail.pt", true, false, null, "ADMIN@MAIL.PT", "ADMIN@MAIL.PT", "AQAAAAIAAYagAAAAEIfKsakR2qSKUaQF+C7EN44G3CNtQnrNDQFvJu7t6e7935oGe+7RrnQutJVOChFJCw==", null, false, "0ef2b2a4-87c6-4acd-aec9-0cf5f2faaf01", false, "admin@mail.pt" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "a", "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -301,6 +323,11 @@ namespace GGData.Migrations
                 table: "Estatistica",
                 column: "JogoId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Jogos_UtilizadorId",
+                table: "Jogos",
+                column: "UtilizadorId");
         }
 
         /// <inheritdoc />
@@ -331,13 +358,13 @@ namespace GGData.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Usuarios");
 
             migrationBuilder.DropTable(
-                name: "Jogo");
+                name: "Jogos");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

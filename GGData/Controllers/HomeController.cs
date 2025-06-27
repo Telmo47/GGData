@@ -18,7 +18,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        var jogos = _context.Jogo.ToList();
+        var jogos = _context.Jogos.ToList();
         return View(jogos);
     }
 
