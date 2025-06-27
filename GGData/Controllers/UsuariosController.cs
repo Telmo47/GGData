@@ -89,7 +89,6 @@ namespace GGData.Controllers
             HttpContext.Session.SetString("Acao", "Usuarios/Edit");
 
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
-
             return View(usuarios);
         }
 
@@ -187,6 +186,7 @@ namespace GGData.Controllers
                 HttpContext.Session.Remove("UsuarioID");
                 HttpContext.Session.Remove("Acao");
             }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -196,4 +196,3 @@ namespace GGData.Controllers
         }
     }
 }
-

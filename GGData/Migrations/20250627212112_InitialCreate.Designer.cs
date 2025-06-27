@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GGData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250625180858_TipoUsuarioNullable")]
-    partial class TipoUsuarioNullable
+    [Migration("20250627212112_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,7 +47,6 @@ namespace GGData.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TipoUsuario")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -79,20 +78,24 @@ namespace GGData.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("MediaNotaCriticos")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("MediaNotaUtilizadores")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("TempoMedioJogo")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("TotalAvaliacoes")
                         .HasColumnType("int");
 
                     b.HasKey("EstatisticaId");
 
-                    b.HasIndex("JogoId");
+                    b.HasIndex("JogoId")
+                        .IsUnique();
 
                     b.ToTable("Estatistica");
                 });
@@ -113,6 +116,10 @@ namespace GGData.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("ImagemUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -123,7 +130,12 @@ namespace GGData.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("UtilizadorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("JogoId");
+
+                    b.HasIndex("UtilizadorId");
 
                     b.ToTable("Jogos");
                 });
@@ -305,15 +317,15 @@ namespace GGData.Migrations
                         {
                             Id = "admin",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8fef583f-1c2e-47e8-b818-7b54942e3c58",
+                            ConcurrencyStamp = "bb5fbadf-4714-47a0-8f5e-2b4084550151",
                             Email = "admin@mail.pt",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.PT",
                             NormalizedUserName = "ADMIN@MAIL.PT",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGcmyynnKYZTG3sACBK47OWFPWXE0A6wXVCZKfYal5XJwdVmypJj0PACDP3ozOVVpw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIfKsakR2qSKUaQF+C7EN44G3CNtQnrNDQFvJu7t6e7935oGe+7RrnQutJVOChFJCw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3f854a05-ab3e-4697-8992-54105f2ec1e5",
+                            SecurityStamp = "0ef2b2a4-87c6-4acd-aec9-0cf5f2faaf01",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.pt"
                         });
@@ -433,12 +445,21 @@ namespace GGData.Migrations
             modelBuilder.Entity("GGData.Models.Estatistica", b =>
                 {
                     b.HasOne("GGData.Models.Jogo", "Jogo")
-                        .WithMany("Estatisticas")
-                        .HasForeignKey("JogoId")
+                        .WithOne("Estatistica")
+                        .HasForeignKey("GGData.Models.Estatistica", "JogoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Jogo");
+                });
+
+            modelBuilder.Entity("GGData.Models.Jogo", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Utilizador")
+                        .WithMany()
+                        .HasForeignKey("UtilizadorId");
+
+                    b.Navigation("Utilizador");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -496,7 +517,8 @@ namespace GGData.Migrations
                 {
                     b.Navigation("Avaliacoes");
 
-                    b.Navigation("Estatisticas");
+                    b.Navigation("Estatistica")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GGData.Models.Usuarios", b =>

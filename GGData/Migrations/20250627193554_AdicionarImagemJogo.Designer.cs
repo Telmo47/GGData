@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GGData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:GGData/Migrations/20250627193554_AdicionarImagemJogo.Designer.cs
+    [Migration("20250627193554_AdicionarImagemJogo")]
+    partial class AdicionarImagemJogo
+========
     [Migration("20250625181543_TipoUsuarioNullableFinal")]
     partial class TipoUsuarioNullableFinal
+>>>>>>>> 4e687be0dbb39e74a83c84662d45906fdf25074d:GGData/Migrations/20250625181543_TipoUsuarioNullableFinal.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,13 +83,16 @@ namespace GGData.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("MediaNotaCriticos")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("MediaNotaUtilizadores")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<decimal>("TempoMedioJogo")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("TotalAvaliacoes")
                         .HasColumnType("int");
@@ -111,6 +119,10 @@ namespace GGData.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ImagemUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -432,8 +444,13 @@ namespace GGData.Migrations
             modelBuilder.Entity("GGData.Models.Estatistica", b =>
                 {
                     b.HasOne("GGData.Models.Jogo", "Jogo")
+<<<<<<<< HEAD:GGData/Migrations/20250627193554_AdicionarImagemJogo.Designer.cs
+                        .WithOne("Estatistica")
+                        .HasForeignKey("GGData.Models.Estatistica", "JogoId")
+========
                         .WithMany("Estatisticas")
                         .HasForeignKey("JogoId")
+>>>>>>>> 4e687be0dbb39e74a83c84662d45906fdf25074d:GGData/Migrations/20250625181543_TipoUsuarioNullableFinal.Designer.cs
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

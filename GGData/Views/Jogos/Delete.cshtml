@@ -26,7 +26,8 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="JogoId" />
-        @if ((Model.Avaliacoes?.Count ?? 0) == 0 && (Model.Estatisticas?.Count ?? 0) == 0)
+        @* Verifica se não existem avaliações e se não existe estatística associada *@
+        @if ((Model.Avaliacoes?.Count ?? 0) == 0 && Model.Estatistica == null)
         {
             <input type="submit" value="Apagar" class="btn btn-danger" />
         }
@@ -34,6 +35,6 @@
         {
             <p class="text-danger">Não é possível apagar este jogo pois existem avaliações ou estatísticas associadas.</p>
         }
-        <a asp-action="Index">Voltar à lista</a>
+        <a asp-action="Index" class="btn btn-secondary">Voltar à lista</a>
     </form>
 </div>

@@ -11,7 +11,12 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GGData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:GGData/Migrations/ApplicationDbContextModelSnapshot.cs
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+========
+    [Migration("20250625180858_TipoUsuarioNullable")]
+    partial class TipoUsuarioNullable
+>>>>>>>> 4e687be0dbb39e74a83c84662d45906fdf25074d:GGData/Migrations/20250625180858_TipoUsuarioNullable.Designer.cs
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -44,6 +49,7 @@ namespace GGData.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TipoUsuario")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -75,20 +81,22 @@ namespace GGData.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("MediaNotaCriticos")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("MediaNotaUtilizadores")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TempoMedioJogo")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("TotalAvaliacoes")
                         .HasColumnType("int");
 
                     b.HasKey("EstatisticaId");
 
+<<<<<<<< HEAD:GGData/Migrations/ApplicationDbContextModelSnapshot.cs
+                    b.HasIndex("JogoId")
+                        .IsUnique();
+========
                     b.HasIndex("JogoId");
+>>>>>>>> 4e687be0dbb39e74a83c84662d45906fdf25074d:GGData/Migrations/20250625180858_TipoUsuarioNullable.Designer.cs
 
                     b.ToTable("Estatistica");
                 });
@@ -108,6 +116,10 @@ namespace GGData.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ImagemUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -306,15 +318,12 @@ namespace GGData.Migrations
                         {
                             Id = "admin",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cb039fc6-c875-42c1-8435-babfe42830f2",
                             Email = "admin@mail.pt",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.PT",
                             NormalizedUserName = "ADMIN@MAIL.PT",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN9xMO7hEx6pdgGRJgC+UAN2mCQviNxrP3xUEOP0oOEUg6pxPnbK0kIpY6f1ZrAkKw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "96e40a62-81ff-423c-992c-9bd5f83566d5",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.pt"
                         });
@@ -434,8 +443,13 @@ namespace GGData.Migrations
             modelBuilder.Entity("GGData.Models.Estatistica", b =>
                 {
                     b.HasOne("GGData.Models.Jogo", "Jogo")
+<<<<<<<< HEAD:GGData/Migrations/ApplicationDbContextModelSnapshot.cs
+                        .WithOne("Estatistica")
+                        .HasForeignKey("GGData.Models.Estatistica", "JogoId")
+========
                         .WithMany("Estatisticas")
                         .HasForeignKey("JogoId")
+>>>>>>>> 4e687be0dbb39e74a83c84662d45906fdf25074d:GGData/Migrations/20250625180858_TipoUsuarioNullable.Designer.cs
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -506,7 +520,6 @@ namespace GGData.Migrations
                 {
                     b.Navigation("Avaliacoes");
 
-                    b.Navigation("Estatisticas");
                 });
 
             modelBuilder.Entity("GGData.Models.Usuarios", b =>
