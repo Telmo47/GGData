@@ -35,11 +35,7 @@
 
             <div class="form-group">
                 <label asp-for="UsuarioId" class="control-label"></label>
-<<<<<<< HEAD
                 <select asp-for="UsuarioId" class="form-control" asp-items="@(ViewData["UsuarioId"] as IEnumerable<SelectListItem>)"></select>
-=======
-                <select asp-for="UsuarioId" class="form-control" asp-items="ViewBag.UsuariosID"></select>
->>>>>>> Autentication
                 <span asp-validation-for="UsuarioId" class="text-danger"></span>
             </div>
 
@@ -49,7 +45,6 @@
                 <span asp-validation-for="JogoId" class="text-danger"></span>
             </div>
 
-            <!-- DataReview fica escondido ou editável, conforme necessidade -->
             <input type="hidden" asp-for="DataReview" />
 
             <div class="form-group">
