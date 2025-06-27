@@ -24,7 +24,8 @@ namespace GGData.Controllers
         {
             var jogos = _context.Jogo
                 .Include(j => j.Avaliacoes)
-                .Include(j => j.Estatisticas)
+                .Include(j => j.Estatistica)
+
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(genero))
@@ -124,7 +125,8 @@ namespace GGData.Controllers
 
             var jogo = await _context.Jogo
                 .Include(j => j.Avaliacoes)
-                .Include(j => j.Estatisticas)
+                .Include(j => j.Estatistica)
+
                 .FirstOrDefaultAsync(m => m.JogoId == id);
 
             if (jogo == null) return NotFound();
@@ -142,7 +144,8 @@ namespace GGData.Controllers
         {
             var jogo = await _context.Jogo
                 .Include(j => j.Avaliacoes)
-                .Include(j => j.Estatisticas)
+                .Include(j => j.Estatistica)
+
                 .FirstOrDefaultAsync(j => j.JogoId == id);
 
             var jogoIDSessao = HttpContext.Session.GetInt32("JogoId");
@@ -159,7 +162,8 @@ namespace GGData.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (jogo != null && jogo.Avaliacoes.Count == 0 && jogo.Estatisticas.Count == 0)
+            if (jogo != null && jogo.Avaliacoes.Count == 0 && jogo.Estatistica != null
+)
             {
                 _context.Jogo.Remove(jogo);
                 await _context.SaveChangesAsync();

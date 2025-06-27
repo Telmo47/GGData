@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;  // necessário para List<>
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
@@ -47,16 +47,16 @@ namespace GGData.Models
 
         /// <summary>
         /// Avaliações que o jogo recebeu.
-        /// Uma coleção para facilitar navegação e agregação das avaliações.
         /// </summary>
         [ValidateNever]
         public virtual ICollection<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
 
         /// <summary>
         /// Estatísticas agregadas do jogo.
-        /// Uma coleção para permitir múltiplas estatísticas (se aplicável).
+        /// Relação 1:1 com a entidade Estatistica.
         /// </summary>
         [ValidateNever]
-        public virtual ICollection<Estatistica> Estatisticas { get; set; } = new List<Estatistica>();
+        public virtual Estatistica Estatistica { get; set; }
+
     }
 }

@@ -50,19 +50,27 @@ namespace GGData.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuração da relação Avaliacao <-> Jogo
+            // Relação Avaliacao <-> Jogo (1:n)
             modelBuilder.Entity<Avaliacao>()
                 .HasOne(a => a.Jogo)
                 .WithMany(j => j.Avaliacoes)
                 .HasForeignKey(a => a.JogoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuração da relação Estatistica <-> Jogo
+            // Relação Estatistica <-> Jogo (1:1)
             modelBuilder.Entity<Estatistica>()
                 .HasOne(e => e.Jogo)
-                .WithMany(j => j.Estatisticas)
-                .HasForeignKey(e => e.JogoId)
+                .WithOne(j => j.Estatistica)
+                .HasForeignKey<Estatistica>(e => e.JogoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configuração da precisão das propriedades decimal para evitar truncamento
+            modelBuilder.Entity<Estatistica>(entity =>
+            {
+                entity.Property(e => e.MediaNotaCriticos).HasPrecision(5, 2);
+                entity.Property(e => e.MediaNotaUtilizadores).HasPrecision(5, 2);
+                entity.Property(e => e.TempoMedioJogo).HasPrecision(10, 2);
+            });
         }
     }
 }

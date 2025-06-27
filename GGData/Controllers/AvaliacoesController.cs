@@ -11,11 +11,11 @@ using Microsoft.AspNetCore.Authorization;
 namespace GGData.Controllers
 {
     [Authorize]
-    public class AvaliacaosController : Controller
+    public class AvaliacoesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public AvaliacaosController(ApplicationDbContext context)
+        public AvaliacoesController(ApplicationDbContext context)
         {
             _context = context;
         }
