@@ -58,5 +58,10 @@ namespace GGData.Models
         [ValidateNever]
         public virtual Estatistica Estatistica { get; set; }
 
+        [Display(Name = "Imagem (URL)")]
+        [StringLength(300, ErrorMessage = "O URL da imagem não pode ter mais de 300 caracteres.")]
+        public string? ImagemUrl { get; set; }
+
+
     }
 }
