@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace GGData.Models
 {
@@ -50,6 +51,16 @@ namespace GGData.Models
         /// </summary>
         [ValidateNever]
         public virtual ICollection<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
+
+
+        /// <summary>
+        /// Referência ao utilizador que criou o jogo.
+        /// </summary>
+        public string? UtilizadorId { get; set; }
+
+        [ValidateNever]
+        public IdentityUser? Utilizador { get; set; }
+
 
         /// <summary>
         /// Estatísticas agregadas do jogo.

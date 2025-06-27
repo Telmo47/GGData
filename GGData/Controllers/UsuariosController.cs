@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http; // Necessário para HttpContext.Session
+using Microsoft.AspNetCore.Http; // Para HttpContext.Session
 using GGData.Data;
 using GGData.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +24,10 @@ namespace GGData.Controllers
             _context = context;
         }
 
+<<<<<<< HEAD
+        // GET: Usuarios
+=======
+>>>>>>> Autentication
         public async Task<IActionResult> Index()
         {
             var nome = HttpContext.Session.GetString("UltimoUsuarioEditadoNome");
@@ -34,6 +38,10 @@ namespace GGData.Controllers
             return View(await _context.Usuarios.ToListAsync());
         }
 
+<<<<<<< HEAD
+        // GET: Usuarios/Details/5
+=======
+>>>>>>> Autentication
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -44,6 +52,8 @@ namespace GGData.Controllers
             return View(usuarios);
         }
 
+<<<<<<< HEAD
+        // GET: Usuarios/Create
         public IActionResult Create()
         {
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" });
@@ -72,6 +82,9 @@ namespace GGData.Controllers
             return View(usuarios);
         }
 
+        // GET: Usuarios/Edit/5
+=======
+>>>>>>> Autentication
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -79,14 +92,24 @@ namespace GGData.Controllers
             var usuarios = await _context.Usuarios.FindAsync(id);
             if (usuarios == null) return NotFound();
 
+
             // Guardar dados para proteção
             HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
             HttpContext.Session.SetString("Acao", "Usuarios/Edit");
+
+            ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.tipoUsuario);
+
+            return View(usuarios);
+        }
+
+        // POST: Usuarios/Edit/5
+=======
 
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
             return View(usuarios);
         }
 
+>>>>>>> Autentication
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,TipoUsuario")] Usuarios usuarios)
@@ -118,12 +141,15 @@ namespace GGData.Controllers
                     // Limpar sessão após sucesso
                     HttpContext.Session.Remove("UsuarioID");
                     HttpContext.Session.Remove("Acao");
-
-                    HttpContext.Session.SetString("UltimoUsuarioEditadoNome", usuarios.Nome);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsuariosExists(usuarios.UsuarioId)) return NotFound();
+<<<<<<< HEAD
+                    if (!_context.Usuarios.Any(e => e.UsuarioId == id)) return NotFound();
+=======
+                    if (!UsuariosExists(usuarios.UsuarioId))
+                        return NotFound();
+>>>>>>> Autentication
                     else throw;
                 }
                 return RedirectToAction(nameof(Index));
@@ -133,12 +159,17 @@ namespace GGData.Controllers
             return View(usuarios);
         }
 
+<<<<<<< HEAD
+        // GET: Usuarios/Delete/5
+=======
+>>>>>>> Autentication
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
             var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
             if (usuarios == null) return NotFound();
+
 
             // Guardar dados para proteção
             HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
@@ -147,6 +178,10 @@ namespace GGData.Controllers
             return View(usuarios);
         }
 
+<<<<<<< HEAD
+        // POST: Usuarios/Delete/5
+=======
+>>>>>>> Autentication
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -185,3 +220,4 @@ namespace GGData.Controllers
         }
     }
 }
+

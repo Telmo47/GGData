@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GGData.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:GGData/Migrations/20250627185940_CorrigirEstatistica.Designer.cs
     [Migration("20250627185940_CorrigirEstatistica")]
     partial class CorrigirEstatistica
+========
+    [Migration("20250625174312_InitialCreate")]
+    partial class InitialCreate
+>>>>>>>> 4e687be0dbb39e74a83c84662d45906fdf25074d:GGData/Migrations/20250625174312_InitialCreate.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,8 +100,7 @@ namespace GGData.Migrations
 
                     b.HasKey("EstatisticaId");
 
-                    b.HasIndex("JogoId")
-                        .IsUnique();
+                    b.HasIndex("JogoId");
 
                     b.ToTable("Estatistica");
                 });
@@ -129,7 +133,7 @@ namespace GGData.Migrations
 
                     b.HasKey("JogoId");
 
-                    b.ToTable("Jogo");
+                    b.ToTable("Jogos");
                 });
 
             modelBuilder.Entity("GGData.Models.Usuarios", b =>
@@ -205,6 +209,14 @@ namespace GGData.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a",
+                            Name = "Administrador",
+                            NormalizedName = "ADMINISTRADOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -295,6 +307,24 @@ namespace GGData.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "admin",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f9dd8ec2-b34d-46d9-b9b9-fbea34a9aa60",
+                            Email = "admin@mail.pt",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@MAIL.PT",
+                            NormalizedUserName = "ADMIN@MAIL.PT",
+                            PasswordHash = "AQAAAAIAAYagAAAAELmVmQtGSnG9F1xL8XQ/UtZFpID+s0xsrVSwe1lbFsTLxZ7c3mAW5+fBLmS35wHBEg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4cd36f4d-14a8-4bae-854a-171dd806556b",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@mail.pt"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -359,6 +389,13 @@ namespace GGData.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "admin",
+                            RoleId = "a"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -404,8 +441,13 @@ namespace GGData.Migrations
             modelBuilder.Entity("GGData.Models.Estatistica", b =>
                 {
                     b.HasOne("GGData.Models.Jogo", "Jogo")
+<<<<<<<< HEAD:GGData/Migrations/20250627185940_CorrigirEstatistica.Designer.cs
                         .WithOne("Estatistica")
                         .HasForeignKey("GGData.Models.Estatistica", "JogoId")
+========
+                        .WithMany("Estatisticas")
+                        .HasForeignKey("JogoId")
+>>>>>>>> 4e687be0dbb39e74a83c84662d45906fdf25074d:GGData/Migrations/20250625174312_InitialCreate.Designer.cs
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -467,8 +509,7 @@ namespace GGData.Migrations
                 {
                     b.Navigation("Avaliacoes");
 
-                    b.Navigation("Estatistica")
-                        .IsRequired();
+                    b.Navigation("Estatisticas");
                 });
 
             modelBuilder.Entity("GGData.Models.Usuarios", b =>

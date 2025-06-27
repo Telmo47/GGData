@@ -22,7 +22,7 @@ namespace GGData.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(string genero)
         {
-            var jogos = _context.Jogo
+            var jogos = _context.Jogos
                 .Include(j => j.Avaliacoes)
                 .Include(j => j.Estatistica)
                 .AsQueryable();
@@ -40,7 +40,7 @@ namespace GGData.Controllers
         {
             if (id == null) return NotFound();
 
-            var jogo = await _context.Jogo.FirstOrDefaultAsync(m => m.JogoId == id);
+            var jogo = await _context.Jogos.FirstOrDefaultAsync(m => m.JogoId == id);
             if (jogo == null) return NotFound();
 
             return View(jogo);
@@ -68,7 +68,7 @@ namespace GGData.Controllers
         {
             if (id == null) return NotFound();
 
-            var jogo = await _context.Jogo.FindAsync(id);
+            var jogo = await _context.Jogos.FindAsync(id);
             if (jogo == null) return NotFound();
 
             HttpContext.Session.SetInt32("JogoId", jogo.JogoId);
@@ -121,7 +121,7 @@ namespace GGData.Controllers
         {
             if (id == null) return NotFound();
 
-            var jogo = await _context.Jogo
+            var jogo = await _context.Jogos
                 .Include(j => j.Avaliacoes)
                 .Include(j => j.Estatistica)
                 .FirstOrDefaultAsync(m => m.JogoId == id);
@@ -138,7 +138,7 @@ namespace GGData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var jogo = await _context.Jogo
+            var jogo = await _context.Jogos
                 .Include(j => j.Avaliacoes)
                 .Include(j => j.Estatistica)
                 .FirstOrDefaultAsync(j => j.JogoId == id);
@@ -159,7 +159,7 @@ namespace GGData.Controllers
 
             if (jogo != null && jogo.Avaliacoes.Count == 0 && jogo.Estatistica != null)
             {
-                _context.Jogo.Remove(jogo);
+                _context.Jogos.Remove(jogo);
                 await _context.SaveChangesAsync();
 
                 HttpContext.Session.Remove("JogoId");
@@ -171,7 +171,7 @@ namespace GGData.Controllers
 
         private bool JogoExists(int id)
         {
-            return _context.Jogo.Any(e => e.JogoId == id);
+            return _context.Jogos.Any(e => e.JogoId == id);
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using GGData.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace GGData.Data
 {
@@ -26,6 +28,7 @@ namespace GGData.Data
         /// Tabela Avaliação
         /// </summary>
         public DbSet<Avaliacao> Avaliacao { get; set; }
+        public DbSet<Jogo> Jogos { get; set; }
 
         /// <summary>
         /// Tabela Estatistica
@@ -35,7 +38,7 @@ namespace GGData.Data
         /// <summary>
         /// Tabela Jogo
         /// </summary>
-        public DbSet<Jogo> Jogo { get; set; }
+        
 
         /// <summary>
         /// Tabela Usuários
@@ -63,14 +66,6 @@ namespace GGData.Data
                 .WithOne(j => j.Estatistica)
                 .HasForeignKey<Estatistica>(e => e.JogoId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Configuração da precisão das propriedades decimal para evitar truncamento
-            modelBuilder.Entity<Estatistica>(entity =>
-            {
-                entity.Property(e => e.MediaNotaCriticos).HasPrecision(5, 2);
-                entity.Property(e => e.MediaNotaUtilizadores).HasPrecision(5, 2);
-                entity.Property(e => e.TempoMedioJogo).HasPrecision(10, 2);
-            });
         }
     }
 }
