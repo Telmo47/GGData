@@ -97,10 +97,11 @@ if (app.Environment.IsDevelopment())
     app.UseItToSeedSqlServer();
 
     app.UseSwagger();
+
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "GGData API v1");
-        c.RoutePrefix = string.Empty;
+        c.RoutePrefix = "swagger";  // <<< Swagger em /swagger
     });
 }
 else
