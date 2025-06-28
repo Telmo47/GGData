@@ -104,6 +104,13 @@ namespace GGData.Areas.Identity.Pages.Account
                 if (string.IsNullOrWhiteSpace(Input.DescricaoProfissional))
                     ModelState.AddModelError("Input.DescricaoProfissional", "A descrição profissional é obrigatória para críticos.");
             }
+            else
+            {
+                // Remove os erros associados aos campos de críticos
+                ModelState.Remove("Input.Instituicao");
+                ModelState.Remove("Input.WebsiteProfissional");
+                ModelState.Remove("Input.DescricaoProfissional");
+            }
 
             if (ModelState.IsValid)
             {
@@ -148,7 +155,6 @@ namespace GGData.Areas.Identity.Pages.Account
                 }
             }
 
-            // Se chegou aqui, houve erro, mostra a página com mensagens
             return Page();
         }
 
