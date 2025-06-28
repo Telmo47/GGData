@@ -1,50 +1,37 @@
+using GGData.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
 using System.Threading.Tasks;
 
-public class RegisterConfirmationModel : PageModel
+namespace GGData.Areas.Identity.Pages.Account
 {
-    private readonly UserManager<IdentityUser> _userManager;
-
-    public RegisterConfirmationModel(UserManager<IdentityUser> userManager)
+    public class RegisterConfirmationModel : PageModel
     {
-        _userManager = userManager;
-    }
+        private readonly UserManager<Usuarios> _userManager;
 
-    public string Email { get; set; }
-    public bool DisplayConfirmAccountLink { get; set; }
-    public string EmailConfirmationUrl { get; set; }
-
-    public async Task<IActionResult> OnGetAsync(string email)
-    {
-        if (email == null)
+        public RegisterConfirmationModel(UserManager<Usuarios> userManager)
         {
-            return RedirectToPage("/Index");
+            _userManager = userManager;
         }
 
-        var user = await _userManager.FindByEmailAsync(email);
-        if (user == null)
+        public string Email { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(string email)
         {
-            return NotFound($"Não foi possível encontrar o utilizador com o email '{email}'.");
+            if (email == null)
+            {
+                return RedirectToPage("/Index");
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound($"Não foi possível carregar utilizador com o email '{email}'.");
+            }
+
+            Email = email;
+            return Page();
         }
-
-        Email = email;
-
-        // Em ambiente de DEV, mostramos o link diretamente
-        DisplayConfirmAccountLink = true;
-
-        var userId = await _userManager.GetUserIdAsync(user);
-        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        EmailConfirmationUrl = Url.Page(
-            "/Account/ConfirmEmail",
-            pageHandler: null,
-            values: new { area = "Identity", userId = userId, code = code },
-            protocol: Request.Scheme);
-
-        return Page();
     }
 }

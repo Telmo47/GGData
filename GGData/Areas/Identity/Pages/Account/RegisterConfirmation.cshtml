@@ -1,22 +1,60 @@
-﻿@page
-@model RegisterConfirmationModel
-@{
-    ViewData["Title"] = "Confirmação de registo";
-}
+﻿using GGData.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
+using System.Threading.Tasks;
 
-<h1>@ViewData["Title"]</h1>
-
-<p>
-    Obrigado por se registar! Por favor confirme o seu email.
-</p>
-
-@if (Model.DisplayConfirmAccountLink)
+namespace GGData.Areas.Identity.Pages.Account
 {
-    <p>
-        Normalmente, seria enviado um email com um link de confirmação.
-        Como este é um ambiente de desenvolvimento, aqui está o link diretamente:
-        <br />
-        <a href="@Model.EmailConfirmationUrl">Confirmar Conta</a>
-    </p>
-}
+    public class RegisterConfirmationModel : PageModel
+    {
+        private readonly UserManager<Usuarios>
+    _userManager;
 
+    public RegisterConfirmationModel(UserManager<Usuarios>
+        userManager)
+        {
+        _userManager = userManager;
+        }
+
+        public string Email { get; set; }
+        public bool DisplayConfirmAccountLink { get; set; }
+        public string EmailConfirmationUrl { get; set; }
+
+        public async Task<IActionResult>
+            OnGetAsync(string email, string returnUrl = null)
+            {
+            if (email == null)
+            {
+            return RedirectToPage("/Index");
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+            return NotFound($"Não foi possível carregar utilizador com o email '{email}'.");
+            }
+
+            Email = email;
+
+            // Em ambiente de desenvolvimento, podes mostrar o link de confirmação direto
+            DisplayConfirmAccountLink = true;
+
+            if (DisplayConfirmAccountLink)
+            {
+            var userId = await _userManager.GetUserIdAsync(user);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            EmailConfirmationUrl = Url.Page(
+            "/Account/ConfirmEmail",
+            pageHandler: null,
+            values: new { area = "Identity", userId, code, returnUrl },
+            protocol: Request.Scheme);
+            }
+
+            return Page();
+            }
+            }
+            }

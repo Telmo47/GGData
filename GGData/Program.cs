@@ -1,15 +1,17 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.Reflection;
-using System.Text.Json.Serialization;
 using GGData.Data;
 using GGData.Data.Seed;
 using GGData.Models;
-using GGData.Services;
+using GGData.Services; // <- necessário para o FakeEmailSender
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Text;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,13 +62,16 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Registo do serviço fake de email
+builder.Services.AddSingleton<IEmailSender, FakeEmailSender>();
+
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-// ** Adiciona suporte a Razor Pages para Identity funcionar **
+// Adiciona suporte a Razor Pages para Identity funcionar
 builder.Services.AddRazorPages();
 
 builder.Services.AddDistributedMemoryCache();
@@ -129,7 +134,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// ** Mapear as Razor Pages (Identity e outras) **
+// Mapear as Razor Pages (Identity e outras)
 app.MapRazorPages();
 
 app.Run();
