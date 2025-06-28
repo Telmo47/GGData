@@ -1,31 +1,29 @@
 using GGData.Data;
 using GGData.Data.Seed;
 using GGData.Models;
-using GGData.Services; // <- necessário para o FakeEmailSender
+using GGData.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Identity.UI.Services;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Connection string
+// ====== Base de Dados ======
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-// DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Identity com roles e a tua classe personalizada Usuarios
+// ====== Identity + Roles ======
 builder.Services.AddIdentity<Usuarios, IdentityRole<int>>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
@@ -33,50 +31,52 @@ builder.Services.AddIdentity<Usuarios, IdentityRole<int>>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-
-// JWT setup
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not configured."));
-var expireHours = double.Parse(jwtSettings["ExpireHours"] ?? "24");
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = "Cookies";
-    options.DefaultChallengeScheme = "Cookies";
-})
-.AddCookie("Cookies", options =>
+// Configura caminhos personalizados para os cookies do Identity
+builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
+
+// ====== JWT Settings ======
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not configured."));
+
+// ====== Autenticação ======
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;  // cookie do Identity
+    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
 })
 .AddJwtBearer("Bearer", options =>
 {
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
+
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
 
-// Registo do serviço fake de email
+// ====== Serviços auxiliares ======
 builder.Services.AddSingleton<IEmailSender, FakeEmailSender>();
-
 builder.Services.AddScoped<TokenService>();
 
+// ====== MVC + Razor Pages ======
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
-// Adiciona suporte a Razor Pages para Identity funcionar
 builder.Services.AddRazorPages();
 
+// ====== Sessões ======
 builder.Services.AddDistributedMemoryCache();
-
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -84,7 +84,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Swagger com comentários XML
+// ====== Swagger com JWT suporte ======
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -97,15 +97,36 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
+
+    // Autenticação JWT no Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Insira o token JWT no campo abaixo. Exemplo: Bearer {seu_token}",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 var app = builder.Build();
 
+// ====== Middleware ======
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-
-    // Seed assíncrono para garantir que termina antes de continuar
     await app.UseItToSeedSqlServerAsync();
 
     app.UseSwagger();
@@ -126,7 +147,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
+app.UseAuthentication(); // Autenticação (Cookie + JWT)
 app.UseAuthorization();
 
 app.UseSession();
@@ -135,7 +156,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Mapear as Razor Pages (Identity e outras)
 app.MapRazorPages();
 
 app.Run();

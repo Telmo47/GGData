@@ -42,6 +42,10 @@
                         <a asp-action="Edit" asp-route-id="@item.JogoId">Editar</a>
                         <text> | </text>
                         <a asp-action="Details" asp-route-id="@item.JogoId">Detalhes</a>
+                        <text> | </text>
+                        <a asp-controller="Avaliacoes" asp-action="Create" asp-route-jogoId="@item.JogoId">Avaliar</a>
+                        <text> | </text>
+                        <a asp-controller="Estatisticas" asp-action="DetailsByJogo" asp-route-jogoId="@item.JogoId">Ver Estatísticas</a>
                         @* Verifica se não existem avaliações e se não existe estatística associada *@
                         @if ((item.Avaliacoes?.Count ?? 0) == 0 && item.Estatistica == null)
                         {
@@ -51,6 +55,10 @@
                     else
                     {
                         <a asp-action="Details" asp-route-id="@item.JogoId">Detalhes</a>
+                        <text> | </text>
+                        <a asp-controller="Avaliacoes" asp-action="Create" asp-route-jogoId="@item.JogoId">Avaliar</a>
+                        <text> | </text>
+                        <a asp-controller="Estatisticas" asp-action="DetailsByJogo" asp-route-jogoId="@item.JogoId">Ver Estatísticas</a>
                     }
                 </td>
             </tr>

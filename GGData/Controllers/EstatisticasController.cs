@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GGData.Data;
 using GGData.Models;
 using Microsoft.AspNetCore.Authorization;
 
@@ -19,6 +18,7 @@ namespace GGData.Controllers
             _context = context;
         }
 
+        // Lista todas as estatísticas com os respetivos jogos
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
@@ -26,28 +26,50 @@ namespace GGData.Controllers
             return View(await estatisticas.ToListAsync());
         }
 
+        // Detalhes por EstatisticaId
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return NotFound();
 
             var estatistica = await _context.Estatistica
                 .Include(e => e.Jogo)
                 .FirstOrDefaultAsync(m => m.EstatisticaId == id);
 
-            if (estatistica == null) return NotFound();
+            if (estatistica == null)
+                return NotFound();
 
             return View(estatistica);
         }
 
+        // NOVA: Detalhes por JogoId (chave estrangeira)
+        [AllowAnonymous]
+        public async Task<IActionResult> DetailsByJogo(int? jogoId)
+        {
+            if (jogoId == null)
+                return NotFound();
+
+            var estatistica = await _context.Estatistica
+                .Include(e => e.Jogo)
+                .FirstOrDefaultAsync(e => e.JogoId == jogoId);
+
+            if (estatistica == null)
+                return NotFound();
+
+            // Reutiliza a mesma view Details.cshtml para mostrar a estatística
+            return View("Details", estatistica);
+        }
+
         public IActionResult Create()
         {
-            ViewData["JogoID"] = new SelectList(_context.Jogos, "JogoId", "Nome");
+            ViewData["JogoId"] = new SelectList(_context.Jogos, "JogoId", "Nome");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EstatisticaId,Conquistas,TempoMedioJogo,TotalAvaliacoes,MediaNotaUtilizadores,MediaNotaCriticos,JogoID")] Estatistica estatistica)
+        public async Task<IActionResult> Create([Bind("EstatisticaId,Conquistas,TempoMedioJogo,TotalAvaliacoes,MediaNotaUtilizadores,MediaNotaCriticos,JogoId")] Estatistica estatistica)
         {
             if (ModelState.IsValid)
             {
@@ -56,26 +78,29 @@ namespace GGData.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["JogoID"] = new SelectList(_context.Jogos, "JogoId", "Nome", estatistica.JogoId);
+            ViewData["JogoId"] = new SelectList(_context.Jogos, "JogoId", "Nome", estatistica.JogoId);
             return View(estatistica);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return NotFound();
 
             var estatistica = await _context.Estatistica.FindAsync(id);
-            if (estatistica == null) return NotFound();
+            if (estatistica == null)
+                return NotFound();
 
-            ViewData["JogoID"] = new SelectList(_context.Jogos, "JogoId", "Nome", estatistica.JogoId);
+            ViewData["JogoId"] = new SelectList(_context.Jogos, "JogoId", "Nome", estatistica.JogoId);
             return View(estatistica);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EstatisticaId,Conquistas,TempoMedioJogo,TotalAvaliacoes,MediaNotaUtilizadores,MediaNotaCriticos,JogoID")] Estatistica estatistica)
+        public async Task<IActionResult> Edit(int id, [Bind("EstatisticaId,Conquistas,TempoMedioJogo,TotalAvaliacoes,MediaNotaUtilizadores,MediaNotaCriticos,JogoId")] Estatistica estatistica)
         {
-            if (id != estatistica.EstatisticaId) return NotFound();
+            if (id != estatistica.EstatisticaId)
+                return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -86,25 +111,29 @@ namespace GGData.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EstatisticaExists(estatistica.EstatisticaId)) return NotFound();
-                    else throw;
+                    if (!EstatisticaExists(estatistica.EstatisticaId))
+                        return NotFound();
+                    else
+                        throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["JogoID"] = new SelectList(_context.Jogos, "JogoId", "Nome", estatistica.JogoId);
+            ViewData["JogoId"] = new SelectList(_context.Jogos, "JogoId", "Nome", estatistica.JogoId);
             return View(estatistica);
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return NotFound();
 
             var estatistica = await _context.Estatistica
                 .Include(e => e.Jogo)
                 .FirstOrDefaultAsync(m => m.EstatisticaId == id);
 
-            if (estatistica == null) return NotFound();
+            if (estatistica == null)
+                return NotFound();
 
             return View(estatistica);
         }

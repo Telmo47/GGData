@@ -40,3 +40,8 @@
     <a asp-action="Edit" asp-route-id="@Model?.JogoId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+<div class="mt-3">
+    <a class="btn btn-primary" asp-controller="Estatisticas" asp-action="VerEstatisticas" asp-route-id="@Model.JogoId">Ver Estatísticas</a>
+    <a class="btn btn-success" asp-controller="Avaliacoes" asp-action="Avaliar" asp-route-id="@Model.JogoId">Avaliar</a>
+</div>
+

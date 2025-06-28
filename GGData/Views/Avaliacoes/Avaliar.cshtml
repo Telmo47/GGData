@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Avaliar Jogo";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form id="avaliacaoForm">
+    <input type="hidden" id="jogoId" value="@ViewBag.JogoId" />
+    <div class="form-group">
+        <label>Nota (0 a 10)</label>
+        <input type="number" id="nota" class="form-control" min="0" max="10" />
+    </div>
+    <div class="form-group">
+        <label>Comentários</label>
+        <textarea id="comentarios" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-success mt-2">Enviar Avaliação</button>
+</form>
+
+<script>
+    document.getElementById("avaliacaoForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const token = localStorage.getItem("jwtToken"); // ou outro local onde guardas o JWT
+
+        const response = await fetch("/api/avaliacoes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                jogoId: document.getElementById("jogoId").value,
+                nota: parseInt(document.getElementById("nota").value),
+                comentarios: document.getElementById("comentarios").value,
+                tipoUsuario: "Utilizador" // ou "Critico"
+            })
+        });
+
+        if (response.ok) {
+            alert("Avaliação enviada!");
+            window.location.href = "/Jogos";
+        } else {
+            const data = await response.json();
+            alert("Erro: " + data.message || response.statusText);
+        }
+    });
+</script>

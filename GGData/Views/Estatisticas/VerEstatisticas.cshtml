@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Estatísticas do Jogo";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div id="estatisticas">A carregar...</div>
+
+<script>
+    const jogoId = @ViewBag.JogoId;
+    const token = localStorage.getItem("jwtToken");
+
+    fetch(`/api/estatisticas?jogoId=${jogoId}`, {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("estatisticas").innerHTML = `
+            <p>Média de avaliação: ${data.mediaAvaliacao}</p>
+            <p>Votos totais: ${data.totalVotos}</p>
+        `;
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("estatisticas").textContent = "Erro ao carregar estatísticas.";
+    });
+</script>
