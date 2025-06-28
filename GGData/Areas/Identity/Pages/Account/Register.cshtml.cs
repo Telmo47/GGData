@@ -27,15 +27,13 @@ namespace GGData.Areas.Identity.Pages.Account
         private readonly SignInManager<Usuarios> _signInManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<Usuarios> userManager,
             IUserStore<Usuarios> userStore,
             SignInManager<Usuarios> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
-            ApplicationDbContext context)
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,7 +41,6 @@ namespace GGData.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _context = context;
         }
 
         [BindProperty]
@@ -74,8 +71,9 @@ namespace GGData.Areas.Identity.Pages.Account
 
             [Required(ErrorMessage = "O tipo de utilizador é obrigatório.")]
             [Display(Name = "Tipo de utilizador")]
-            public string TipoUsuario { get; set; }
+            public string TipoUsuario { get; set; } // "Normal" ou "Critico"
 
+            // Campos opcionais para críticos
             [Display(Name = "Instituição")]
             public string Instituicao { get; set; }
 
@@ -114,15 +112,12 @@ namespace GGData.Areas.Identity.Pages.Account
                     UserName = Input.Email,
                     Email = Input.Email,
                     Nome = Input.Nome,
+                    DataRegistro = DateTime.Now,
                     TipoUsuario = Input.TipoUsuario,
-                    Instituicao = Input.Instituicao,
-                    WebsiteProfissional = Input.WebsiteProfissional,
-                    DescricaoProfissional = Input.DescricaoProfissional,
-                    DataRegistro = DateTime.Now
+                    Instituicao = Input.TipoUsuario == "Critico" ? Input.Instituicao : null,
+                    WebsiteProfissional = Input.TipoUsuario == "Critico" ? Input.WebsiteProfissional : null,
+                    DescricaoProfissional = Input.TipoUsuario == "Critico" ? Input.DescricaoProfissional : null,
                 };
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -133,7 +128,6 @@ namespace GGData.Areas.Identity.Pages.Account
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
                     var callbackUrl = Url.Page("/Account/ConfirmEmail", null,
                         new { area = "Identity", userId, code, returnUrl },
                         Request.Scheme);
@@ -147,11 +141,14 @@ namespace GGData.Areas.Identity.Pages.Account
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
-
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
+                else
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
+            // Se chegou aqui, houve erro, mostra a página com mensagens
             return Page();
         }
 

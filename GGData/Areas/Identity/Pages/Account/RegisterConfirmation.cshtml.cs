@@ -2,6 +2,8 @@ using GGData.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GGData.Areas.Identity.Pages.Account
@@ -16,8 +18,10 @@ namespace GGData.Areas.Identity.Pages.Account
         }
 
         public string Email { get; set; }
+        public bool DisplayConfirmAccountLink { get; set; }
+        public string EmailConfirmationUrl { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string email)
+        public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
         {
             if (email == null)
             {
@@ -31,6 +35,22 @@ namespace GGData.Areas.Identity.Pages.Account
             }
 
             Email = email;
+
+            // Mostra o link direto só em ambiente de desenvolvimento para testes
+            DisplayConfirmAccountLink = true;
+
+            if (DisplayConfirmAccountLink)
+            {
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                EmailConfirmationUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId, code, returnUrl },
+                    protocol: Request.Scheme);
+            }
+
             return Page();
         }
     }
