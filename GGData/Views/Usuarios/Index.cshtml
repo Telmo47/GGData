@@ -42,9 +42,9 @@
                 <td>@Html.DisplayFor(modelItem => item.TipoUsuario)</td>
                 <td>@item.DataRegistro.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
-                    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.UsuarioId">Editar</a>
-                    <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.UsuarioId">Detalhes</a>
-                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.UsuarioId">Eliminar</a>
+                    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
                 </td>
             </tr>
         }

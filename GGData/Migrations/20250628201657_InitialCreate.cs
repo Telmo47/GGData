@@ -15,7 +15,8 @@ namespace GGData.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -29,7 +30,14 @@ namespace GGData.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TipoUsuario = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Instituicao = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WebsiteProfissional = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DescricaoProfissional = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -51,33 +59,12 @@ namespace GGData.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Usuarios",
-                columns: table => new
-                {
-                    UsuarioId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Senha = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DataRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TipoUsuario = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Instituicao = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WebsiteProfissional = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DescricaoProfissional = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Usuarios", x => x.UsuarioId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -98,7 +85,7 @@ namespace GGData.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -117,10 +104,10 @@ namespace GGData.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -137,8 +124,8 @@ namespace GGData.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -161,9 +148,9 @@ namespace GGData.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -187,7 +174,7 @@ namespace GGData.Migrations
                     Genero = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Plataforma = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DataLancamento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UtilizadorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UtilizadorId = table.Column<int>(type: "int", nullable: true),
                     ImagemUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
@@ -217,17 +204,17 @@ namespace GGData.Migrations
                 {
                     table.PrimaryKey("PK_Avaliacao", x => x.AvaliacaoId);
                     table.ForeignKey(
+                        name: "FK_Avaliacao_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Avaliacao_Jogos_JogoId",
                         column: x => x.JogoId,
                         principalTable: "Jogos",
                         principalColumn: "JogoId",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Avaliacao_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "UsuarioId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -237,10 +224,10 @@ namespace GGData.Migrations
                     EstatisticaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Conquistas = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TempoMedioJogo = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    TempoMedioJogo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalAvaliacoes = table.Column<int>(type: "int", nullable: false),
-                    MediaNotaUtilizadores = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
-                    MediaNotaCriticos = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false),
+                    MediaNotaUtilizadores = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MediaNotaCriticos = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     JogoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -253,21 +240,6 @@ namespace GGData.Migrations
                         principalColumn: "JogoId",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "a", null, "Administrador", "ADMINISTRADOR" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "admin", 0, "bb5fbadf-4714-47a0-8f5e-2b4084550151", "admin@mail.pt", true, false, null, "ADMIN@MAIL.PT", "ADMIN@MAIL.PT", "AQAAAAIAAYagAAAAEIfKsakR2qSKUaQF+C7EN44G3CNtQnrNDQFvJu7t6e7935oGe+7RrnQutJVOChFJCw==", null, false, "0ef2b2a4-87c6-4acd-aec9-0cf5f2faaf01", false, "admin@mail.pt" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "a", "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -356,9 +328,6 @@ namespace GGData.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Usuarios");
 
             migrationBuilder.DropTable(
                 name: "Jogos");

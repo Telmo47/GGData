@@ -1,4 +1,5 @@
-﻿using GGData.Models.ViewModels;
+﻿using GGData.Models;
+using GGData.Models.ViewModels;
 using GGData.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,10 @@ namespace GGData.Controllers.API
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<Usuarios> _userManager;
         private readonly TokenService _tokenService;
 
-        public AuthController(UserManager<IdentityUser> userManager, TokenService tokenService)
+        public AuthController(UserManager<Usuarios> userManager, TokenService tokenService)
         {
             _userManager = userManager;
             _tokenService = tokenService;

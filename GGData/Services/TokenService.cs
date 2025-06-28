@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using GGData.Models; // para a classe Usuarios
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -12,34 +13,31 @@ namespace GGData.Services
 {
     public class TokenService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<Usuarios> _userManager;
         private readonly IConfiguration _configuration;
 
-        public TokenService(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public TokenService(UserManager<Usuarios> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
         }
 
-        public async Task<string> GenerateTokenAsync(IdentityUser user)
+        public async Task<string> GenerateTokenAsync(Usuarios user)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // Buscar roles do utilizador
             var roles = await _userManager.GetRolesAsync(user);
 
-            // Criar claims básicas + roles
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            // Adicionar claims de roles
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));

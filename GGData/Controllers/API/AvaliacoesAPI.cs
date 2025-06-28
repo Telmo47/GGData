@@ -61,13 +61,13 @@ namespace GGData.Controllers.API
 
                 // Verificar se já existe avaliação para este usuário e jogo
                 bool jaAvaliado = await _context.Avaliacao
-                    .AnyAsync(a => a.JogoId == avaliacao.JogoId && a.UsuarioId == usuario.UsuarioId);
+                    .AnyAsync(a => a.JogoId == avaliacao.JogoId && a.UsuarioId == usuario.Id);
 
                 if (jaAvaliado)
                     return BadRequest("Este utilizador já avaliou este jogo.");
 
                 // Atribuir o UsuarioId ao avaliacao
-                avaliacao.UsuarioId = usuario.UsuarioId;
+                avaliacao.UsuarioId = usuario.Id;
                 avaliacao.DataReview = DateTime.UtcNow;
 
                 // Definir TipoUsuario para evitar erro de NULL na BD
@@ -103,7 +103,7 @@ namespace GGData.Controllers.API
                 return NotFound();
 
             // Verificar se o dono da avaliação é o utilizador autenticado
-            if (avaliacaoExistente.UsuarioId != usuario.UsuarioId)
+            if (avaliacaoExistente.UsuarioId != usuario.Id)
                 return StatusCode(403, new { message = "Só podes editar as tu próprias avaliações." });
 
             // Atualizar os campos que podem ser modificados
@@ -141,7 +141,7 @@ namespace GGData.Controllers.API
             var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == userEmail);
 
-            if (usuario == null || avaliacao.UsuarioId != usuario.UsuarioId)
+            if (usuario == null || avaliacao.UsuarioId != usuario.Id)
                 return Forbid("Só podes apagar as tuas próprias avaliações.");
 
             _context.Avaliacao.Remove(avaliacao);

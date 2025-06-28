@@ -25,7 +25,7 @@ namespace GGData.Controllers
             var username = User.Identity.Name;
             return _context.Usuarios
                 .Where(u => u.UserName == username)
-                .Select(u => u.UsuarioId)
+                .Select(u => u.Id)
                 .FirstOrDefault();
         }
 
@@ -175,7 +175,7 @@ namespace GGData.Controllers
 
             var avaliacao = await _context.Avaliacao
                 .Include(a => a.Usuario)
-                .FirstOrDefaultAsync(a => a.AvaliacaoId == id && (isAdmin || a.Usuario.UsuarioId == currentUserId));
+                .FirstOrDefaultAsync(a => a.AvaliacaoId == id && (isAdmin || a.Usuario.Id == currentUserId));
 
             if (avaliacao == null) return RedirectToAction(nameof(Index));
 

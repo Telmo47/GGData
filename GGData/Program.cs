@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using GGData.Data;
 using GGData.Data.Seed;
+using GGData.Models;
 using GGData.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,41 +23,51 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Identity com roles
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-    options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+// Identity com roles e a tua classe personalizada Usuarios
+builder.Services.AddIdentity<Usuarios, IdentityRole<int>>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
 // JWT setup
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not configured."));
+var expireHours = double.Parse(jwtSettings["ExpireHours"] ?? "24");
 
-builder.Services.AddAuthentication("Cookies")
-    .AddCookie("Cookies", options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = "Cookies";
+    options.DefaultChallengeScheme = "Cookies";
+})
+.AddCookie("Cookies", options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+})
+.AddJwtBearer("Bearer", options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.LoginPath = "/Identity/Account/Login";
-        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-    })
-    .AddJwtBearer("Bearer", options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(key)
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
 
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+// ** Adiciona suporte a Razor Pages para Identity funcionar **
+builder.Services.AddRazorPages();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -84,13 +95,12 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Se for publicar numa subpasta (opcional)
-// app.UsePathBase("/ggdata");
-
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    app.UseItToSeedSqlServer();
+
+    // Seed assíncrono para garantir que termina antes de continuar
+    await app.UseItToSeedSqlServerAsync();
 
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -119,6 +129,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// ** Mapear as Razor Pages (Identity e outras) **
 app.MapRazorPages();
 
 app.Run();

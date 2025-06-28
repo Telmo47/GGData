@@ -40,7 +40,7 @@ namespace GGData.Controllers
         {
             if (id == null) return NotFound();
 
-            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
+            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.Id == id);
             if (usuarios == null) return NotFound();
 
             return View(usuarios);
@@ -85,7 +85,7 @@ namespace GGData.Controllers
             if (usuarios == null) return NotFound();
 
             // Guardar dados para proteção da sessão
-            HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
+            HttpContext.Session.SetInt32("UsuarioID", usuarios.Id);
             HttpContext.Session.SetString("Acao", "Usuarios/Edit");
 
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" }, usuarios.TipoUsuario);
@@ -97,7 +97,7 @@ namespace GGData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,TipoUsuario")] Usuarios usuarios)
         {
-            if (id != usuarios.UsuarioId) return NotFound();
+            if (id != usuarios.Id) return NotFound();
 
             var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
             var acao = HttpContext.Session.GetString("Acao");
@@ -109,7 +109,7 @@ namespace GGData.Controllers
                 return View(usuarios);
             }
 
-            if (usuarioIDSessao != usuarios.UsuarioId || acao != "Usuarios/Edit")
+            if (usuarioIDSessao != usuarios.Id || acao != "Usuarios/Edit")
             {
                 return RedirectToAction("Index");
             }
@@ -130,7 +130,7 @@ namespace GGData.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsuariosExists(usuarios.UsuarioId))
+                    if (!UsuariosExists(usuarios.Id))
                         return NotFound();
                     else
                         throw;
@@ -147,11 +147,11 @@ namespace GGData.Controllers
         {
             if (id == null) return NotFound();
 
-            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.UsuarioId == id);
+            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.Id == id);
             if (usuarios == null) return NotFound();
 
             // Guardar dados para proteção da sessão
-            HttpContext.Session.SetInt32("UsuarioID", usuarios.UsuarioId);
+            HttpContext.Session.SetInt32("UsuarioID", usuarios.Id);
             HttpContext.Session.SetString("Acao", "Usuarios/Delete");
 
             return View(usuarios);
@@ -192,7 +192,7 @@ namespace GGData.Controllers
 
         private bool UsuariosExists(int id)
         {
-            return _context.Usuarios.Any(e => e.UsuarioId == id);
+            return _context.Usuarios.Any(e => e.Id == id);
         }
     }
 }
