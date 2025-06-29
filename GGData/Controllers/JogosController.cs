@@ -204,7 +204,7 @@ namespace GGData.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (jogo != null && jogo.Avaliacoes.Count == 0 && jogo.Estatistica != null)
+            if (jogo != null && (jogo.Avaliacoes?.Count ?? 0) == 0 && jogo.Estatistica == null)
             {
                 _context.Jogos.Remove(jogo);
                 await _context.SaveChangesAsync();
@@ -215,6 +215,7 @@ namespace GGData.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool JogoExists(int id)
         {

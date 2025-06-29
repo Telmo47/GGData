@@ -15,8 +15,8 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa; /* cor suave para fundo */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Body com padding extra para não tapar conteúdo */
@@ -35,20 +35,22 @@ body {
     border-color: #258cfb;
     outline: none;
 }
+.container {
+    flex: 1 0 auto; /* cresce, não encolhe, base auto */
+}
 
 /* Footer fixo em baixo com sombra */
 footer.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+    position: relative; /* ou remove position fixo */
     height: 60px;
-    background-color: #212529; /* escuro, consistente com navbar */
+    background-color: #212529;
     color: #e9ecef;
     border-top: 1px solid #343a40;
-    z-index: 1030;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0; /* evita encolher */
+    width: 100%;
 }
 
 /* Navbar ajustes */
@@ -110,5 +112,7 @@ label {
 
 /* Espaçamento para a área principal */
 main.pb-4 {
-    padding-bottom: 2.5rem !important;
+    padding-bottom: 100px !important;
 }
+
+
