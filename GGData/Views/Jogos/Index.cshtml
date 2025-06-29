@@ -22,7 +22,7 @@
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.First().Nome)</th>
-            <th>@Html.DisplayNameFor(model => model.First().Genero)</th>
+            <th>Géneros</th>
             <th>@Html.DisplayNameFor(model => model.First().Plataforma)</th>
             <th>@Html.DisplayNameFor(model => model.First().DataLancamento)</th>
             <th>Ações</th>
@@ -33,17 +33,29 @@
         {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Nome)</td>
-                <td>@Html.DisplayFor(modelItem => item.Genero)</td>
+
+                <td>
+                    @if (item.JogoGeneros != null && item.JogoGeneros.Any())
+                    {
+                        @string.Join(", ", item.JogoGeneros.Select(jg => jg.Genero.Nome))
+                    }
+                    else
+                    {
+                        <em>Sem géneros</em>
+                    }
+                </td>
+
                 <td>@Html.DisplayFor(modelItem => item.Plataforma)</td>
                 <td>@item.DataLancamento.ToString("yyyy-MM-dd")</td>
                 <td>
+                    @* Aqui mantém o teu código para links e permissões *@
                     @if (User.IsInRole("Administrador"))
                     {
                         <a asp-action="Edit" asp-route-id="@item.JogoId">Editar</a>
                         <text> | </text>
                         <a asp-action="Details" asp-route-id="@item.JogoId">Detalhes</a>
                         <text> | </text>
-                        
+
                         <a asp-controller="Estatisticas" asp-action="DetailsByJogo" asp-route-jogoId="@item.JogoId">Ver Estatísticas</a>
                         @if ((item.Avaliacoes?.Count ?? 0) == 0 && item.Estatistica == null)
                         {
@@ -54,11 +66,10 @@
                     {
                         <a asp-action="Details" asp-route-id="@item.JogoId">Detalhes</a>
                         <text> | </text>
-                        
+
                         <a asp-controller="Estatisticas" asp-action="DetailsByJogo" asp-route-jogoId="@item.JogoId">Ver Estatísticas</a>
                     }
                 </td>
-
             </tr>
         }
     </tbody>

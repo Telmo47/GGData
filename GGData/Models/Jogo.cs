@@ -13,8 +13,9 @@ namespace GGData.Models
         [Required, StringLength(100)]
         public string Nome { get; set; }
 
-        [Required, StringLength(50)]
-        public string Genero { get; set; }
+        // Removido o campo Genero string para substituir pela relação N-M
+        // [Required, StringLength(50)]
+        // public string Genero { get; set; }
 
         [Required, StringLength(100)]
         public string Plataforma { get; set; }
@@ -25,7 +26,7 @@ namespace GGData.Models
         [ValidateNever]
         public virtual ICollection<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
 
-        public int? UtilizadorId { get; set; }  // FK - int para bater com chave PK do Usuarios
+        public int? UtilizadorId { get; set; }  // FK para Usuarios
 
         [ValidateNever]
         public Usuarios? Utilizador { get; set; }  // Navegação
@@ -35,5 +36,8 @@ namespace GGData.Models
 
         [StringLength(300)]
         public string? ImagemUrl { get; set; }
+
+        // Relação N-M com Genero
+        public ICollection<JogoGenero> JogoGeneros { get; set; } = new List<JogoGenero>();
     }
 }

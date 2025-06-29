@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace GGData.Controllers.API
@@ -30,14 +29,16 @@ namespace GGData.Controllers.API
             string? nomePessoaAutenticada = User.Identity?.Name;
 
             var jogos = await _context.Jogos
-                .Where(j => j.Utilizador.UserName == nomePessoaAutenticada)
+                .Include(j => j.JogoGeneros)
+                    .ThenInclude(jg => jg.Genero)
+                .Where(j => j.Utilizador != null && j.Utilizador.UserName == nomePessoaAutenticada)
                 .Select(j => new JogoDTObyUser
                 {
                     JogoId = j.JogoId,
                     Nome = j.Nome,
-                    Genero = j.Genero,
                     Plataforma = j.Plataforma,
-                    DataLancamento = j.DataLancamento
+                    DataLancamento = j.DataLancamento,
+                    Genero = string.Join(", ", j.JogoGeneros.Select(jg => jg.Genero.Nome))
                 })
                 .ToListAsync();
 
@@ -50,7 +51,7 @@ namespace GGData.Controllers.API
         public async Task<ActionResult<JogoDTO>> CreateJogo(JogoDTO jogoDTO)
         {
             string? nomePessoaAutenticada = User.Identity?.Name;
-            var utilizador = await _context.Users
+            var utilizador = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.UserName == nomePessoaAutenticada);
 
             if (utilizador == null)
@@ -61,11 +62,20 @@ namespace GGData.Controllers.API
             var jogo = new Jogo
             {
                 Nome = jogoDTO.Nome,
-                Genero = jogoDTO.Genero,
                 Plataforma = jogoDTO.Plataforma,
                 DataLancamento = jogoDTO.DataLancamento,
                 Utilizador = utilizador
             };
+
+            // Adiciona os géneros (assumindo que já existem no BD)
+            foreach (var generoNome in jogoDTO.Generos)
+            {
+                var genero = await _context.Set<Genero>().FirstOrDefaultAsync(g => g.Nome == generoNome);
+                if (genero != null)
+                {
+                    jogo.JogoGeneros.Add(new JogoGenero { Genero = genero, Jogo = jogo });
+                }
+            }
 
             _context.Jogos.Add(jogo);
             await _context.SaveChangesAsync();

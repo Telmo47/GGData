@@ -22,7 +22,14 @@
     </div>
 
     <!-- JogoId fixo -->
-    <input type="hidden" asp-for="JogoId" />
+    <div class="form-group">
+        <label asp-for="JogoId"></label>
+        <select asp-for="JogoId" class="form-control" asp-items="@(ViewData["JogoId"] as IEnumerable<SelectListItem>)">
+            <option value="">-- Seleciona um jogo --</option>
+        </select>
+        <span asp-validation-for="JogoId" class="text-danger"></span>
+    </div>
+
 
     <div class="form-group mt-3">
         <input type="submit" value="Criar" class="btn btn-primary" />

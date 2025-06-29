@@ -14,8 +14,17 @@
         <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Nome)</dt>
         <dd class="col-sm-10">@Html.DisplayFor(model => model.Nome)</dd>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Genero)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Genero)</dd>
+        <dt class="col-sm-2">Géneros</dt>
+        <dd class="col-sm-10">
+            @if (Model.JogoGeneros != null && Model.JogoGeneros.Any())
+            {
+                @string.Join(", ", Model.JogoGeneros.Select(jg => jg.Genero.Nome))
+            }
+            else
+            {
+                <em>Sem géneros</em>
+            }
+        </dd>
 
         <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Plataforma)</dt>
         <dd class="col-sm-10">@Html.DisplayFor(model => model.Plataforma)</dd>
@@ -23,6 +32,7 @@
         <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DataLancamento)</dt>
         <dd class="col-sm-10">@Html.DisplayFor(model => model.DataLancamento)</dd>
     </dl>
+
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="JogoId" />

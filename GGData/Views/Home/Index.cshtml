@@ -14,7 +14,11 @@
                 <img src="@jogo.ImagemUrl" class="card-img-top" alt="@jogo.Nome" style="max-height: 200px; object-fit: cover;">
                 <div class="card-body">
                     <h5 class="card-title">@jogo.Nome</h5>
-                    <p class="card-text"><strong>Género:</strong> @jogo.Genero</p>
+                    <p class="card-text">
+                        <strong>Géneros:</strong>
+                        @string.Join(", ", jogo.JogoGeneros.Select(jg => jg.Genero.Nome))
+                    </p>
+
                     <p class="card-text"><strong>Plataforma:</strong> @jogo.Plataforma</p>
                 </div>
                 <div class="card-footer d-flex justify-content-center">
