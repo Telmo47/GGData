@@ -1,66 +1,69 @@
 ﻿@model GGData.Models.Estatistica
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Estatística";
 }
 
-<h1>Edit</h1>
+<div class="container mt-4 mb-5">
+    <h1 class="mb-4">✏️ Editar Estatística</h1>
 
-<h4>Estatistica</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EstatisticaId" />
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <form asp-action="Edit" class="card shadow p-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="EstatisticaId" />
 
-            <div class="form-group">
-                <label asp-for="Conquistas" class="control-label"></label>
-                <input asp-for="Conquistas" class="form-control" />
-                <span asp-validation-for="Conquistas" class="text-danger"></span>
-            </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Conquistas" class="form-label"></label>
+                        <input asp-for="Conquistas" class="form-control" />
+                        <span asp-validation-for="Conquistas" class="text-danger"></span>
+                    </div>
 
-            <div class="form-group">
-                <label asp-for="TempoMedioJogo" class="control-label"></label>
-                <input asp-for="TempoMedioJogo" class="form-control" />
-                <span asp-validation-for="TempoMedioJogo" class="text-danger"></span>
-            </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="TempoMedioJogo" class="form-label"></label>
+                        <input asp-for="TempoMedioJogo" class="form-control" />
+                        <span asp-validation-for="TempoMedioJogo" class="text-danger"></span>
+                    </div>
 
-            <div class="form-group">
-                <label asp-for="TotalAvaliacoes" class="control-label"></label>
-                <input asp-for="TotalAvaliacoes" class="form-control" />
-                <span asp-validation-for="TotalAvaliacoes" class="text-danger"></span>
-            </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="TotalAvaliacoes" class="form-label"></label>
+                        <input asp-for="TotalAvaliacoes" class="form-control" />
+                        <span asp-validation-for="TotalAvaliacoes" class="text-danger"></span>
+                    </div>
 
-            <div class="form-group">
-                <label asp-for="MediaNotaUtilizadores" class="control-label"></label>
-                <input asp-for="MediaNotaUtilizadores" class="form-control" />
-                <span asp-validation-for="MediaNotaUtilizadores" class="text-danger"></span>
-            </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="MediaNotaUtilizadores" class="form-label"></label>
+                        <input asp-for="MediaNotaUtilizadores" class="form-control" />
+                        <span asp-validation-for="MediaNotaUtilizadores" class="text-danger"></span>
+                    </div>
 
-            <div class="form-group">
-                <label asp-for="MediaNotaCriticos" class="control-label"></label>
-                <input asp-for="MediaNotaCriticos" class="form-control" />
-                <span asp-validation-for="MediaNotaCriticos" class="text-danger"></span>
-            </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="MediaNotaCriticos" class="form-label"></label>
+                        <input asp-for="MediaNotaCriticos" class="form-control" />
+                        <span asp-validation-for="MediaNotaCriticos" class="text-danger"></span>
+                    </div>
 
-            <div class="form-group">
-                <label asp-for="JogoId" class="control-label"></label>
-                <select asp-for="JogoId" class="form-control" asp-items="ViewBag.JogoID">
-                    <option value="">Selecione um jogo</option>
-                </select>
-                <span asp-validation-for="JogoId" class="text-danger"></span>
-            </div>
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="JogoId" class="form-label"></label>
+                        <select asp-for="JogoId" class="form-control" asp-items="ViewBag.JogoID">
+                            <option value="">Selecione um jogo</option>
+                        </select>
+                        <span asp-validation-for="JogoId" class="text-danger"></span>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

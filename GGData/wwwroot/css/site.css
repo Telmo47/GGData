@@ -1,22 +1,114 @@
+/* Base font size responsiva */
 html {
-  font-size: 14px;
+    font-size: 14px;
+    scroll-behavior: smooth;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* Body e html com altura total */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* cor suave para fundo */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* Body com padding extra para não tapar conteúdo */
 body {
-  margin-bottom: 60px;
+    padding-bottom: 100px; /* espaço suficiente para não colidir com o footer */
+    position: relative;
+}
+
+/* Foco nos inputs e botões com cor personalizada */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    border-color: #258cfb;
+    outline: none;
+}
+
+/* Footer fixo em baixo com sombra */
+footer.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #212529; /* escuro, consistente com navbar */
+    color: #e9ecef;
+    border-top: 1px solid #343a40;
+    z-index: 1030;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Navbar ajustes */
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-weight: 500;
+}
+
+    .nav-link.active {
+        color: #0d6efd !important; /* bootstrap primary azul */
+        font-weight: 700;
+    }
+
+/* Botões personalizados */
+.btn-primary {
+    background-color: #258cfb;
+    border-color: #258cfb;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+        background-color: #1c6cd9;
+        border-color: #1c6cd9;
+        box-shadow: 0 0 10px #1c6cd9;
+    }
+
+/* Form group spacing */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+/* Table improvements */
+.table {
+    background-color: white;
+    box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+    border-radius: 0.3rem;
+    overflow: hidden;
+}
+
+/* Validation summary e mensagens */
+.text-danger {
+    font-weight: 600;
+}
+
+/* Labels */
+label {
+    font-weight: 600;
+}
+
+/* Pequenos ajustes para o form-check */
+.form-check-label {
+    user-select: none;
+}
+
+/* Espaçamento para a área principal */
+main.pb-4 {
+    padding-bottom: 2.5rem !important;
 }

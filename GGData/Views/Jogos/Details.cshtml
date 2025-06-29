@@ -1,43 +1,60 @@
 ﻿@model GGData.Models.Jogo
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Jogo";
 }
 
-<h1>Details</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">🎮 Detalhes do Jogo</h1>
 
-<div>
-    <h4>Jogo</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Nome)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Nome)</dd>
+    <div class="card shadow p-4 mb-4">
+        <dl class="row">
+            <dt class="col-sm-3 fw-bold">@Html.DisplayNameFor(model => model.Nome)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Nome)</dd>
 
-        <dt class="col-sm-2">Géneros</dt>
-        <dd class="col-sm-10">
-            @if (Model.JogoGeneros != null && Model.JogoGeneros.Any())
-            {
-                @string.Join(", ", Model.JogoGeneros.Select(jg => jg.Genero.Nome))
-            }
-            else
-            {
-                <em>Sem géneros</em>
-            }
-        </dd>
+            <dt class="col-sm-3 fw-bold">Géneros</dt>
+            <dd class="col-sm-9">
+                @if (Model.JogoGeneros != null && Model.JogoGeneros.Any())
+                {
+                    @string.Join(", ", Model.JogoGeneros.Select(jg => jg.Genero.Nome))
+                }
+                else
+                {
+                    <em>Sem géneros atribuídos</em>
+                }
+            </dd>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Plataforma)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Plataforma)</dd>
+            <dt class="col-sm-3 fw-bold">@Html.DisplayNameFor(model => model.Plataforma)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Plataforma)</dd>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DataLancamento)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.DataLancamento)</dd>
-    </dl>
-</div>
+            <dt class="col-sm-3 fw-bold">@Html.DisplayNameFor(model => model.DataLancamento)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.DataLancamento)</dd>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.JogoId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+            <dt class="col-sm-3 fw-bold">Imagem</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrWhiteSpace(Model.ImagemUrl))
+                {
+                    <img src="@Model.ImagemUrl" class="img-fluid rounded shadow-sm mt-2" style="max-height: 300px;" alt="Imagem do Jogo" />
+                }
+                else
+                {
+                    <em>Sem imagem disponível</em>
+                }
+            </dd>
+        </dl>
+    </div>
 
-<div class="mt-3">
-    <a class="btn btn-primary" asp-controller="Estatisticas" asp-action="VerEstatisticas" asp-route-id="@Model.JogoId">Ver Estatísticas</a>
+    <div class="d-flex justify-content-between">
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar à Lista
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model?.JogoId" class="btn btn-outline-primary ms-2">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+        </div>
+        <a class="btn btn-success" asp-controller="Estatisticas" asp-action="VerEstatisticas" asp-route-id="@Model.JogoId">
+            📊 Ver Estatísticas
+        </a>
+    </div>
 </div>

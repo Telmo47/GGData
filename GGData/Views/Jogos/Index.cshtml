@@ -1,76 +1,99 @@
 ﻿@model IEnumerable<GGData.Models.Jogo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista de Jogos";
 }
 
-<h1>Jogos</h1>
-
-<p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">🎮 Lista de Jogos</h1>
     @if (User.IsInRole("Administrador"))
     {
-        <a asp-action="Create" class="btn btn-primary">Criar Novo Jogo</a>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Criar Novo Jogo
+        </a>
     }
-</p>
+</div>
 
-<form method="get" asp-controller="Jogos" asp-action="Index" class="form-inline mb-3">
-    <input type="text" name="genero" value="@Context.Request.Query["genero"]" placeholder="Filtrar por género" class="form-control mr-2" />
-    <button type="submit" class="btn btn-secondary">Pesquisar</button>
+<form method="get" asp-controller="Jogos" asp-action="Index" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="genero" value="@Context.Request.Query["genero"]"
+               placeholder="Filtrar por género"
+               class="form-control" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-primary">
+            <i class="bi bi-search"></i> Pesquisar
+        </button>
+    </div>
 </form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.First().Nome)</th>
-            <th>Géneros</th>
-            <th>@Html.DisplayNameFor(model => model.First().Plataforma)</th>
-            <th>@Html.DisplayNameFor(model => model.First().DataLancamento)</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Nome)</td>
-
-                <td>
-                    @if (item.JogoGeneros != null && item.JogoGeneros.Any())
-                    {
-                        @string.Join(", ", item.JogoGeneros.Select(jg => jg.Genero.Nome))
-                    }
-                    else
-                    {
-                        <em>Sem géneros</em>
-                    }
-                </td>
-
-                <td>@Html.DisplayFor(modelItem => item.Plataforma)</td>
-                <td>@item.DataLancamento.ToString("yyyy-MM-dd")</td>
-                <td>
-                    @* Aqui mantém o teu código para links e permissões *@
-                    @if (User.IsInRole("Administrador"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.JogoId">Editar</a>
-                        <text> | </text>
-                        <a asp-action="Details" asp-route-id="@item.JogoId">Detalhes</a>
-                        <text> | </text>
-
-                        <a asp-controller="Estatisticas" asp-action="DetailsByJogo" asp-route-jogoId="@item.JogoId">Ver Estatísticas</a>
-                        @if ((item.Avaliacoes?.Count ?? 0) == 0 && item.Estatistica == null)
-                        {
-                            <text> | <a asp-action="Delete" asp-route-id="@item.JogoId">Apagar</a></text>
-                        }
-                    }
-                    else
-                    {
-                        <a asp-action="Details" asp-route-id="@item.JogoId">Detalhes</a>
-                        <text> | </text>
-
-                        <a asp-controller="Estatisticas" asp-action="DetailsByJogo" asp-route-jogoId="@item.JogoId">Ver Estatísticas</a>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        Nenhum jogo encontrado.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.First().Nome)</th>
+                    <th>Géneros</th>
+                    <th>@Html.DisplayNameFor(model => model.First().Plataforma)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().DataLancamento)</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+                        <td>
+                            @if (item.JogoGeneros != null && item.JogoGeneros.Any())
+                            {
+                                @string.Join(", ", item.JogoGeneros.Select(jg => jg.Genero.Nome))
+                            }
+                            else
+                            {
+                                <em class="text-muted">Sem géneros</em>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Plataforma)</td>
+                        <td>@item.DataLancamento.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a asp-action="Details" asp-route-id="@item.JogoId" class="btn btn-outline-info btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                @if (User.IsInRole("Administrador"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.JogoId" class="btn btn-outline-warning btn-sm">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-controller="Estatisticas" asp-action="DetailsByJogo" asp-route-jogoId="@item.JogoId" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-bar-chart-line"></i>
+                                    </a>
+                                    @if ((item.Avaliacoes?.Count ?? 0) == 0 && item.Estatistica == null)
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.JogoId" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    <a asp-controller="Estatisticas" asp-action="DetailsByJogo" asp-route-jogoId="@item.JogoId" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-bar-chart-line"></i>
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,40 +1,51 @@
 ﻿@model GGData.Models.Avaliacao
 
-<h1>Criar Avaliação</h1>
+<div class="container mt-4 mb-5">
+    <h1 class="mb-4">🆕 Criar Avaliação</h1>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Nota"></label>
-        <input asp-for="Nota" class="form-control" />
-        <span asp-validation-for="Nota" class="text-danger"></span>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form asp-action="Create" method="post" class="card shadow p-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Nota" class="form-label"></label>
+                        <input asp-for="Nota" class="form-control" />
+                        <span asp-validation-for="Nota" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="TipoUsuario" class="form-label"></label>
+                        <select asp-for="TipoUsuario" class="form-control" asp-items="@(ViewData["TipoUsuario"] as IEnumerable<SelectListItem>)"></select>
+                        <span asp-validation-for="TipoUsuario" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label asp-for="Comentarios" class="form-label"></label>
+                        <textarea asp-for="Comentarios" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Comentarios" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="JogoId" class="form-label"></label>
+                        <select asp-for="JogoId" class="form-control" asp-items="@(ViewData["JogoId"] as IEnumerable<SelectListItem>)">
+                            <option value="">-- Seleciona um jogo --</option>
+                        </select>
+                        <span asp-validation-for="JogoId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                    <input type="submit" value="Criar" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Comentarios"></label>
-        <textarea asp-for="Comentarios" class="form-control"></textarea>
-        <span asp-validation-for="Comentarios" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TipoUsuario"></label>
-        <select asp-for="TipoUsuario" class="form-control" asp-items="@(ViewData["TipoUsuario"] as IEnumerable<SelectListItem>)"></select>
-        <span asp-validation-for="TipoUsuario" class="text-danger"></span>
-    </div>
-
-    <!-- JogoId fixo -->
-    <div class="form-group">
-        <label asp-for="JogoId"></label>
-        <select asp-for="JogoId" class="form-control" asp-items="@(ViewData["JogoId"] as IEnumerable<SelectListItem>)">
-            <option value="">-- Seleciona um jogo --</option>
-        </select>
-        <span asp-validation-for="JogoId" class="text-danger"></span>
-    </div>
-
-
-    <div class="form-group mt-3">
-        <input type="submit" value="Criar" class="btn btn-primary" />
-    </div>
-</form>
+</div>
 
 @section Scripts {
     @{
