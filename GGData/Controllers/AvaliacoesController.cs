@@ -57,21 +57,38 @@ namespace GGData.Controllers
             return View(avaliacao);
         }
 
-        public IActionResult Create()
+        // Parâmetro "jogoId" minúsculo para casar com asp-route-jogoId
+        public IActionResult Create(int? jogoId)
         {
-            PopularViewData();
-            return View();
+            var avaliacao = new Avaliacao();
+            if (jogoId.HasValue)
+            {
+                avaliacao.JogoId = jogoId.Value;
+            }
+
+            PopularViewData(avaliacao);
+            return View(avaliacao);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Nota,Comentarios,TipoUsuario,JogoId")] Avaliacao avaliacao)
         {
+            avaliacao.UsuarioId = GetCurrentUserId();
+
+            var existeAvaliacao = await _context.Avaliacao.AnyAsync(a =>
+                a.JogoId == avaliacao.JogoId && a.UsuarioId == avaliacao.UsuarioId);
+
+            if (existeAvaliacao)
+            {
+                ModelState.AddModelError("", "Já avaliou este jogo anteriormente.");
+                PopularViewData(avaliacao);
+                return View(avaliacao);
+            }
+
             if (ModelState.IsValid)
             {
                 avaliacao.DataReview = DateTime.Now;
-                avaliacao.UsuarioId = GetCurrentUserId();
-
                 _context.Add(avaliacao);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -138,8 +155,11 @@ namespace GGData.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var avaliacao = await _context.Avaliacao.FindAsync(id);
-            _context.Avaliacao.Remove(avaliacao);
-            await _context.SaveChangesAsync();
+            if (avaliacao != null)
+            {
+                _context.Avaliacao.Remove(avaliacao);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
     }

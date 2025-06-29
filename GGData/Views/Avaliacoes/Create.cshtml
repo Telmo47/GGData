@@ -1,61 +1,33 @@
 ﻿@model GGData.Models.Avaliacao
 
-@{
-    ViewData["Title"] = "Criar Avaliação";
-}
-
 <h1>Criar Avaliação</h1>
 
-<h4>Avaliação</h4>
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="Nota" class="control-label"></label>
-                <input asp-for="Nota" class="form-control" />
-                <span asp-validation-for="Nota" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Comentarios" class="control-label"></label>
-                <textarea asp-for="Comentarios" class="form-control"></textarea>
-                <span asp-validation-for="Comentarios" class="text-danger"></span>
-            </div>
-
-            <!-- DataReview será preenchido no controller -->
-            <input type="hidden" asp-for="DataReview" />
-
-            <div class="form-group">
-                <label asp-for="TipoUsuario" class="control-label"></label>
-                <select asp-for="TipoUsuario" class="form-control" asp-items="@(ViewData["TipoUsuario"] as IEnumerable<SelectListItem>)"></select>
-                <span asp-validation-for="TipoUsuario" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="UsuarioId" class="control-label"></label>
-                <select asp-for="UsuarioId" class="form-control" asp-items="@(ViewData["UsuarioId"] as IEnumerable<SelectListItem>)"></select>
-                <span asp-validation-for="UsuarioId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="JogoId" class="control-label"></label>
-                <select asp-for="JogoId" class="form-control" asp-items="@(ViewData["JogoId"] as IEnumerable<SelectListItem>)"></select>
-                <span asp-validation-for="JogoId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mt-3">
-                <input type="submit" value="Criar" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Nota"></label>
+        <input asp-for="Nota" class="form-control" />
+        <span asp-validation-for="Nota" class="text-danger"></span>
     </div>
-</div>
 
-<div class="mt-3">
-    <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
-</div>
+    <div class="form-group">
+        <label asp-for="Comentarios"></label>
+        <textarea asp-for="Comentarios" class="form-control"></textarea>
+        <span asp-validation-for="Comentarios" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TipoUsuario"></label>
+        <select asp-for="TipoUsuario" class="form-control" asp-items="@(ViewData["TipoUsuario"] as IEnumerable<SelectListItem>)"></select>
+        <span asp-validation-for="TipoUsuario" class="text-danger"></span>
+    </div>
+
+    <!-- JogoId fixo -->
+    <input type="hidden" asp-for="JogoId" />
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Criar" class="btn btn-primary" />
+    </div>
+</form>
 
 @section Scripts {
     @{

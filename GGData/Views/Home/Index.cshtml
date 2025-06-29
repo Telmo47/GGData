@@ -17,17 +17,11 @@
                     <p class="card-text"><strong>Género:</strong> @jogo.Genero</p>
                     <p class="card-text"><strong>Plataforma:</strong> @jogo.Plataforma</p>
                 </div>
-                <div class="card-footer d-flex justify-content-between">
+                <div class="card-footer d-flex justify-content-center">
                     <a class="btn btn-outline-info" asp-controller="Estatisticas" asp-action="Details" asp-route-id="@jogo.JogoId">Ver Estatísticas</a>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <a class="btn btn-outline-primary" asp-controller="Avaliacaos" asp-action="Create" asp-route-jogoId="@jogo.JogoId">Avaliar</a>
-                    }
-                    else
-                    {
-                        <a class="btn btn-outline-secondary" asp-controller="Account" asp-action="Login">Avaliar</a>
-                    }
                 </div>
+
+
             </div>
         </div>
     }

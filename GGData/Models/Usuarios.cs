@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GGData.Models
 {
+    [Table("AspNetUsers")]  // Mapeia para a tabela padrão do Identity
     public class Usuarios : IdentityUser<int>
     {
         public string Nome { get; set; }
