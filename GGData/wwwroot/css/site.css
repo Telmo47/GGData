@@ -1,35 +1,42 @@
-/* Base font size responsiva */
+/* site.css - Estilos principais globais do site GGData */
+
+/* --- Base font size responsiva --- */
+/* Define o tamanho base da fonte para o html, ajustando em ecrãs maiores */
 html {
     font-size: 14px;
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; /* scroll suave ao navegar pela página */
 }
 
 @media (min-width: 768px) {
     html {
-        font-size: 16px;
+        font-size: 16px; /* aumento do tamanho da fonte em dispositivos maiores */
     }
 }
 
-/* Body e html com altura total */
+/* --- Definições gerais de altura para html e body --- */
+/* Garante que a altura de html e body preenche a janela do navegador */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
 }
 
+/* --- Estrutura flexível para o body --- */
+/* Usamos flexbox para criar layout com footer fixo no fundo */
 body {
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    flex-direction: column; /* empilha verticalmente header, main e footer */
+    min-height: 100vh; /* altura mínima igual à altura da viewport */
 }
 
+/* --- Área principal com flex para crescer --- */
+/* Permite que o main cresça para preencher espaço entre header e footer */
 main {
     flex: 1 0 auto;
 }
 
-
-
-/* Foco nos inputs e botões com cor personalizada */
+/* --- Estilos para foco em inputs, botões e links --- */
+/* Realça com borda azul personalizada e sombra ao focar */
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
@@ -37,13 +44,16 @@ main {
 .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
     border-color: #258cfb;
-    outline: none;
-}
-.container {
-    flex: 1 0 auto; /* cresce, não encolhe, base auto */
+    outline: none; /* remove outline padrão */
 }
 
-/* Footer fixo em baixo com sombra */
+/* --- Container flexível para crescimento --- */
+.container {
+    flex: 1 0 auto; /* permite crescimento, impede encolhimento */
+}
+
+/* --- Footer fixo no fundo --- */
+/* Altura fixa, cor escura, texto claro, alinhado centro vertical e horizontal */
 footer.footer {
     height: 60px;
     background-color: #212529;
@@ -52,33 +62,37 @@ footer.footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    flex-shrink: 0; /* evita que encolha */
     width: 100%;
 }
 
-
-/* Navbar ajustes */
+/* --- Ajustes para a Navbar --- */
+/* Logo com maior peso e tamanho */
 .navbar-brand {
     font-weight: 700;
     font-size: 1.5rem;
 }
 
+/* Links da navbar com peso médio */
 .nav-link {
     font-weight: 500;
 }
 
+    /* Link ativo com cor azul bootstrap primário e peso mais forte */
     .nav-link.active {
-        color: #0d6efd !important; /* bootstrap primary azul */
+        color: #0d6efd !important;
         font-weight: 700;
     }
 
-/* Botões personalizados */
+/* --- Botões principais personalizados --- */
+/* Cor azul GGData e transição suave ao passar o mouse */
 .btn-primary {
     background-color: #258cfb;
     border-color: #258cfb;
     transition: background-color 0.3s ease;
 }
 
+    /* Hover e foco: tom mais escuro e sombra azul */
     .btn-primary:hover,
     .btn-primary:focus {
         background-color: #1c6cd9;
@@ -86,12 +100,13 @@ footer.footer {
         box-shadow: 0 0 10px #1c6cd9;
     }
 
-/* Form group spacing */
+/* --- Espaçamento entre form groups --- */
 .form-group {
     margin-bottom: 1rem;
 }
 
-/* Table improvements */
+/* --- Estilos para tabelas --- */
+/* Fundo branco, sombra leve, cantos arredondados, overflow oculto */
 .table {
     background-color: white;
     box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
@@ -99,24 +114,26 @@ footer.footer {
     overflow: hidden;
 }
 
-/* Validation summary e mensagens */
+/* --- Mensagens de erro e sumários de validação --- */
+/* Texto com peso forte para maior destaque */
 .text-danger {
     font-weight: 600;
 }
 
-/* Labels */
+/* --- Estilos para labels --- */
+/* Texto com peso forte */
 label {
     font-weight: 600;
 }
 
-/* Pequenos ajustes para o form-check */
+/* --- Ajustes para labels de checkbox e radio --- */
+/* Impede que texto seja selecionado pelo utilizador */
 .form-check-label {
     user-select: none;
 }
 
-/* Espaçamento para a área principal */
+/* --- Espaçamento extra para a área principal --- */
+/* Adiciona espaço inferior para não colidir com footer fixo */
 main.pb-4 {
     padding-bottom: 100px !important;
 }
-
-

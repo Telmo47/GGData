@@ -6,74 +6,76 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 namespace GGData.Models
 {
     /// <summary>
-    /// Avaliação dada a cada jogo por um utilizador.
-    /// Cada utilizador pode avaliar um jogo uma única vez.
+    /// Representa uma avaliação feita a um jogo por parte de um utilizador (pode ser utilizador comum ou crítico).
+    /// Cada utilizador pode avaliar um jogo apenas uma vez.
     /// </summary>
     public class Avaliacao
     {
         /// <summary>
-        /// Id da avaliação.
+        /// Identificador único da avaliação.
         /// </summary>
         [Key]
         public int AvaliacaoId { get; set; }
 
         /// <summary>
-        /// Nota dada pelo utilizador, de 1 a 10.
+        /// Nota atribuída ao jogo (entre 1 e 10).
         /// </summary>
-        [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
-        [Range(1, 10, ErrorMessage = "A nota deve estar entre 1 e 10")]
+        [Required(ErrorMessage = "A nota é obrigatória.")]
+        [Range(1, 10, ErrorMessage = "A nota deve estar entre 1 e 10.")]
         public int Nota { get; set; }
 
         /// <summary>
-        /// Comentários opcionais sobre o jogo.
-        /// Pode ser uma mensagem livre, até 5000 caracteres.
+        /// Comentário opcional do utilizador sobre o jogo.
         /// </summary>
         [StringLength(5000, ErrorMessage = "O comentário não pode exceder 5000 caracteres.")]
         [Display(Name = "Comentários")]
         public string? Comentarios { get; set; }
 
         /// <summary>
-        /// Data da review feita pelo utilizador.
+        /// Data em que a avaliação foi feita.
         /// </summary>
-        [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
+        [Required(ErrorMessage = "A data da review é obrigatória.")]
         [Display(Name = "Data da Review")]
         [DataType(DataType.Date)]
         public DateTime DataReview { get; set; }
 
         /// <summary>
-        /// Tipo de usuário que deu a avaliação (Crítico ou Utilizador).
+        /// Tipo de utilizador que fez a avaliação: "Crítico" ou "Utilizador".
+        /// Este campo é apenas informativo.
         /// </summary>
-
         [StringLength(20)]
-        [Display(Name = "Tipo de Usuário")]
+        [Display(Name = "Tipo de Utilizador")]
         [ValidateNever]
-        public string? TipoUsuario { get; set; }  // <-- Adiciona o `?` para aceitar null
+        public string? TipoUsuario { get; set; }
 
-
-        // Foreign Keys e Navegações
+        // --------------------------
+        // Relações (Foreign Keys)
+        // --------------------------
 
         /// <summary>
-        /// Chave estrangeira com referência ao utilizador que fez a avaliação.
+        /// ID do utilizador que avaliou.
         /// </summary>
+        [Required]
         [ForeignKey(nameof(Utilizador))]
         [Display(Name = "Utilizador")]
         public int UtilizadorId { get; set; }
 
         /// <summary>
-        /// Navegação para o utilizador que fez a avaliação.
+        /// Objeto de navegação para o utilizador que fez a avaliação.
         /// </summary>
         [ValidateNever]
         public Utilizadores Utilizador { get; set; }
 
         /// <summary>
-        /// Chave estrangeira com referência ao jogo avaliado.
+        /// ID do jogo que foi avaliado.
         /// </summary>
+        [Required]
         [ForeignKey(nameof(Jogo))]
         [Display(Name = "Jogo")]
         public int JogoId { get; set; }
 
         /// <summary>
-        /// Navegação para o jogo avaliado.
+        /// Objeto de navegação para o jogo avaliado.
         /// </summary>
         [ValidateNever]
         public Jogo Jogo { get; set; }

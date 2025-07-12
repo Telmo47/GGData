@@ -1,39 +1,48 @@
 ﻿@page
 @model GGData.Areas.Identity.Pages.Account.RegisterModel
 @{
+    // Define o título da página para o cabeçalho e para o título do browser
     ViewData["Title"] = "Registar";
 }
 
 <h1>@ViewData["Title"]</h1>
 
+<!-- Formulário para criar nova conta -->
 <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
     <h2>Criar uma nova conta</h2>
+
+    <!-- Sumário de validação para erros -->
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
+    <!-- Campo para Nome completo do utilizador -->
     <div class="form-floating mb-3">
         <input asp-for="Input.Nome" class="form-control" placeholder="Nome completo" />
         <label asp-for="Input.Nome">Nome</label>
         <span asp-validation-for="Input.Nome" class="text-danger"></span>
     </div>
 
+    <!-- Campo para Email -->
     <div class="form-floating mb-3">
         <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="email@exemplo.com" />
         <label asp-for="Input.Email">Email</label>
         <span asp-validation-for="Input.Email" class="text-danger"></span>
     </div>
 
+    <!-- Campo para Palavra-passe -->
     <div class="form-floating mb-3">
         <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Palavra-passe" />
         <label asp-for="Input.Password">Palavra-passe</label>
         <span asp-validation-for="Input.Password" class="text-danger"></span>
     </div>
 
+    <!-- Campo para Confirmar Palavra-passe -->
     <div class="form-floating mb-3">
         <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Confirmar palavra-passe" />
         <label asp-for="Input.ConfirmPassword">Confirmar Palavra-passe</label>
         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
     </div>
 
+    <!-- Seletor para Tipo de Conta (Utilizador ou Crítico) -->
     <div class="form-floating mb-3">
         <select asp-for="Input.TipoUsuario" class="form-select">
             <option value="">Seleciona o tipo de conta</option>
@@ -44,6 +53,7 @@
         <span asp-validation-for="Input.TipoUsuario" class="text-danger"></span>
     </div>
 
+    <!-- Campos adicionais visíveis apenas se o tipo de conta for Crítico -->
     <div id="camposCritico" style="display:none;">
         <div class="form-floating mb-3">
             <input asp-for="Input.Instituicao" class="form-control" placeholder="Instituição" />
@@ -64,12 +74,15 @@
         </div>
     </div>
 
+    <!-- Botão para submeter o formulário e criar a conta -->
     <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Criar Conta</button>
 </form>
 
 @section Scripts {
+    <!-- Scripts de validação automáticos do ASP.NET Core -->
     <partial name="_ValidationScriptsPartial" />
     <script>
+        // Script para mostrar ou esconder campos extra quando o tipo de utilizador muda
         document.getElementById("Input_TipoUsuario").addEventListener("change", function () {
             const tipo = this.value;
             const div = document.getElementById("camposCritico");

@@ -1,7 +1,7 @@
 ﻿@model GGData.Models.Estatistica
 
 @{
-    ViewData["Title"] = "Criar Estatística";
+    ViewData["Title"] = "Criar Estatística"; // Define o título da página
 }
 
 <div class="container mt-4 mb-5">
@@ -9,40 +9,48 @@
 
     <div class="row justify-content-center">
         <div class="col-md-10">
+            <!-- Formulário para criar uma nova estatística -->
             <form asp-action="Create" class="card shadow p-4">
+                <!-- Resumo de validação apenas do modelo, com mensagens de erro em vermelho -->
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="row">
+                    <!-- Campo para as conquistas obtidas no jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="Conquistas" class="form-label"></label>
                         <input asp-for="Conquistas" class="form-control" />
                         <span asp-validation-for="Conquistas" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para o tempo médio de jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="TempoMedioJogo" class="form-label"></label>
                         <input asp-for="TempoMedioJogo" class="form-control" />
                         <span asp-validation-for="TempoMedioJogo" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para o total de avaliações recebidas -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="TotalAvaliacoes" class="form-label"></label>
                         <input asp-for="TotalAvaliacoes" class="form-control" />
                         <span asp-validation-for="TotalAvaliacoes" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para a média das notas dadas pelos utilizadores -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="MediaNotaUtilizadores" class="form-label"></label>
                         <input asp-for="MediaNotaUtilizadores" class="form-control" />
                         <span asp-validation-for="MediaNotaUtilizadores" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para a média das notas dadas pelos críticos -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="MediaNotaCriticos" class="form-label"></label>
                         <input asp-for="MediaNotaCriticos" class="form-control" />
                         <span asp-validation-for="MediaNotaCriticos" class="text-danger"></span>
                     </div>
 
+                    <!-- Dropdown para selecionar o jogo a que pertence a estatística -->
                     <div class="col-md-6 mb-4">
                         <label asp-for="JogoId" class="form-label"></label>
                         <select asp-for="JogoId" class="form-control" asp-items="ViewBag.JogoID">
@@ -52,6 +60,7 @@
                     </div>
                 </div>
 
+                <!-- Botões para voltar ou criar a estatística -->
                 <div class="d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Voltar
@@ -67,6 +76,7 @@
 
 @section Scripts {
     @{
+        // Inclui os scripts de validação do formulário (jQuery Validation, etc.)
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

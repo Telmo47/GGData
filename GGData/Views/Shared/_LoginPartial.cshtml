@@ -3,22 +3,29 @@
 @inject SignInManager<Utilizadores> SignInManager
 @inject UserManager<Utilizadores> UserManager
 
+<!-- Lista de itens de navegação para autenticação -->
 <ul class="navbar-nav">
+    @* Verifica se o utilizador está autenticado *@
     @if (SignInManager.IsSignedIn(User))
     {
+        <!-- Mostra o nome do utilizador e link para gestão da conta -->
         <li class="nav-item">
             <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Conta">
                 Olá, @User.Identity?.Name!
             </a>
         </li>
+
+        <!-- Botão para terminar a sessão (logout) -->
         <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
+                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button type="submit" class="nav-link btn btn-link text-light">Terminar Sessão</button>
             </form>
         </li>
     }
     else
     {
+        <!-- Se não estiver autenticado, mostrar links para Registo e Login -->
         <li class="nav-item">
             <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Registar</a>
         </li>

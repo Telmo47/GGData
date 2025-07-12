@@ -1,54 +1,68 @@
 ﻿@model GGData.Models.Estatistica
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes"; // Título da página
 }
 
-<h1>Details</h1>
+<h1>Detalhes</h1>
 
 <div>
-    <h4>Estatistica</h4>
+    <h4>Estatística</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <!-- Exibe o nome do campo e o respetivo valor para Conquistas -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Conquistas)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Conquistas)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Exibe Tempo Médio de Jogo -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TempoMedioJogo)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TempoMedioJogo)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Exibe Total de Avaliações -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TotalAvaliacoes)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TotalAvaliacoes)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Exibe Média das Notas dos Utilizadores -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MediaNotaUtilizadores)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.MediaNotaUtilizadores)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Exibe Média das Notas dos Críticos -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MediaNotaCriticos)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.MediaNotaCriticos)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Exibe o Jogo associado à estatística -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Jogo)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Jogo.JogoId)
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.EstatisticaId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <!-- Link para editar a estatística -->
+    <a asp-action="Edit" asp-route-id="@Model?.EstatisticaId">Editar</a> |
+    <!-- Link para voltar à lista de estatísticas -->
+    <a asp-action="Index">Voltar à Lista</a>
 </div>

@@ -1,37 +1,43 @@
 ﻿@model GGData.Models.Jogo
 
 @{
-    ViewData["Title"] = "Criar Jogo";
+    ViewData["Title"] = "Criar Jogo"; // Define o título da página
 }
 
 <div class="container mt-4 mb-5">
-    <!-- mb-5 evita que o conteúdo encoste ao footer -->
+    <!-- mb-5 evita que o conteúdo fique colado ao rodapé (footer) -->
     <h1 class="mb-4">🆕 Criar Jogo</h1>
 
     <div class="row justify-content-center">
         <div class="col-md-10">
+            <!-- Formulário que envia para a ação "Create" do controller atual -->
             <form asp-action="Create" class="card shadow p-4">
+                <!-- Exibe resumo de validações do modelo (apenas erros) -->
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="row">
+                    <!-- Campo para o nome do jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="Nome" class="form-label">Nome</label>
                         <input asp-for="Nome" class="form-control" placeholder="Nome do jogo" />
                         <span asp-validation-for="Nome" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para a plataforma do jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="Plataforma" class="form-label">Plataforma</label>
                         <input asp-for="Plataforma" class="form-control" placeholder="Ex: PC, PlayStation, Xbox..." />
                         <span asp-validation-for="Plataforma" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para a data de lançamento do jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="DataLancamento" class="form-label">Data de Lançamento</label>
                         <input asp-for="DataLancamento" type="date" class="form-control" />
                         <span asp-validation-for="DataLancamento" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para a URL da imagem do jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="ImagemUrl" class="form-label">URL da Imagem</label>
                         <input asp-for="ImagemUrl" class="form-control" placeholder="Link para imagem do jogo" />
@@ -39,9 +45,11 @@
                     </div>
                 </div>
 
+                <!-- Selecção múltipla dos géneros associados ao jogo -->
                 <div class="form-group mb-4">
                     <label class="form-label">Géneros</label>
                     <div class="row">
+                        @* Itera sobre os géneros passados no ViewBag para criar checkboxes *@
                         @foreach (var genero in ViewBag.Generos as List<GGData.Models.Genero>)
                         {
                             <div class="col-md-4 mb-2">
@@ -54,6 +62,7 @@
                     </div>
                 </div>
 
+                <!-- Botões de navegação -->
                 <div class="d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Voltar
@@ -69,6 +78,7 @@
 
 @section Scripts {
     @{
+        // Carrega os scripts de validação do lado do cliente
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

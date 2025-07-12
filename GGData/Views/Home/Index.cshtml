@@ -4,28 +4,39 @@
     ViewData["Title"] = "GGData - Início";
 }
 
+<!-- Título principal da página -->
 <h1 class="text-center mb-4">GGData</h1>
 
+<!-- Grid responsivo para listar os jogos -->
 <div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var jogo in Model)
     {
         <div class="col">
             <div class="card h-100 shadow-sm">
+                <!-- Imagem do jogo com estilo para manter proporção e limitar altura -->
                 <img src="@jogo.ImagemUrl" class="card-img-top" alt="@jogo.Nome" style="max-height: 200px; object-fit: cover;">
+
+                <!-- Corpo do cartão com nome, géneros e plataforma -->
                 <div class="card-body">
                     <h5 class="card-title">@jogo.Nome</h5>
                     <p class="card-text">
                         <strong>Géneros:</strong>
+                        <!-- Lista os géneros associados ao jogo, separados por vírgula -->
                         @string.Join(", ", jogo.JogoGeneros.Select(jg => jg.Genero.Nome))
                     </p>
 
                     <p class="card-text"><strong>Plataforma:</strong> @jogo.Plataforma</p>
                 </div>
+
+                <!-- Rodapé do cartão com botão para ver estatísticas do jogo -->
                 <div class="card-footer d-flex justify-content-center">
-                    <a class="btn btn-outline-info" asp-controller="Estatisticas" asp-action="Details" asp-route-id="@jogo.JogoId">Ver Estatísticas</a>
+                    <a class="btn btn-outline-info"
+                       asp-controller="Estatisticas"
+                       asp-action="Details"
+                       asp-route-id="@jogo.JogoId">
+                        Ver Estatísticas
+                    </a>
                 </div>
-
-
             </div>
         </div>
     }
