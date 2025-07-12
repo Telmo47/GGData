@@ -7,31 +7,30 @@
 <h1>@ViewData["Title"]</h1>
 
 <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-    <h2>Criar uma nova conta.</h2>
-
+    <h2>Criar uma nova conta</h2>
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
     <div class="form-floating mb-3">
         <input asp-for="Input.Nome" class="form-control" placeholder="Nome completo" />
-        <label asp-for="Input.Nome"></label>
+        <label asp-for="Input.Nome">Nome</label>
         <span asp-validation-for="Input.Nome" class="text-danger"></span>
     </div>
 
     <div class="form-floating mb-3">
         <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="email@exemplo.com" />
-        <label asp-for="Input.Email"></label>
+        <label asp-for="Input.Email">Email</label>
         <span asp-validation-for="Input.Email" class="text-danger"></span>
     </div>
 
     <div class="form-floating mb-3">
-        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Password" />
-        <label asp-for="Input.Password"></label>
+        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Palavra-passe" />
+        <label asp-for="Input.Password">Palavra-passe</label>
         <span asp-validation-for="Input.Password" class="text-danger"></span>
     </div>
 
     <div class="form-floating mb-3">
-        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Confirmar Password" />
-        <label asp-for="Input.ConfirmPassword"></label>
+        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Confirmar palavra-passe" />
+        <label asp-for="Input.ConfirmPassword">Confirmar Palavra-passe</label>
         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
     </div>
 
@@ -41,26 +40,26 @@
             <option value="Utilizador">Utilizador</option>
             <option value="Critico">Crítico</option>
         </select>
-        <label asp-for="Input.TipoUsuario"></label>
+        <label asp-for="Input.TipoUsuario">Tipo de Conta</label>
         <span asp-validation-for="Input.TipoUsuario" class="text-danger"></span>
     </div>
 
     <div id="camposCritico" style="display:none;">
         <div class="form-floating mb-3">
             <input asp-for="Input.Instituicao" class="form-control" placeholder="Instituição" />
-            <label asp-for="Input.Instituicao"></label>
+            <label asp-for="Input.Instituicao">Instituição</label>
             <span asp-validation-for="Input.Instituicao" class="text-danger"></span>
         </div>
 
         <div class="form-floating mb-3">
             <input asp-for="Input.WebsiteProfissional" class="form-control" placeholder="Website profissional" />
-            <label asp-for="Input.WebsiteProfissional"></label>
+            <label asp-for="Input.WebsiteProfissional">Website Profissional</label>
             <span asp-validation-for="Input.WebsiteProfissional" class="text-danger"></span>
         </div>
 
         <div class="form-floating mb-3">
             <textarea asp-for="Input.DescricaoProfissional" class="form-control" placeholder="Descrição"></textarea>
-            <label asp-for="Input.DescricaoProfissional"></label>
+            <label asp-for="Input.DescricaoProfissional">Descrição Profissional</label>
             <span asp-validation-for="Input.DescricaoProfissional" class="text-danger"></span>
         </div>
     </div>
