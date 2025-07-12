@@ -1,25 +1,21 @@
 ﻿@model GGData.Models.Jogo
 
 @{
-    ViewData["Title"] = "Apagar"; // Define o título da página
+    ViewData["Title"] = "Delete";
 }
 
 <h1>Apagar</h1>
 
 <h3>Tens a certeza que queres apagar este jogo?</h3>
-
 <div>
     <h4>Jogo</h4>
     <hr />
     <dl class="row">
-        <!-- Nome do jogo -->
         <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Nome)</dt>
         <dd class="col-sm-10">@Html.DisplayFor(model => model.Nome)</dd>
 
-        <!-- Lista de géneros associados ao jogo -->
         <dt class="col-sm-2">Géneros</dt>
         <dd class="col-sm-10">
-            @* Se existir lista de géneros, mostra os nomes separados por vírgulas, caso contrário, mostra mensagem *@
             @if (Model.JogoGeneros != null && Model.JogoGeneros.Any())
             {
                 @string.Join(", ", Model.JogoGeneros.Select(jg => jg.Genero.Nome))
@@ -30,37 +26,28 @@
             }
         </dd>
 
-        <!-- Plataforma do jogo -->
         <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Plataforma)</dt>
         <dd class="col-sm-10">@Html.DisplayFor(model => model.Plataforma)</dd>
 
-        <!-- Data de lançamento do jogo -->
         <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DataLancamento)</dt>
         <dd class="col-sm-10">@Html.DisplayFor(model => model.DataLancamento)</dd>
     </dl>
 
-    <!-- Formulário para apagar o jogo -->
     <form asp-action="Delete">
-        <!-- Esconde o ID do jogo para enviar na requisição -->
         <input type="hidden" asp-for="JogoId" />
 
-        @* Verifica se o utilizador tem papel de administrador *@
         @if (User.IsInRole("Administrador"))
         {
-            @* Só permite apagar se não existirem avaliações nem estatísticas associadas *@
             @if ((Model.Avaliacoes?.Count ?? 0) == 0 && Model.Estatistica == null)
             {
                 <input type="submit" value="Apagar" class="btn btn-danger" />
             }
             else
             {
-                <p class="text-danger">
-                    Não é possível apagar este jogo pois existem avaliações ou estatísticas associadas.
-                </p>
+                <p class="text-danger">Não é possível apagar este jogo pois existem avaliações ou estatísticas associadas.</p>
             }
         }
 
-        <!-- Botão para voltar à lista de jogos -->
         <a asp-action="Index" class="btn btn-secondary">Voltar à lista</a>
     </form>
 </div>

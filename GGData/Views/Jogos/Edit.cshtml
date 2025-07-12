@@ -1,7 +1,7 @@
 ﻿@model GGData.Models.Jogo
 
 @{
-    ViewData["Title"] = "Editar Jogo"; // Define o título da página
+    ViewData["Title"] = "Editar Jogo";
 }
 
 <div class="container mt-4 mb-5">
@@ -9,37 +9,29 @@
 
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <!-- Formulário para editar um jogo -->
             <form asp-action="Edit" class="card shadow p-4">
-                <!-- Resumo das validações do modelo -->
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <!-- Campo oculto com o ID do jogo para envio no POST -->
                 <input type="hidden" asp-for="JogoId" />
 
                 <div class="row">
-                    <!-- Campo para editar o nome do jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="Nome" class="form-label">Nome</label>
                         <input asp-for="Nome" class="form-control" placeholder="Nome do jogo" />
                         <span asp-validation-for="Nome" class="text-danger"></span>
                     </div>
 
-                    <!-- Campo para editar a plataforma do jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="Plataforma" class="form-label">Plataforma</label>
                         <input asp-for="Plataforma" class="form-control" placeholder="Ex: PC, PlayStation, Xbox..." />
                         <span asp-validation-for="Plataforma" class="text-danger"></span>
                     </div>
 
-                    <!-- Campo para editar a data de lançamento -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="DataLancamento" class="form-label">Data de Lançamento</label>
                         <input asp-for="DataLancamento" type="date" class="form-control" />
                         <span asp-validation-for="DataLancamento" class="text-danger"></span>
                     </div>
 
-                    <!-- Campo para editar a URL da imagem -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="ImagemUrl" class="form-label">URL da Imagem</label>
                         <input asp-for="ImagemUrl" class="form-control" placeholder="Link para imagem do jogo" />
@@ -47,24 +39,15 @@
                     </div>
                 </div>
 
-                <!-- Seção para seleção dos géneros do jogo -->
                 <div class="form-group mb-4">
                     <label class="form-label">Géneros</label>
                     <div class="row">
-                        @* Para cada género disponível, cria uma checkbox *@
                         @foreach (var genero in ViewBag.Generos as List<GGData.Models.Genero>)
                         {
-                            // Verifica se o género já está associado ao jogo para marcar o checkbox
                             var isChecked = Model.JogoGeneros?.Any(jg => jg.GeneroId == genero.GeneroId) ?? false;
-
                             <div class="col-md-4 mb-2">
                                 <div class="form-check">
-                                    <input class="form-check-input"
-                                           type="checkbox"
-                                           name="GeneroIds"
-                                           value="@genero.GeneroId"
-                                           id="genero_@genero.GeneroId"
-                                           @(isChecked ? "checked" : "") />
+                                    <input class="form-check-input" type="checkbox" name="GeneroIds" value="@genero.GeneroId" id="genero_@genero.GeneroId" @(isChecked ? "checked" : "") />
                                     <label class="form-check-label" for="genero_@genero.GeneroId">@genero.Nome</label>
                                 </div>
                             </div>
@@ -72,7 +55,6 @@
                     </div>
                 </div>
 
-                <!-- Botões para cancelar ou submeter o formulário -->
                 <div class="d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Voltar
@@ -88,7 +70,6 @@
 
 @section Scripts {
     @{
-        // Inclui os scripts de validação jQuery para o formulário
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

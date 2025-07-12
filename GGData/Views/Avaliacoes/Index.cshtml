@@ -1,18 +1,16 @@
 ﻿@model IEnumerable<GGData.Models.Avaliacao>
 
 @{
-    ViewData["Title"] = "Avaliações"; // Define o título da página
-    var currentUserName = (string)ViewBag.CurrentUserName; // Obtém o nome do utilizador atual para controlo de permissões
+    ViewData["Title"] = "Avaliações";
+    var currentUserName = (string)ViewBag.CurrentUserName;
 }
 
 <h1>Avaliações</h1>
 
-<!-- Botão para criar uma nova avaliação -->
 <p>
     <a asp-action="Create" class="btn btn-primary">Criar Nova Avaliação</a>
 </p>
 
-<!-- Tabela que lista todas as avaliações -->
 <table class="table">
     <thead>
         <tr>
@@ -29,14 +27,13 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Nota</td> <!-- Nota da avaliação -->
-                <td>@item.Comentarios</td> <!-- Comentários da avaliação -->
-                <td>@item.DataReview</td> <!-- Data da avaliação -->
-                <td>@item.TipoUsuario</td> <!-- Tipo do utilizador que avaliou -->
-                <td>@item.Utilizador.UserName</td> <!-- Nome do utilizador que fez a avaliação -->
-                <td>@item.Jogo.Nome</td> <!-- Nome do jogo avaliado -->
+                <td>@item.Nota</td>
+                <td>@item.Comentarios</td>
+                <td>@item.DataReview</td>
+                <td>@item.TipoUsuario</td>
+                <td>@item.Utilizador.UserName</td>
+                <td>@item.Jogo.Nome</td>
                 <td>
-                    @* Se o utilizador está autenticado e é o dono da avaliação ou administrador, permite editar, ver detalhes e apagar *@
                     @if (User.Identity.IsAuthenticated && (item.Utilizador.UserName == currentUserName || User.IsInRole("Administrador")))
                     {
                         <a asp-action="Edit" asp-route-id="@item.AvaliacaoId">Editar</a>
@@ -47,7 +44,6 @@
                     }
                     else
                     {
-                        <!-- Caso contrário, apenas pode ver os detalhes -->
                         <a asp-action="Details" asp-route-id="@item.AvaliacaoId">Detalhes</a>
                     }
                 </td>

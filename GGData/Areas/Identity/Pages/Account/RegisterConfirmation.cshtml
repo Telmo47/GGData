@@ -1,17 +1,15 @@
 ﻿@page
 @model GGData.Areas.Identity.Pages.Account.RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Confirmação de registo"; // Define o título da página
+    ViewData["Title"] = "Confirmação de registo";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<!-- Mensagem principal após o registo -->
 <p>
     Obrigado por se registar! Por favor confirme o seu email.
 </p>
 
-<!-- Se estiver em ambiente de desenvolvimento, mostra o link direto para confirmação -->
 @if (Model.DisplayConfirmAccountLink)
 {
     <p>
@@ -22,7 +20,6 @@
 }
 else
 {
-    <!-- Caso contrário, informa que o email de confirmação foi enviado -->
     <p>
         Um email de confirmação foi enviado para <strong>@Model.Email</strong>. Por favor, verifica o email para confirmar a conta.
     </p>

@@ -1,34 +1,28 @@
 ﻿@{
-    ViewData["Title"] = "Estatísticas do Jogo"; // Define o título da página
+    ViewData["Title"] = "Estatísticas do Jogo";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<!-- Div onde as estatísticas vão ser mostradas após carregamento via fetch -->
 <div id="estatisticas">A carregar...</div>
 
 <script>
-    // Obtém o id do jogo da ViewBag, passado pelo controlador
     const jogoId = @ViewBag.JogoId;
-    // Obtém o token JWT do armazenamento local para autenticação na API
     const token = localStorage.getItem("jwtToken");
 
-    // Faz uma requisição GET à API para obter as estatísticas do jogo
     fetch(`/api/estatisticas?jogoId=${jogoId}`, {
         headers: {
-            "Authorization": "Bearer " + token // Envia token no cabeçalho para autenticação
+            "Authorization": "Bearer " + token
         }
     })
-    .then(response => response.json()) // Converte a resposta em JSON
+    .then(response => response.json())
     .then(data => {
-        // Atualiza o conteúdo da div "estatisticas" com os dados recebidos
         document.getElementById("estatisticas").innerHTML = `
             <p>Média de avaliação: ${data.mediaAvaliacao}</p>
             <p>Votos totais: ${data.totalVotos}</p>
         `;
     })
     .catch(err => {
-        // Em caso de erro, mostra mensagem de erro e regista no console
         console.error(err);
         document.getElementById("estatisticas").textContent = "Erro ao carregar estatísticas.";
     });

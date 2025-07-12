@@ -1,42 +1,35 @@
-/* site.css - Estilos principais globais do site GGData */
-
-/* --- Base font size responsiva --- */
-/* Define o tamanho base da fonte para o html, ajustando em ecrãs maiores */
+/* Base font size responsiva */
 html {
     font-size: 14px;
-    scroll-behavior: smooth; /* scroll suave ao navegar pela página */
+    scroll-behavior: smooth;
 }
 
 @media (min-width: 768px) {
     html {
-        font-size: 16px; /* aumento do tamanho da fonte em dispositivos maiores */
+        font-size: 16px;
     }
 }
 
-/* --- Definições gerais de altura para html e body --- */
-/* Garante que a altura de html e body preenche a janela do navegador */
+/* Body e html com altura total */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
 }
 
-/* --- Estrutura flexível para o body --- */
-/* Usamos flexbox para criar layout com footer fixo no fundo */
 body {
     display: flex;
-    flex-direction: column; /* empilha verticalmente header, main e footer */
-    min-height: 100vh; /* altura mínima igual à altura da viewport */
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-/* --- Área principal com flex para crescer --- */
-/* Permite que o main cresça para preencher espaço entre header e footer */
 main {
     flex: 1 0 auto;
 }
 
-/* --- Estilos para foco em inputs, botões e links --- */
-/* Realça com borda azul personalizada e sombra ao focar */
+
+
+/* Foco nos inputs e botões com cor personalizada */
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
@@ -44,16 +37,13 @@ main {
 .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
     border-color: #258cfb;
-    outline: none; /* remove outline padrão */
+    outline: none;
 }
-
-/* --- Container flexível para crescimento --- */
 .container {
-    flex: 1 0 auto; /* permite crescimento, impede encolhimento */
+    flex: 1 0 auto; /* cresce, não encolhe, base auto */
 }
 
-/* --- Footer fixo no fundo --- */
-/* Altura fixa, cor escura, texto claro, alinhado centro vertical e horizontal */
+/* Footer fixo em baixo com sombra */
 footer.footer {
     height: 60px;
     background-color: #212529;
@@ -62,37 +52,33 @@ footer.footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0; /* evita que encolha */
+    flex-shrink: 0;
     width: 100%;
 }
 
-/* --- Ajustes para a Navbar --- */
-/* Logo com maior peso e tamanho */
+
+/* Navbar ajustes */
 .navbar-brand {
     font-weight: 700;
     font-size: 1.5rem;
 }
 
-/* Links da navbar com peso médio */
 .nav-link {
     font-weight: 500;
 }
 
-    /* Link ativo com cor azul bootstrap primário e peso mais forte */
     .nav-link.active {
-        color: #0d6efd !important;
+        color: #0d6efd !important; /* bootstrap primary azul */
         font-weight: 700;
     }
 
-/* --- Botões principais personalizados --- */
-/* Cor azul GGData e transição suave ao passar o mouse */
+/* Botões personalizados */
 .btn-primary {
     background-color: #258cfb;
     border-color: #258cfb;
     transition: background-color 0.3s ease;
 }
 
-    /* Hover e foco: tom mais escuro e sombra azul */
     .btn-primary:hover,
     .btn-primary:focus {
         background-color: #1c6cd9;
@@ -100,13 +86,12 @@ footer.footer {
         box-shadow: 0 0 10px #1c6cd9;
     }
 
-/* --- Espaçamento entre form groups --- */
+/* Form group spacing */
 .form-group {
     margin-bottom: 1rem;
 }
 
-/* --- Estilos para tabelas --- */
-/* Fundo branco, sombra leve, cantos arredondados, overflow oculto */
+/* Table improvements */
 .table {
     background-color: white;
     box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
@@ -114,26 +99,24 @@ footer.footer {
     overflow: hidden;
 }
 
-/* --- Mensagens de erro e sumários de validação --- */
-/* Texto com peso forte para maior destaque */
+/* Validation summary e mensagens */
 .text-danger {
     font-weight: 600;
 }
 
-/* --- Estilos para labels --- */
-/* Texto com peso forte */
+/* Labels */
 label {
     font-weight: 600;
 }
 
-/* --- Ajustes para labels de checkbox e radio --- */
-/* Impede que texto seja selecionado pelo utilizador */
+/* Pequenos ajustes para o form-check */
 .form-check-label {
     user-select: none;
 }
 
-/* --- Espaçamento extra para a área principal --- */
-/* Adiciona espaço inferior para não colidir com footer fixo */
+/* Espaçamento para a área principal */
 main.pb-4 {
     padding-bottom: 100px !important;
 }
+
+

@@ -1,71 +1,57 @@
 ﻿@model GGData.Models.Estatistica
 
 @{
-    ViewData["Title"] = "Eliminar"; // Título da página
+    ViewData["Title"] = "Delete";
 }
 
-<h1>Eliminar</h1>
+<h1>Delete</h1>
 
-<h3>Tem a certeza que pretende eliminar esta estatística?</h3>
-
+<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Estatística</h4>
+    <h4>Estatistica</h4>
     <hr />
     <dl class="row">
-        <!-- Exibe o nome do campo e o respetivo valor para Conquistas -->
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Conquistas)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Conquistas)
         </dd>
-
-        <!-- Exibe Tempo Médio de Jogo -->
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TempoMedioJogo)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.TempoMedioJogo)
         </dd>
-
-        <!-- Exibe Total de Avaliações -->
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TotalAvaliacoes)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.TotalAvaliacoes)
         </dd>
-
-        <!-- Exibe Média das Notas dos Utilizadores -->
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.MediaNotaUtilizadores)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.MediaNotaUtilizadores)
         </dd>
-
-        <!-- Exibe Média das Notas dos Críticos -->
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.MediaNotaCriticos)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.MediaNotaCriticos)
         </dd>
-
-        <!-- Exibe o Jogo associado à estatística -->
-        <dt class="col-sm-2">
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Jogo)
         </dt>
-        <dd class="col-sm-10">
+        <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Jogo.JogoId)
         </dd>
     </dl>
-
-    <!-- Formulário para confirmar a eliminação -->
+    
     <form asp-action="Delete">
-        <!-- Campo escondido para enviar o id da estatística a eliminar -->
         <input type="hidden" asp-for="EstatisticaId" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Voltar à Lista</a>
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
     </form>
 </div>

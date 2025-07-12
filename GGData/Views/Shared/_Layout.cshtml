@@ -2,37 +2,26 @@
 <html lang="pt">
 <head>
     <meta charset="utf-8" />
-    <!-- Responsividade para dispositivos móveis -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Título da página dinâmica baseado na ViewData -->
     <title>@ViewData["Title"] - GGData</title>
-
-    <!-- Estilos CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GGData.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <!-- Cabeçalho com barra de navegação -->
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom shadow-sm mb-4">
             <div class="container">
-                <!-- Marca / logo que redireciona para a homepage -->
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GGData</a>
-
-                <!-- Botão hamburger para menu colapsável em ecrãs pequenos -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Alternar navegação">
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
-                <!-- Menu principal -->
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav me-auto mb-2 mb-sm-0">
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Início</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Jogos" asp-action="Index">Jogos</a>
@@ -44,33 +33,27 @@
                             <a class="nav-link" asp-controller="Estatisticas" asp-action="Index">Estatísticas</a>
                         </li>
                     </ul>
-                    <!-- Partial para login/logout e info do utilizador -->
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- Conteúdo principal da página -->
     <main class="flex-fill">
         <div class="container py-4">
-            @RenderBody() <!-- Renderiza o conteúdo da view atual -->
+            @RenderBody()
         </div>
     </main>
 
-    <!-- Rodapé fixo ao fundo da página -->
     <footer class="footer bg-dark text-light border-top mt-auto py-3">
         <div class="container text-center">
             &copy; 2025 - GGData
         </div>
     </footer>
 
-    <!-- Scripts JavaScript -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    <!-- Seção opcional para scripts específicos de cada página -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
