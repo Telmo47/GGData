@@ -1,4 +1,5 @@
 using GGData.Data;
+using GGData.Data.Seed;
 using GGData.Models;
 using GGData.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -118,11 +119,14 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// ====== Executar seed para criar admin e roles ======
+await app.UseItToSeedSqlServerAsync();
+
 // ====== Pipeline HTTP ======
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    // Sem seeder específico de SQL Server aqui
+
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
