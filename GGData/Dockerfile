@@ -1,19 +1,18 @@
-# Usar imagem base com SDK do .NET 8.0
+# Imagem base com .NET 8.0 para runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-# Imagem para build com SDK do .NET 8.0
+# Imagem com .NET 8.0 SDK para build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copiar os ficheiros do projeto e restaurar dependências
-COPY GGData/*.csproj ./GGData/
-RUN dotnet restore GGData/GGData.csproj
+# Já estás no contexto da pasta GGData/, por isso copia apenas o .csproj diretamente
+COPY *.csproj ./
+RUN dotnet restore
 
-# Copiar tudo e compilar
+# Copiar o resto dos ficheiros
 COPY . .
-WORKDIR /src/GGData
 RUN dotnet publish -c Release -o /app/publish
 
 # Final image
