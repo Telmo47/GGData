@@ -1,26 +1,23 @@
-# Etapa 1: Build da aplicação
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+# Usar imagem base com SDK do .NET 8.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
+EXPOSE 80
 
-# Copiar o ficheiro csproj e restaurar as dependências
-COPY *.csproj ./
-RUN dotnet restore
+# Imagem para build com SDK do .NET 8.0
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
 
-# Copiar o resto do código
-COPY . ./
+# Copiar os ficheiros do projeto e restaurar dependências
+COPY GGData/*.csproj ./GGData/
+RUN dotnet restore GGData/GGData.csproj
 
-# Publicar a aplicação em modo Release na pasta /out
-RUN dotnet publish -c Release -o out
+# Copiar tudo e compilar
+COPY . .
+WORKDIR /src/GGData
+RUN dotnet publish -c Release -o /app/publish
 
-# Etapa 2: Runtime para correr a aplicação
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+# Final image
+FROM base AS final
 WORKDIR /app
-
-# Copiar os ficheiros publicados da etapa build
-COPY --from=build /app/out ./
-
-# Expõe a porta 5000 (ou a porta que usas na app)
-EXPOSE 5000
-
-# Comando para iniciar a aplicação
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "GGData.dll"]
