@@ -21,17 +21,17 @@ namespace GGData.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly UserManager<Usuarios> _userManager;
-        private readonly IUserStore<Usuarios> _userStore;
-        private readonly IUserEmailStore<Usuarios> _emailStore;
-        private readonly SignInManager<Usuarios> _signInManager;
+        private readonly UserManager<Utilizadores> _userManager;
+        private readonly IUserStore<Utilizadores> _userStore;
+        private readonly IUserEmailStore<Utilizadores> _emailStore;
+        private readonly SignInManager<Utilizadores> _signInManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<Usuarios> userManager,
-            IUserStore<Usuarios> userStore,
-            SignInManager<Usuarios> signInManager,
+            UserManager<Utilizadores> userManager,
+            IUserStore<Utilizadores> userStore,
+            SignInManager<Utilizadores> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -114,7 +114,7 @@ namespace GGData.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new Usuarios
+                var user = new Utilizadores
                 {
                     UserName = Input.Email,
                     Email = Input.Email,
@@ -158,12 +158,12 @@ namespace GGData.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IUserEmailStore<Usuarios> GetEmailStore()
+        private IUserEmailStore<Utilizadores> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
                 throw new NotSupportedException("A store de utilizadores tem de suportar email.");
 
-            return (IUserEmailStore<Usuarios>)_userStore;
+            return (IUserEmailStore<Utilizadores>)_userStore;
         }
     }
 }

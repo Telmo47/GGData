@@ -29,7 +29,7 @@ namespace GGData.Models
         public int? UtilizadorId { get; set; }  // FK para Usuarios
 
         [ValidateNever]
-        public Usuarios? Utilizador { get; set; }  // Navegação
+        public Utilizadores? Utilizador { get; set; }  // Navegação
 
         [ValidateNever]
         public virtual Estatistica Estatistica { get; set; }

@@ -22,7 +22,7 @@ namespace GGData.Controllers
         private int GetCurrentUserId()
         {
             var username = User.Identity.Name;
-            return _context.Usuarios
+            return _context.Utilizadores
                 .Where(u => u.UserName == username)
                 .Select(u => u.Id)
                 .FirstOrDefault();
@@ -39,7 +39,7 @@ namespace GGData.Controllers
         {
             var avaliacoes = _context.Avaliacao
                 .Include(a => a.Jogo)
-                .Include(a => a.Usuario);
+                .Include(a => a.Utilizador);
             return View(await avaliacoes.ToListAsync());
         }
 
@@ -49,7 +49,7 @@ namespace GGData.Controllers
 
             var avaliacao = await _context.Avaliacao
                 .Include(a => a.Jogo)
-                .Include(a => a.Usuario)
+                .Include(a => a.Utilizador)
                 .FirstOrDefaultAsync(m => m.AvaliacaoId == id);
 
             if (avaliacao == null) return NotFound();
@@ -74,10 +74,10 @@ namespace GGData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Nota,Comentarios,TipoUsuario,JogoId")] Avaliacao avaliacao)
         {
-            avaliacao.UsuarioId = GetCurrentUserId();
+            avaliacao.UtilizadorId = GetCurrentUserId();
 
             var existeAvaliacao = await _context.Avaliacao.AnyAsync(a =>
-                a.JogoId == avaliacao.JogoId && a.UsuarioId == avaliacao.UsuarioId);
+                a.JogoId == avaliacao.JogoId && a.UtilizadorId == avaliacao.UtilizadorId);
 
             if (existeAvaliacao)
             {
@@ -142,7 +142,7 @@ namespace GGData.Controllers
 
             var avaliacao = await _context.Avaliacao
                 .Include(a => a.Jogo)
-                .Include(a => a.Usuario)
+                .Include(a => a.Utilizador)
                 .FirstOrDefaultAsync(m => m.AvaliacaoId == id);
 
             if (avaliacao == null) return NotFound();

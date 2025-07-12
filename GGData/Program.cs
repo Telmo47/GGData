@@ -24,7 +24,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // ====== Identity + Roles ======
-builder.Services.AddIdentity<Usuarios, IdentityRole<int>>(options =>
+builder.Services.AddIdentity<Utilizadores, IdentityRole<int>>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
 })

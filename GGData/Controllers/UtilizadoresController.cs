@@ -15,11 +15,11 @@ namespace GGData.Controllers
     /// Controlador responsável por gerir os utilizadores do sistema.
     /// </summary>
     [Authorize(Roles = "Administrador")]
-    public class UsuariosController : Controller
+    public class UtilizadoresController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public UsuariosController(ApplicationDbContext context)
+        public UtilizadoresController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -32,7 +32,7 @@ namespace GGData.Controllers
             {
                 ViewBag.Mensagem = $"Último utilizador editado: {nome}";
             }
-            return View(await _context.Usuarios.ToListAsync());
+            return View(await _context.Utilizadores.ToListAsync());
         }
 
         // GET: Usuarios/Details/5
@@ -40,7 +40,7 @@ namespace GGData.Controllers
         {
             if (id == null) return NotFound();
 
-            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.Id == id);
+            var usuarios = await _context.Utilizadores.FirstOrDefaultAsync(m => m.Id == id);
             if (usuarios == null) return NotFound();
 
             return View(usuarios);
@@ -56,11 +56,11 @@ namespace GGData.Controllers
         // POST: Usuarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,Email,TipoUsuario")] Usuarios usuarios)
+        public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,Email,TipoUsuario")] Utilizadores usuarios)
         {
             usuarios.DataRegistro = DateTime.Now;
 
-            if (_context.Usuarios.Any(u => u.Email == usuarios.Email))
+            if (_context.Utilizadores.Any(u => u.Email == usuarios.Email))
             {
                 ModelState.AddModelError("Email", "Já existe um utilizador com este email.");
             }
@@ -81,7 +81,7 @@ namespace GGData.Controllers
         {
             if (id == null) return NotFound();
 
-            var usuarios = await _context.Usuarios.FindAsync(id);
+            var usuarios = await _context.Utilizadores.FindAsync(id);
             if (usuarios == null) return NotFound();
 
             // Guardar dados para proteção da sessão
@@ -95,7 +95,7 @@ namespace GGData.Controllers
         // POST: Usuarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,TipoUsuario")] Usuarios usuarios)
+        public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,TipoUsuario")] Utilizadores usuarios)
         {
             if (id != usuarios.Id) return NotFound();
 
@@ -147,7 +147,7 @@ namespace GGData.Controllers
         {
             if (id == null) return NotFound();
 
-            var usuarios = await _context.Usuarios.FirstOrDefaultAsync(m => m.Id == id);
+            var usuarios = await _context.Utilizadores.FirstOrDefaultAsync(m => m.Id == id);
             if (usuarios == null) return NotFound();
 
             // Guardar dados para proteção da sessão
@@ -162,7 +162,7 @@ namespace GGData.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var usuarios = await _context.Usuarios.FindAsync(id);
+            var utilizadores = await _context.Utilizadores.FindAsync(id);
 
             var usuarioIDSessao = HttpContext.Session.GetInt32("UsuarioID");
             var acao = HttpContext.Session.GetString("Acao");
@@ -170,7 +170,7 @@ namespace GGData.Controllers
             if (usuarioIDSessao == null || string.IsNullOrEmpty(acao))
             {
                 ModelState.AddModelError("", "Demorou muito tempo. Já não consegue eliminar o utilizador. Tem de reiniciar o processo.");
-                return View(usuarios);
+                return View(utilizadores);
             }
 
             if (usuarioIDSessao != id || acao != "Usuarios/Delete")
@@ -178,9 +178,9 @@ namespace GGData.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (usuarios != null)
+            if (utilizadores != null)
             {
-                _context.Usuarios.Remove(usuarios);
+                _context.Utilizadores.Remove(utilizadores);
                 await _context.SaveChangesAsync();
 
                 HttpContext.Session.Remove("UsuarioID");
@@ -192,7 +192,7 @@ namespace GGData.Controllers
 
         private bool UsuariosExists(int id)
         {
-            return _context.Usuarios.Any(e => e.Id == id);
+            return _context.Utilizadores.Any(e => e.Id == id);
         }
     }
 }

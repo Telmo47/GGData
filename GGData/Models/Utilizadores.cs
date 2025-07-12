@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace GGData.Models
 {
     [Table("AspNetUsers")]  // Mapeia para a tabela padrão do Identity
-    public class Usuarios : IdentityUser<int>
+    public class Utilizadores : IdentityUser<int>
     {
         public string Nome { get; set; }
         public DateTime DataRegistro { get; set; }

@@ -12,7 +12,7 @@ namespace GGData.Data.Seed
         public static async Task SeedAsync(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<Usuarios>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<Utilizadores>>();
             var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
             // Cria role se não existir
@@ -25,7 +25,7 @@ namespace GGData.Data.Seed
             var adminUser = await userManager.FindByEmailAsync("admin@mail.pt");
             if (adminUser == null)
             {
-                adminUser = new Usuarios
+                adminUser = new Utilizadores
                 {
                     UserName = "admin@mail.pt",
                     Email = "admin@mail.pt",

@@ -55,15 +55,15 @@ namespace GGData.Models
         /// <summary>
         /// Chave estrangeira com referência ao utilizador que fez a avaliação.
         /// </summary>
-        [ForeignKey(nameof(Usuario))]
+        [ForeignKey(nameof(Utilizador))]
         [Display(Name = "Utilizador")]
-        public int UsuarioId { get; set; }
+        public int UtilizadorId { get; set; }
 
         /// <summary>
         /// Navegação para o utilizador que fez a avaliação.
         /// </summary>
         [ValidateNever]
-        public Usuarios Usuario { get; set; }
+        public Utilizadores Utilizador { get; set; }
 
         /// <summary>
         /// Chave estrangeira com referência ao jogo avaliado.

@@ -51,7 +51,7 @@ namespace GGData.Controllers.API
         public async Task<ActionResult<JogoDTO>> CreateJogo(JogoDTO jogoDTO)
         {
             string? nomePessoaAutenticada = User.Identity?.Name;
-            var utilizador = await _context.Usuarios
+            var utilizador = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.UserName == nomePessoaAutenticada);
 
             if (utilizador == null)
@@ -79,7 +79,7 @@ namespace GGData.Controllers.API
 
             _context.Jogos.Add(jogo);
             await _context.SaveChangesAsync();
-
+            
             return CreatedAtAction(nameof(GetJogos), new { id = jogo.JogoId }, jogoDTO);
         }
     }

@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using GGData.Models
-@inject SignInManager<Usuarios> SignInManager
-@inject UserManager<Usuarios> UserManager
+@inject SignInManager<Utilizadores> SignInManager
+@inject UserManager<Utilizadores> UserManager
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))

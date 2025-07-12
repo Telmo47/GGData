@@ -10,9 +10,9 @@ namespace GGData.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailModel : PageModel
     {
-        private readonly UserManager<Usuarios> _userManager;
+        private readonly UserManager<Utilizadores> _userManager;
 
-        public ConfirmEmailModel(UserManager<Usuarios> userManager)
+        public ConfirmEmailModel(UserManager<Utilizadores> userManager)
         {
             _userManager = userManager;
         }

@@ -13,16 +13,16 @@ namespace GGData.Services
 {
     public class TokenService
     {
-        private readonly UserManager<Usuarios> _userManager;
+        private readonly UserManager<Utilizadores> _userManager;
         private readonly IConfiguration _configuration;
 
-        public TokenService(UserManager<Usuarios> userManager, IConfiguration configuration)
+        public TokenService(UserManager<Utilizadores> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
         }
 
-        public async Task<string> GenerateTokenAsync(Usuarios user)
+        public async Task<string> GenerateTokenAsync(Utilizadores user)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class ApplicationDbContext : IdentityDbContext<Usuarios, IdentityRole<int>, int>
+public class ApplicationDbContext : IdentityDbContext<Utilizadores, IdentityRole<int>, int>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
@@ -11,7 +11,7 @@ public class ApplicationDbContext : IdentityDbContext<Usuarios, IdentityRole<int
     public DbSet<Avaliacao> Avaliacao { get; set; }
     public DbSet<Jogo> Jogos { get; set; }
     public DbSet<Estatistica> Estatistica { get; set; }
-    public DbSet<Usuarios> Usuarios { get; set; }
+    public DbSet<Utilizadores> Utilizadores { get; set; }
 
     public DbSet<Genero> Generos { get; set; }
     public DbSet<JogoGenero> JogoGeneros { get; set; }

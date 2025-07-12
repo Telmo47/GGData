@@ -13,10 +13,10 @@ namespace GGData.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<Usuarios> _signInManager;
+        private readonly SignInManager<Utilizadores> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<Usuarios> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<Utilizadores> signInManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;

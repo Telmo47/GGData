@@ -10,11 +10,11 @@ namespace GGData.Areas.Identity.Pages.Account
 {
     public class LogoutModel : PageModel
     {
-        private readonly SignInManager<Usuarios> _signInManager;
+        private readonly SignInManager<Utilizadores> _signInManager;
         private readonly ILogger<LogoutModel> _logger;
 
         // Construtor único e correto
-        public LogoutModel(SignInManager<Usuarios> signInManager, ILogger<LogoutModel> logger)
+        public LogoutModel(SignInManager<Utilizadores> signInManager, ILogger<LogoutModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
