@@ -1,43 +1,56 @@
 ﻿@model GGData.Models.Utilizadores
-
+<!--
+Define que o modelo da View é a classe Utilizadores,
+representando um utilizador do sistema.
+-->
 @{
     ViewData["Title"] = "Details";
+    // Define o título da página como "Details"
 }
 
 <h1>Details</h1>
+<!-- Título principal da página -->
 
 <div>
     <h4>Usuarios</h4>
     <hr />
+    <!-- Apresenta os detalhes do utilizador num formato de lista de definições (dl) com colunas bootstrap -->
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Nome)
+            <!-- Label para a propriedade Nome -->
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Nome)
+            <!-- Valor do Nome do utilizador -->
         </dd>
-        
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DataRegistro)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DataRegistro)
         </dd>
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Email)
         </dd>
-        <dt class = "col-sm-2">
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TipoUsuario)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TipoUsuario)
         </dd>
     </dl>
 </div>
+
 <div>
+    <!-- Link para editar este utilizador, passando o Id como parâmetro -->
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <!-- Link para voltar à lista de utilizadores -->
     <a asp-action="Index">Back to List</a>
 </div>

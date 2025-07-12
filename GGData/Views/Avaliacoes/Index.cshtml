@@ -2,15 +2,17 @@
 
 @{
     ViewData["Title"] = "Avaliações";
-    var currentUserName = (string)ViewBag.CurrentUserName;
+    var currentUserName = (string)ViewBag.CurrentUserName; // Nome do utilizador atual para controlo de permissões
 }
 
 <h1>Avaliações</h1>
 
+<!-- Botão para criar nova avaliação -->
 <p>
     <a asp-action="Create" class="btn btn-primary">Criar Nova Avaliação</a>
 </p>
 
+<!-- Tabela com as avaliações -->
 <table class="table">
     <thead>
         <tr>
@@ -27,13 +29,15 @@
         @foreach (var item in Model)
         {
             <tr>
+                <!-- Colunas com dados da avaliação -->
                 <td>@item.Nota</td>
                 <td>@item.Comentarios</td>
-                <td>@item.DataReview</td>
+                <td>@item.DataReview.ToShortDateString()</td> <!-- Formato de data mais amigável -->
                 <td>@item.TipoUsuario</td>
                 <td>@item.Utilizador.UserName</td>
                 <td>@item.Jogo.Nome</td>
                 <td>
+                    @* Se o utilizador estiver autenticado e for dono da avaliação ou for administrador, permite ações extra *@
                     @if (User.Identity.IsAuthenticated && (item.Utilizador.UserName == currentUserName || User.IsInRole("Administrador")))
                     {
                         <a asp-action="Edit" asp-route-id="@item.AvaliacaoId">Editar</a>

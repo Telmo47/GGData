@@ -9,40 +9,48 @@
 
     <div class="row justify-content-center">
         <div class="col-md-10">
+            <!-- Formulário para criação de nova estatística -->
             <form asp-action="Create" class="card shadow p-4">
+                <!-- Sumário das validações do modelo (erros) -->
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="row">
+                    <!-- Campo para conquistas do jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="Conquistas" class="form-label"></label>
                         <input asp-for="Conquistas" class="form-control" />
                         <span asp-validation-for="Conquistas" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para tempo médio de jogo -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="TempoMedioJogo" class="form-label"></label>
                         <input asp-for="TempoMedioJogo" class="form-control" />
                         <span asp-validation-for="TempoMedioJogo" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para total de avaliações -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="TotalAvaliacoes" class="form-label"></label>
                         <input asp-for="TotalAvaliacoes" class="form-control" />
                         <span asp-validation-for="TotalAvaliacoes" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para média de notas dos utilizadores -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="MediaNotaUtilizadores" class="form-label"></label>
                         <input asp-for="MediaNotaUtilizadores" class="form-control" />
                         <span asp-validation-for="MediaNotaUtilizadores" class="text-danger"></span>
                     </div>
 
+                    <!-- Campo para média de notas dos críticos -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="MediaNotaCriticos" class="form-label"></label>
                         <input asp-for="MediaNotaCriticos" class="form-control" />
                         <span asp-validation-for="MediaNotaCriticos" class="text-danger"></span>
                     </div>
 
+                    <!-- Drop-down para selecionar o jogo relacionado -->
                     <div class="col-md-6 mb-4">
                         <label asp-for="JogoId" class="form-label"></label>
                         <select asp-for="JogoId" class="form-control" asp-items="ViewBag.JogoID">
@@ -52,6 +60,7 @@
                     </div>
                 </div>
 
+                <!-- Botões de navegação -->
                 <div class="d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Voltar
@@ -67,6 +76,7 @@
 
 @section Scripts {
     @{
+        // Inclusão dos scripts de validação client-side
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

@@ -43,12 +43,10 @@ namespace GGData.Models
         /// <summary>
         /// Tipo de usuário que deu a avaliação (Crítico ou Utilizador).
         /// </summary>
-
         [StringLength(20)]
         [Display(Name = "Tipo de Usuário")]
         [ValidateNever]
-        public string? TipoUsuario { get; set; }  // <-- Adiciona o `?` para aceitar null
-
+        public string? TipoUsuario { get; set; }  // pode ser null se não for preenchido
 
         // Foreign Keys e Navegações
 
@@ -63,7 +61,7 @@ namespace GGData.Models
         /// Navegação para o utilizador que fez a avaliação.
         /// </summary>
         [ValidateNever]
-        public Utilizadores Utilizador { get; set; }
+        public Utilizadores? Utilizador { get; set; }  // pode ser null em alguns contextos EF
 
         /// <summary>
         /// Chave estrangeira com referência ao jogo avaliado.
@@ -76,6 +74,6 @@ namespace GGData.Models
         /// Navegação para o jogo avaliado.
         /// </summary>
         [ValidateNever]
-        public Jogo Jogo { get; set; }
+        public Jogo? Jogo { get; set; }  // pode ser null em alguns contextos EF
     }
 }

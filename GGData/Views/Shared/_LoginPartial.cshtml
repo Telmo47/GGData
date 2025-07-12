@@ -4,11 +4,11 @@
 @inject UserManager<Utilizadores> UserManager
 
 <ul class="navbar-nav">
-    @if (SignInManager.IsSignedIn(User))
+    @if (SignInManager.IsSignedIn(User))  // Se o utilizador estiver autenticado
     {
         <li class="nav-item">
             <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Conta">
-                Olá, @User.Identity?.Name!
+                Olá, @User.Identity?.Name!  <!-- Cumprimento com o nome do utilizador -->
             </a>
         </li>
         <li class="nav-item">
@@ -17,7 +17,7 @@
             </form>
         </li>
     }
-    else
+    else  // Se não estiver autenticado
     {
         <li class="nav-item">
             <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Registar</a>

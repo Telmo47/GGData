@@ -3,21 +3,32 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - GGData</title>
+    <title>@ViewData["Title"] - GGData</title> <!-- Título dinâmico -->
+    <!-- CSS Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- CSS personalizado -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GGData.styles.css" asp-append-version="true" />
+
+    <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 </head>
 <body class="d-flex flex-column min-vh-100">
+    <!-- Para ter footer fixo ao fundo -->
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom shadow-sm mb-4">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GGData</a>
+
+                <!-- Botão para colapsar menu em mobile -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
                         aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                <!-- Menu de navegação -->
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav me-auto mb-2 mb-sm-0">
                         <li class="nav-item">
@@ -33,6 +44,7 @@
                             <a class="nav-link" asp-controller="Estatisticas" asp-action="Index">Estatísticas</a>
                         </li>
                     </ul>
+                    <!-- Partial para login/logout e info de utilizador -->
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -41,7 +53,7 @@
 
     <main class="flex-fill">
         <div class="container py-4">
-            @RenderBody()
+            @RenderBody() <!-- Conteúdo das páginas será injetado aqui -->
         </div>
     </main>
 
@@ -51,9 +63,11 @@
         </div>
     </footer>
 
+    <!-- Scripts JS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+    @await RenderSectionAsync("Scripts", required: false) <!-- Scripts adicionais específicos das páginas -->
 </body>
 </html>

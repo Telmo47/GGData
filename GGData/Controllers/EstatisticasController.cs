@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GGData.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador")] // Apenas administradores podem aceder à maioria das ações
     public class EstatisticasController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -18,7 +18,10 @@ namespace GGData.Controllers
             _context = context;
         }
 
-        // Lista todas as estatísticas com os respetivos jogos
+        /// <summary>
+        /// Lista todas as estatísticas com os respetivos jogos.
+        /// Esta ação é permitida a utilizadores anónimos.
+        /// </summary>
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
@@ -26,7 +29,10 @@ namespace GGData.Controllers
             return View(await estatisticas.ToListAsync());
         }
 
-        // Detalhes por EstatisticaId
+        /// <summary>
+        /// Mostra detalhes de uma estatística específica pelo seu ID.
+        /// Esta ação é permitida a utilizadores anónimos.
+        /// </summary>
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
@@ -43,7 +49,11 @@ namespace GGData.Controllers
             return View(estatistica);
         }
 
-        // NOVA: Detalhes por JogoId (chave estrangeira)
+        /// <summary>
+        /// Mostra detalhes de uma estatística dado o ID do jogo (chave estrangeira).
+        /// Reutiliza a view Details.
+        /// Esta ação é permitida a utilizadores anónimos.
+        /// </summary>
         [AllowAnonymous]
         public async Task<IActionResult> DetailsByJogo(int? jogoId)
         {
@@ -57,16 +67,22 @@ namespace GGData.Controllers
             if (estatistica == null)
                 return NotFound();
 
-            // Reutiliza a mesma view Details.cshtml para mostrar a estatística
             return View("Details", estatistica);
         }
 
+        /// <summary>
+        /// Exibe o formulário para criar uma nova estatística.
+        /// </summary>
         public IActionResult Create()
         {
             ViewData["JogoId"] = new SelectList(_context.Jogos, "JogoId", "Nome");
             return View();
         }
 
+        /// <summary>
+        /// Recebe a submissão do formulário para criar uma nova estatística.
+        /// Valida e adiciona a estatística à base de dados.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EstatisticaId,Conquistas,TempoMedioJogo,TotalAvaliacoes,MediaNotaUtilizadores,MediaNotaCriticos,JogoId")] Estatistica estatistica)
@@ -82,6 +98,9 @@ namespace GGData.Controllers
             return View(estatistica);
         }
 
+        /// <summary>
+        /// Exibe o formulário para editar uma estatística existente.
+        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,6 +114,10 @@ namespace GGData.Controllers
             return View(estatistica);
         }
 
+        /// <summary>
+        /// Recebe a submissão do formulário para editar uma estatística.
+        /// Valida e atualiza a estatística na base de dados.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("EstatisticaId,Conquistas,TempoMedioJogo,TotalAvaliacoes,MediaNotaUtilizadores,MediaNotaCriticos,JogoId")] Estatistica estatistica)
@@ -123,6 +146,9 @@ namespace GGData.Controllers
             return View(estatistica);
         }
 
+        /// <summary>
+        /// Exibe a página para confirmar a eliminação de uma estatística.
+        /// </summary>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -138,6 +164,9 @@ namespace GGData.Controllers
             return View(estatistica);
         }
 
+        /// <summary>
+        /// Confirma a eliminação da estatística selecionada.
+        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -151,6 +180,9 @@ namespace GGData.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Verifica se uma estatística existe na base de dados.
+        /// </summary>
         private bool EstatisticaExists(int id)
         {
             return _context.Estatistica.Any(e => e.EstatisticaId == id);

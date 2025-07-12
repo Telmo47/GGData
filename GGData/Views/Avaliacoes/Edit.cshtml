@@ -1,32 +1,40 @@
 ﻿@model GGData.Models.Avaliacao
 
 <div class="container mt-4 mb-5">
+    <!-- Título da página -->
     <h1 class="mb-4">🆕 Criar Avaliação</h1>
 
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <!-- Formulário para criar nova avaliação, usando POST -->
             <form asp-action="Create" method="post" class="card shadow p-4">
+
+                <!-- Resumo das validações do modelo (erros) -->
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="row">
+                    <!-- Campo para Nota da avaliação -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="Nota" class="form-label"></label>
                         <input asp-for="Nota" class="form-control" />
                         <span asp-validation-for="Nota" class="text-danger"></span>
                     </div>
 
+                    <!-- Dropdown para Tipo de Utilizador (Crítico/Utilizador) -->
                     <div class="col-md-6 mb-3">
                         <label asp-for="TipoUsuario" class="form-label"></label>
                         <select asp-for="TipoUsuario" class="form-control" asp-items="@(ViewData["TipoUsuario"] as IEnumerable<SelectListItem>)"></select>
                         <span asp-validation-for="TipoUsuario" class="text-danger"></span>
                     </div>
 
+                    <!-- Área de texto para Comentários -->
                     <div class="col-12 mb-3">
                         <label asp-for="Comentarios" class="form-label"></label>
                         <textarea asp-for="Comentarios" class="form-control" rows="4"></textarea>
                         <span asp-validation-for="Comentarios" class="text-danger"></span>
                     </div>
 
+                    <!-- Dropdown para selecionar o Jogo avaliado -->
                     <div class="col-md-6 mb-4">
                         <label asp-for="JogoId" class="form-label"></label>
                         <select asp-for="JogoId" class="form-control" asp-items="@(ViewData["JogoId"] as IEnumerable<SelectListItem>)">
@@ -36,6 +44,7 @@
                     </div>
                 </div>
 
+                <!-- Botões para voltar ou submeter o formulário -->
                 <div class="d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Voltar
@@ -49,6 +58,7 @@
 
 @section Scripts {
     @{
+        // Renderiza os scripts de validação jQuery
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

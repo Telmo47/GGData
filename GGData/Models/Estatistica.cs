@@ -20,7 +20,7 @@ namespace GGData.Models
         /// Conquistas obtidas no jogo (texto).
         /// </summary>
         [Required(ErrorMessage = "O campo Conquistas é obrigatório.")]
-        public string Conquistas { get; set; }
+        public string Conquistas { get; set; } = null!; // para evitar warning de null
 
         /// <summary>
         /// Tempo médio de jogo, valor não negativo.
@@ -57,6 +57,6 @@ namespace GGData.Models
         /// Navegação para o jogo.
         /// </summary>
         [ValidateNever]
-        public Jogo Jogo { get; set; }
+        public Jogo? Jogo { get; set; }  // pode ser null em alguns contextos EF
     }
 }

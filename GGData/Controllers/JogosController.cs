@@ -20,6 +20,10 @@ namespace GGData.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Lista todos os jogos, com filtros opcionais por género.
+        /// Permite acesso anónimo.
+        /// </summary>
         [AllowAnonymous]
         public async Task<IActionResult> Index(string genero)
         {
@@ -38,6 +42,10 @@ namespace GGData.Controllers
             return View(await jogos.ToListAsync());
         }
 
+        /// <summary>
+        /// Detalhes de um jogo específico por Id.
+        /// Permite acesso anónimo.
+        /// </summary>
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
@@ -53,19 +61,25 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
+        /// <summary>
+        /// Retorna a view para criar um novo jogo.
+        /// </summary>
         public async Task<IActionResult> Create()
         {
             ViewBag.Generos = await _context.Generos.ToListAsync();
             return View();
         }
 
+        /// <summary>
+        /// Cria um novo jogo com os géneros selecionados.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Jogo jogo, int[] GeneroIds)
         {
             if (ModelState.IsValid)
             {
-                // Inicializar lista de géneros do jogo
+                // Inicializa os géneros associados ao jogo
                 jogo.JogoGeneros = new List<JogoGenero>();
 
                 foreach (var generoId in GeneroIds)
@@ -81,6 +95,9 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
+        /// <summary>
+        /// Retorna a view para editar um jogo existente, carregando os géneros associados.
+        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -93,12 +110,16 @@ namespace GGData.Controllers
 
             ViewBag.Generos = await _context.Generos.ToListAsync();
 
+            // Guarda info na sessão para validação no post
             HttpContext.Session.SetInt32("JogoId", jogo.JogoId);
             HttpContext.Session.SetString("Acao", "Jogos/Edit");
 
             return View(jogo);
         }
 
+        /// <summary>
+        /// Atualiza os dados do jogo e os géneros associados.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Jogo jogo, int[] GeneroIds)
@@ -108,6 +129,7 @@ namespace GGData.Controllers
             var jogoIDSessao = HttpContext.Session.GetInt32("JogoId");
             var acao = HttpContext.Session.GetString("Acao");
 
+            // Valida sessão para evitar edição inválida
             if (jogoIDSessao == null || string.IsNullOrEmpty(acao))
             {
                 ModelState.AddModelError("", "Demorou muito tempo. Já não consegue alterar o jogo. Tem de reiniciar o processo.");
@@ -124,21 +146,21 @@ namespace GGData.Controllers
             {
                 try
                 {
-                    // Atualizar propriedades do jogo
+                    // Atualiza propriedades do jogo
                     _context.Update(jogo);
                     await _context.SaveChangesAsync();
 
-                    // Atualizar géneros associados
+                    // Atualiza géneros associados
                     var jogoAtual = await _context.Jogos
                         .Include(j => j.JogoGeneros)
                         .FirstOrDefaultAsync(j => j.JogoId == id);
 
                     if (jogoAtual == null) return NotFound();
 
-                    // Limpar géneros antigos
+                    // Limpa géneros antigos
                     jogoAtual.JogoGeneros.Clear();
 
-                    // Adicionar géneros novos
+                    // Adiciona géneros novos
                     foreach (var generoId in GeneroIds)
                     {
                         jogoAtual.JogoGeneros.Add(new JogoGenero { JogoId = id, GeneroId = generoId });
@@ -146,6 +168,7 @@ namespace GGData.Controllers
 
                     await _context.SaveChangesAsync();
 
+                    // Remove dados da sessão
                     HttpContext.Session.Remove("JogoId");
                     HttpContext.Session.Remove("Acao");
                 }
@@ -161,6 +184,9 @@ namespace GGData.Controllers
             return View(jogo);
         }
 
+        /// <summary>
+        /// Retorna a view para confirmar a remoção de um jogo.
+        /// </summary>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -174,12 +200,16 @@ namespace GGData.Controllers
 
             if (jogo == null) return NotFound();
 
+            // Guarda info na sessão para validação no post
             HttpContext.Session.SetInt32("JogoId", jogo.JogoId);
             HttpContext.Session.SetString("Acao", "Jogos/Delete");
 
             return View(jogo);
         }
 
+        /// <summary>
+        /// Elimina o jogo se não tiver avaliações ou estatísticas associadas.
+        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -204,6 +234,7 @@ namespace GGData.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Só apaga se não existirem avaliações nem estatísticas associadas
             if (jogo != null && (jogo.Avaliacoes?.Count ?? 0) == 0 && jogo.Estatistica == null)
             {
                 _context.Jogos.Remove(jogo);
@@ -216,7 +247,9 @@ namespace GGData.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        /// <summary>
+        /// Verifica se o jogo existe na base de dados.
+        /// </summary>
         private bool JogoExists(int id)
         {
             return _context.Jogos.Any(e => e.JogoId == id);

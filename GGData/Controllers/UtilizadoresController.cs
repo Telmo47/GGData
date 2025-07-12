@@ -13,6 +13,7 @@ namespace GGData.Controllers
 {
     /// <summary>
     /// Controlador responsável por gerir os utilizadores do sistema.
+    /// Apenas acessível a utilizadores com o papel "Administrador".
     /// </summary>
     [Authorize(Roles = "Administrador")]
     public class UtilizadoresController : Controller
@@ -24,7 +25,10 @@ namespace GGData.Controllers
             _context = context;
         }
 
-        // GET: Usuarios
+        /// <summary>
+        /// Lista todos os utilizadores.
+        /// Mostra mensagem do último utilizador editado (armazenada na sessão).
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             var nome = HttpContext.Session.GetString("UltimoUsuarioEditadoNome");
@@ -35,7 +39,10 @@ namespace GGData.Controllers
             return View(await _context.Utilizadores.ToListAsync());
         }
 
-        // GET: Usuarios/Details/5
+        /// <summary>
+        /// Mostra detalhes de um utilizador específico.
+        /// </summary>
+        /// <param name="id">ID do utilizador</param>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -46,14 +53,19 @@ namespace GGData.Controllers
             return View(usuarios);
         }
 
-        // GET: Usuarios/Create
+        /// <summary>
+        /// Retorna a view para criar um novo utilizador.
+        /// </summary>
         public IActionResult Create()
         {
             ViewBag.Tipos = new SelectList(new[] { "Critico", "Utilizador" });
             return View();
         }
 
-        // POST: Usuarios/Create
+        /// <summary>
+        /// Cria um novo utilizador no sistema.
+        /// Valida se o email já existe para evitar duplicados.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UsuarioId,Nome,Senha,Email,TipoUsuario")] Utilizadores usuarios)
@@ -76,7 +88,10 @@ namespace GGData.Controllers
             return View(usuarios);
         }
 
-        // GET: Usuarios/Edit/5
+        /// <summary>
+        /// Retorna a view para editar um utilizador existente.
+        /// Guarda dados na sessão para validação posterior.
+        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -84,7 +99,6 @@ namespace GGData.Controllers
             var usuarios = await _context.Utilizadores.FindAsync(id);
             if (usuarios == null) return NotFound();
 
-            // Guardar dados para proteção da sessão
             HttpContext.Session.SetInt32("UsuarioID", usuarios.Id);
             HttpContext.Session.SetString("Acao", "Usuarios/Edit");
 
@@ -92,7 +106,11 @@ namespace GGData.Controllers
             return View(usuarios);
         }
 
-        // POST: Usuarios/Edit/5
+        /// <summary>
+        /// Atualiza os dados do utilizador.
+        /// Valida sessão para garantir que o processo não foi interrompido.
+        /// Guarda o nome do último utilizador editado na sessão para exibir mensagem.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UsuarioId,Nome,Senha,DataRegistro,Email,TipoUsuario")] Utilizadores usuarios)
@@ -121,11 +139,9 @@ namespace GGData.Controllers
                     _context.Update(usuarios);
                     await _context.SaveChangesAsync();
 
-                    // Limpar sessão após sucesso
                     HttpContext.Session.Remove("UsuarioID");
                     HttpContext.Session.Remove("Acao");
 
-                    // Guardar nome do último editado para mensagem
                     HttpContext.Session.SetString("UltimoUsuarioEditadoNome", usuarios.Nome);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -142,7 +158,10 @@ namespace GGData.Controllers
             return View(usuarios);
         }
 
-        // GET: Usuarios/Delete/5
+        /// <summary>
+        /// Retorna a view para confirmar a remoção de um utilizador.
+        /// Guarda dados na sessão para validação posterior.
+        /// </summary>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -150,14 +169,16 @@ namespace GGData.Controllers
             var usuarios = await _context.Utilizadores.FirstOrDefaultAsync(m => m.Id == id);
             if (usuarios == null) return NotFound();
 
-            // Guardar dados para proteção da sessão
             HttpContext.Session.SetInt32("UsuarioID", usuarios.Id);
             HttpContext.Session.SetString("Acao", "Usuarios/Delete");
 
             return View(usuarios);
         }
 
-        // POST: Usuarios/Delete/5
+        /// <summary>
+        /// Remove um utilizador da base de dados.
+        /// Valida a sessão para garantir integridade do processo.
+        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -190,6 +211,9 @@ namespace GGData.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Verifica se um utilizador existe na base de dados.
+        /// </summary>
         private bool UsuariosExists(int id)
         {
             return _context.Utilizadores.Any(e => e.Id == id);

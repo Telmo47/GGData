@@ -1,57 +1,77 @@
 ﻿@model GGData.Models.Avaliacao
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Avaliação";
 }
 
-<h1>Delete</h1>
+<h1>Eliminar Avaliação</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Tem a certeza que deseja eliminar esta avaliação?</h3>
+
 <div>
-    <h4>Avaliacao</h4>
+    <h4>Avaliação</h4>
     <hr />
+
+    <!-- Detalhes da avaliação mostrados em formato de definição (dl) -->
     <dl class="row">
-        <dt class = "col-sm-2">
+        <!-- Nota da avaliação -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Nota)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Nota)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Comentários -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Comentarios)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Comentarios)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Data da review -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DataReview)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DataReview)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- Tipo de utilizador que fez a avaliação -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TipoUsuario)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TipoUsuario)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- ID do utilizador que fez a avaliação -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Utilizador)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Utilizador.Id)
         </dd>
-        <dt class = "col-sm-2">
+
+        <!-- ID do jogo avaliado -->
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Jogo)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Jogo.JogoId)
         </dd>
     </dl>
-    
+
+    <!-- Formulário para confirmar a eliminação -->
     <form asp-action="Delete">
+        <!-- Campo oculto para enviar o ID da avaliação -->
         <input type="hidden" asp-for="AvaliacaoId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+
+        <!-- Botão para confirmar eliminação -->
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+
+        <!-- Link para voltar para a lista de avaliações -->
+        <a asp-action="Index">Voltar à Lista</a>
     </form>
 </div>

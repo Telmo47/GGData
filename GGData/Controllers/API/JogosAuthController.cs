@@ -10,28 +10,30 @@ using System.Threading.Tasks;
 
 namespace GGData.Controllers.API
 {
+    // Controlador API para gerir jogos com autenticação via JWT
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer")] // Protegido com JWT
+    [Authorize(AuthenticationSchemes = "Bearer")] // Requer token Bearer válido
     public class JogosAuthController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        // Injeção do contexto da base de dados
         public JogosAuthController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         // GET: api/JogosAuth
+        // Retorna a lista de jogos com dados dos seus géneros concatenados numa string
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JogoDTObyUser>>> GetJogos()
         {
-            // string? nomePessoaAutenticada = User.Identity?.Name; // já não precisamos filtrar por utilizador
-
+            // Obtem todos os jogos incluindo os géneros relacionados
             var jogos = await _context.Jogos
                 .Include(j => j.JogoGeneros)
                     .ThenInclude(jg => jg.Genero)
-                //.Where(j => j.Utilizador != null && j.Utilizador.UserName == nomePessoaAutenticada) // remover filtro
+                // O filtro por utilizador autenticado foi removido (comentado)
                 .Select(j => new JogoDTObyUser
                 {
                     JogoId = j.JogoId,
@@ -46,12 +48,13 @@ namespace GGData.Controllers.API
             return jogos;
         }
 
-
         // POST: api/JogosAuth
+        // Apenas utilizadores com Role "Administrador" podem criar novos jogos
         [HttpPost]
-        [Authorize(Roles = "Administrador")]  // Apenas admins podem adicionar jogos
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<JogoDTO>> CreateJogo(JogoDTO jogoDTO)
         {
+            // Obter nome do utilizador autenticado
             string? nomePessoaAutenticada = User.Identity?.Name;
             var utilizador = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.UserName == nomePessoaAutenticada);
@@ -61,6 +64,7 @@ namespace GGData.Controllers.API
                 return Unauthorized("Utilizador não encontrado.");
             }
 
+            // Criar nova entidade Jogo
             var jogo = new Jogo
             {
                 Nome = jogoDTO.Nome,
@@ -70,7 +74,7 @@ namespace GGData.Controllers.API
                 Utilizador = utilizador
             };
 
-            // Adiciona os géneros (assumindo que já existem no BD)
+            // Adicionar géneros existentes que correspondem aos nomes enviados
             foreach (var generoNome in jogoDTO.Generos)
             {
                 var genero = await _context.Set<Genero>().FirstOrDefaultAsync(g => g.Nome == generoNome);
@@ -80,9 +84,11 @@ namespace GGData.Controllers.API
                 }
             }
 
+            // Adicionar jogo à base de dados e guardar alterações
             _context.Jogos.Add(jogo);
             await _context.SaveChangesAsync();
-            
+
+            // Retornar 201 Created com a localização da lista de jogos
             return CreatedAtAction(nameof(GetJogos), new { id = jogo.JogoId }, jogoDTO);
         }
     }

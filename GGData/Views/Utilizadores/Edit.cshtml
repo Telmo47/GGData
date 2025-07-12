@@ -1,51 +1,58 @@
 ﻿@model GGData.Models.Utilizadores
-
+<!-- Define que o modelo desta View é a classe Utilizadores -->
 @{
     ViewData["Title"] = "Edit";
+    // Define o título da página como "Edit"
 }
 
 <h1>Edit</h1>
+<!-- Título principal da página -->
 
 <h4>Usuarios</h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
+        <!-- Formulário para editar um utilizador -->
         <form asp-action="Edit">
+            <!-- Sumário de validação, apresenta mensagens de erro do modelo -->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Campo oculto para o Id do utilizador (para identificar qual registo editar) -->
             <input type="hidden" asp-for="Id" />
 
+            <!-- Campo para editar o Nome -->
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
                 <input asp-for="Nome" class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
 
-            
-
+            <!-- Campo para editar a Data de Registo -->
             <div class="form-group">
                 <label asp-for="DataRegistro" class="control-label"></label>
                 <input asp-for="DataRegistro" class="form-control" />
                 <span asp-validation-for="DataRegistro" class="text-danger"></span>
             </div>
 
+            <!-- Campo para editar o Email -->
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
+            <!-- Dropdown para selecionar o Tipo de Utilizador -->
             <div class="form-group">
                 <label asp-for="TipoUsuario" class="control-label"></label>
                 <select asp-for="TipoUsuario" class="form-control" asp-items="ViewBag.Tipos">
-<<<<<<< HEAD
-                    <option value="" disabled selected>Selecione o tipo</option>
-=======
+                    <!-- Opção padrão para forçar o utilizador a selecionar um tipo -->
                     <option value="">Selecione o tipo</option>
->>>>>>> Autentication
                 </select>
                 <span asp-validation-for="TipoUsuario" class="text-danger"></span>
             </div>
 
+            <!-- Botão para submeter o formulário e salvar as alterações -->
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -53,12 +60,14 @@
     </div>
 </div>
 
+<!-- Link para voltar à lista de utilizadores -->
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{
+        // Renderiza os scripts de validação do ASP.NET MVC
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

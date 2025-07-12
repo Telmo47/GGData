@@ -1,57 +1,65 @@
 ﻿@model GGData.Models.Estatistica
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Estatística";
 }
 
-<h1>Delete</h1>
+<h1>Eliminar Estatística</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Tem a certeza que deseja eliminar esta estatística?</h3>
+
 <div>
-    <h4>Estatistica</h4>
+    <h4>Estatística</h4>
     <hr />
+    <!-- Detalhes da estatística a ser eliminada -->
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Conquistas)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Conquistas)  <!-- Nome do campo "Conquistas" -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Conquistas)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Conquistas)      <!-- Valor de "Conquistas" -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TempoMedioJogo)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TempoMedioJogo)  <!-- Nome do campo "Tempo Médio de Jogo" -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TempoMedioJogo)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TempoMedioJogo)      <!-- Valor do tempo médio de jogo -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalAvaliacoes)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalAvaliacoes)  <!-- Nome do campo "Total Avaliações" -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalAvaliacoes)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalAvaliacoes)      <!-- Valor do total de avaliações -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MediaNotaUtilizadores)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MediaNotaUtilizadores)  <!-- Nome da média de notas dos utilizadores -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MediaNotaUtilizadores)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MediaNotaUtilizadores)      <!-- Valor da média dos utilizadores -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MediaNotaCriticos)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MediaNotaCriticos)  <!-- Nome da média de notas dos críticos -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MediaNotaCriticos)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MediaNotaCriticos)      <!-- Valor da média dos críticos -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Jogo)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Jogo)  <!-- Nome do campo Jogo -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Jogo.JogoId)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Jogo.JogoId)  <!-- Id do jogo associado -->
         </dd>
     </dl>
-    
+
+    <!-- Formulário para confirmação da exclusão -->
     <form asp-action="Delete">
-        <input type="hidden" asp-for="EstatisticaId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="hidden" asp-for="EstatisticaId" /> <!-- Id escondido para envio -->
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Index">Voltar à Lista</a> <!-- Link para voltar -->
     </form>
 </div>

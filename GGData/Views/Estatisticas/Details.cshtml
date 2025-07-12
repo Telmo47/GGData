@@ -1,54 +1,62 @@
 ﻿@model GGData.Models.Estatistica
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Estatística";
 }
 
-<h1>Details</h1>
+<h1>Detalhes da Estatística</h1>
 
 <div>
-    <h4>Estatistica</h4>
+    <h4>Estatística</h4>
     <hr />
+    <!-- Exibe os detalhes da estatística em formato de lista de definição -->
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Conquistas)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Conquistas)  <!-- Nome do campo "Conquistas" -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Conquistas)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Conquistas)      <!-- Valor das conquistas -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TempoMedioJogo)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TempoMedioJogo)  <!-- Nome do campo "Tempo Médio de Jogo" -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TempoMedioJogo)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TempoMedioJogo)      <!-- Valor do tempo médio de jogo -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalAvaliacoes)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalAvaliacoes)  <!-- Nome do campo "Total de Avaliações" -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalAvaliacoes)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalAvaliacoes)      <!-- Valor do total de avaliações -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MediaNotaUtilizadores)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MediaNotaUtilizadores)  <!-- Nome do campo "Média das Notas dos Utilizadores" -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MediaNotaUtilizadores)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MediaNotaUtilizadores)      <!-- Valor da média das notas dos utilizadores -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MediaNotaCriticos)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MediaNotaCriticos)  <!-- Nome do campo "Média das Notas dos Críticos" -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MediaNotaCriticos)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MediaNotaCriticos)      <!-- Valor da média das notas dos críticos -->
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Jogo)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Jogo)  <!-- Nome do campo "Jogo" -->
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Jogo.JogoId)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Jogo.JogoId)  <!-- ID do jogo associado -->
         </dd>
     </dl>
 </div>
+
+<!-- Links para editar a estatística ou voltar à lista -->
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.EstatisticaId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.EstatisticaId">Editar</a> |
+    <a asp-action="Index">Voltar à Lista</a>
 </div>

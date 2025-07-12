@@ -1,38 +1,60 @@
 ﻿@model GGData.Models.Utilizadores
-
+<!--
+Define que o modelo da View é a classe Utilizadores,
+que representa um utilizador no sistema.
+-->
 @{
     ViewData["Title"] = "Create";
+    // Define o título da página para "Create"
+    // que pode ser usado no layout para mostrar o título da aba ou cabeçalho.
 }
 
 <h1>Create</h1>
+<!-- Título principal da página -->
 
 <h4>Usuarios</h4>
+<!-- Subtítulo para contextualizar a secção -->
+
 <hr />
+<!-- Linha horizontal para separar visualmente -->
+
 <div class="row">
     <div class="col-md-4">
+        <!--
+        Formulário para criação de um novo utilizador.
+        O atributo asp-action="Create" indica que o form vai submeter para a ação Create do controller atual.
+        -->
         <form asp-action="Create">
+            <!-- Sumário de validações, só mostra erros relacionados ao modelo -->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+            <!-- Campo para o nome do utilizador -->
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
+                <!-- O asp-for liga este input à propriedade Nome do modelo -->
                 <input asp-for="Nome" class="form-control" />
+                <!-- Exibe mensagens de validação para Nome -->
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
 
+            <!-- Campo para o email do utilizador -->
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
+            <!-- Campo para selecionar o tipo do utilizador -->
             <div class="form-group">
                 <label asp-for="TipoUsuario" class="control-label"></label>
+                <!-- Dropdown que liga à propriedade TipoUsuario e é preenchido com ViewBag.Tipos -->
                 <select asp-for="TipoUsuario" class="form-control" asp-items="ViewBag.Tipos">
                     <option value="" disabled selected>Selecione o tipo</option>
                 </select>
                 <span asp-validation-for="TipoUsuario" class="text-danger"></span>
             </div>
 
+            <!-- Botão de submissão do formulário -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -40,12 +62,14 @@
     </div>
 </div>
 
+<!-- Link para voltar à lista de utilizadores -->
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{
+        // Inclui os scripts de validação do ASP.NET Core para ativar a validação client-side
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GGData.Controllers
 {
-    [Authorize]
+    [Authorize] // Só utilizadores autenticados podem aceder a este controlador
     public class AvaliacoesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,6 +19,10 @@ namespace GGData.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Obtém o ID do utilizador atualmente autenticado com base no nome de utilizador.
+        /// </summary>
+        /// <returns>ID do utilizador atual</returns>
         private int GetCurrentUserId()
         {
             var username = User.Identity.Name;
@@ -28,6 +32,10 @@ namespace GGData.Controllers
                 .FirstOrDefault();
         }
 
+        /// <summary>
+        /// Preenche os dados necessários para as dropdowns no ViewData,
+        /// incluindo a lista de jogos e tipos de utilizadores.
+        /// </summary>
         private void PopularViewData(Avaliacao avaliacao = null)
         {
             ViewData["JogoId"] = new SelectList(_context.Jogos, "JogoId", "Nome", avaliacao?.JogoId);
@@ -35,6 +43,9 @@ namespace GGData.Controllers
             ViewData["TipoUsuario"] = new SelectList(tiposUsuario, avaliacao?.TipoUsuario);
         }
 
+        /// <summary>
+        /// Lista todas as avaliações, incluindo informações dos jogos e dos utilizadores.
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             var avaliacoes = _context.Avaliacao
@@ -43,6 +54,9 @@ namespace GGData.Controllers
             return View(await avaliacoes.ToListAsync());
         }
 
+        /// <summary>
+        /// Mostra detalhes de uma avaliação específica pelo seu ID.
+        /// </summary>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -57,7 +71,10 @@ namespace GGData.Controllers
             return View(avaliacao);
         }
 
-        // Parâmetro "jogoId" minúsculo para casar com asp-route-jogoId
+        /// <summary>
+        /// Exibe o formulário para criar uma nova avaliação.
+        /// Se for passado um jogoId, preenche automaticamente o campo JogoId.
+        /// </summary>
         public IActionResult Create(int? jogoId)
         {
             var avaliacao = new Avaliacao();
@@ -70,12 +87,18 @@ namespace GGData.Controllers
             return View(avaliacao);
         }
 
+        /// <summary>
+        /// Recebe a submissão do formulário para criar uma nova avaliação.
+        /// Verifica se o utilizador já avaliou o jogo e adiciona a nova avaliação.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Nota,Comentarios,TipoUsuario,JogoId")] Avaliacao avaliacao)
         {
+            // Atribui o utilizador atual à avaliação
             avaliacao.UtilizadorId = GetCurrentUserId();
 
+            // Verifica se já existe avaliação para este jogo e utilizador
             var existeAvaliacao = await _context.Avaliacao.AnyAsync(a =>
                 a.JogoId == avaliacao.JogoId && a.UtilizadorId == avaliacao.UtilizadorId);
 
@@ -98,6 +121,9 @@ namespace GGData.Controllers
             return View(avaliacao);
         }
 
+        /// <summary>
+        /// Exibe o formulário para editar uma avaliação existente.
+        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -109,6 +135,10 @@ namespace GGData.Controllers
             return View(avaliacao);
         }
 
+        /// <summary>
+        /// Recebe a submissão do formulário para editar uma avaliação.
+        /// Valida e atualiza a avaliação na base de dados.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AvaliacaoId,Nota,Comentarios,DataReview,TipoUsuario,UsuarioId,JogoId")] Avaliacao avaliacao)
@@ -136,6 +166,9 @@ namespace GGData.Controllers
             return View(avaliacao);
         }
 
+        /// <summary>
+        /// Exibe a página para confirmar a eliminação de uma avaliação.
+        /// </summary>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -150,6 +183,9 @@ namespace GGData.Controllers
             return View(avaliacao);
         }
 
+        /// <summary>
+        /// Confirma a eliminação da avaliação selecionada.
+        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

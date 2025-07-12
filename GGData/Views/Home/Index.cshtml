@@ -1,31 +1,44 @@
 ﻿@model IEnumerable<GGData.Models.Jogo>
 
 @{
+    // Define o título da página para uso no layout principal
     ViewData["Title"] = "GGData - Início";
 }
 
+<!-- Título principal da página centralizado -->
 <h1 class="text-center mb-4">GGData</h1>
 
+<!-- Container para mostrar os jogos em cartões (cards) responsivos -->
 <div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var jogo in Model)
     {
+        <!-- Cada jogo é representado por uma coluna com um card -->
         <div class="col">
             <div class="card h-100 shadow-sm">
+                <!-- Imagem do jogo com estilo para manter proporção e limite de altura -->
                 <img src="@jogo.ImagemUrl" class="card-img-top" alt="@jogo.Nome" style="max-height: 200px; object-fit: cover;">
+
+                <!-- Corpo do card com informações do jogo -->
                 <div class="card-body">
+                    <!-- Nome do jogo -->
                     <h5 class="card-title">@jogo.Nome</h5>
+
+                    <!-- Géneros do jogo, concatenados numa string separados por vírgulas -->
                     <p class="card-text">
                         <strong>Géneros:</strong>
                         @string.Join(", ", jogo.JogoGeneros.Select(jg => jg.Genero.Nome))
                     </p>
 
+                    <!-- Plataforma do jogo -->
                     <p class="card-text"><strong>Plataforma:</strong> @jogo.Plataforma</p>
                 </div>
+
+                <!-- Rodapé do card com botão para ver estatísticas do jogo -->
                 <div class="card-footer d-flex justify-content-center">
-                    <a class="btn btn-outline-info" asp-controller="Estatisticas" asp-action="Details" asp-route-id="@jogo.JogoId">Ver Estatísticas</a>
+                    <a class="btn btn-outline-info" asp-controller="Estatisticas" asp-action="Details" asp-route-id="@jogo.JogoId">
+                        Ver Estatísticas
+                    </a>
                 </div>
-
-
             </div>
         </div>
     }
