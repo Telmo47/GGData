@@ -22,17 +22,30 @@ namespace GGData.Controllers.API
 
         // GET: api/Estatisticas?jogoId=123
         [HttpGet]
-        public async Task<ActionResult<Estatistica>> GetEstatistica([FromQuery] int jogoId)
+        public async Task<ActionResult<IEnumerable<Estatistica>>> GetEstatisticas([FromQuery] int? jogoId)
         {
-            var estatistica = await _context.Estatistica
-                .Include(e => e.Jogo)
-                .FirstOrDefaultAsync(e => e.JogoId == jogoId);
+            if (jogoId.HasValue)
+            {
+                var estatistica = await _context.Estatistica
+                    .Include(e => e.Jogo)
+                    .FirstOrDefaultAsync(e => e.JogoId == jogoId.Value);
 
-            if (estatistica == null)
-                return NotFound();
+                if (estatistica == null)
+                    return NotFound();
 
-            return Ok(estatistica);
+                return Ok(estatistica);
+            }
+            else
+            {
+                var estatisticas = await _context.Estatistica
+                    .Include(e => e.Jogo)
+                    .ToListAsync();
+
+                return Ok(estatisticas);
+            }
         }
+
+
 
         // PUT: api/Estatisticas/5
         [HttpPut("{id}")]
@@ -70,7 +83,7 @@ namespace GGData.Controllers.API
             _context.Estatistica.Add(estatistica);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetEstatistica), new { jogoId = estatistica.JogoId }, estatistica);
+            return CreatedAtAction(nameof(GetEstatisticas), new { jogoId = estatistica.JogoId }, estatistica);
         }
 
     }

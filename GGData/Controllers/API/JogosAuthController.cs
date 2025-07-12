@@ -26,24 +26,26 @@ namespace GGData.Controllers.API
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JogoDTObyUser>>> GetJogos()
         {
-            string? nomePessoaAutenticada = User.Identity?.Name;
+            // string? nomePessoaAutenticada = User.Identity?.Name; // já não precisamos filtrar por utilizador
 
             var jogos = await _context.Jogos
                 .Include(j => j.JogoGeneros)
                     .ThenInclude(jg => jg.Genero)
-                .Where(j => j.Utilizador != null && j.Utilizador.UserName == nomePessoaAutenticada)
+                //.Where(j => j.Utilizador != null && j.Utilizador.UserName == nomePessoaAutenticada) // remover filtro
                 .Select(j => new JogoDTObyUser
                 {
                     JogoId = j.JogoId,
                     Nome = j.Nome,
                     Plataforma = j.Plataforma,
                     DataLancamento = j.DataLancamento,
-                    Genero = string.Join(", ", j.JogoGeneros.Select(jg => jg.Genero.Nome))
+                    Genero = string.Join(", ", j.JogoGeneros.Select(jg => jg.Genero.Nome)),
+                    ImagemUrl = j.ImagemUrl
                 })
                 .ToListAsync();
 
             return jogos;
         }
+
 
         // POST: api/JogosAuth
         [HttpPost]
@@ -64,6 +66,7 @@ namespace GGData.Controllers.API
                 Nome = jogoDTO.Nome,
                 Plataforma = jogoDTO.Plataforma,
                 DataLancamento = jogoDTO.DataLancamento,
+                ImagemUrl = jogoDTO.ImagemUrl,
                 Utilizador = utilizador
             };
 

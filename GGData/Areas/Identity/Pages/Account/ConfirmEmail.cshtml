@@ -1,18 +1,23 @@
 ﻿@page
 @model ConfirmEmailModel
 @{
+    // Define o título da página para "Confirmar email"
     ViewData["Title"] = "Confirmar email";
 }
 
+<!-- Cabeçalho principal com o título da página -->
 <h1>@ViewData["Title"]</h1>
 
+<!-- Verifica se existe uma mensagem de status para mostrar -->
 @if (!string.IsNullOrEmpty(Model.StatusMessage))
 {
+    <!-- Exibe a mensagem de status dentro de um alerta informativo -->
     <div class="alert alert-info" role="alert">
         @Model.StatusMessage
     </div>
 }
 else
 {
+    <!-- Mensagem padrão caso não exista mensagem de status -->
     <p>Obrigado por confirmares o teu email.</p>
 }

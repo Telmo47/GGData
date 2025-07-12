@@ -6,5 +6,7 @@
         public string Plataforma { get; set; }
         public DateTime DataLancamento { get; set; }
         public List<string> Generos { get; set; } = new List<string>();
+
+        public string? ImagemUrl { get; set; }
     }
 }

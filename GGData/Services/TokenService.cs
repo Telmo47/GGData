@@ -33,10 +33,12 @@ namespace GGData.Services
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                 new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                 new Claim(ClaimTypes.Name, user.UserName ?? "") // <-- Adiciona esta linha
             };
+
 
             foreach (var role in roles)
             {

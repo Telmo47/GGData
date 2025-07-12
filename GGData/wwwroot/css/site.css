@@ -1,35 +1,40 @@
-/* Base font size responsiva */
+/* site.css
+   Folha de estilos base para o projeto GGData.
+   Define estilos responsivos, layout base, componentes e elementos comuns.
+*/
+
+/* Tamanho base da fonte responsiva para o html */
 html {
-    font-size: 14px;
-    scroll-behavior: smooth;
+    font-size: 14px; /* Fonte base para dispositivos pequenos */
+    scroll-behavior: smooth; /* Rolagem suave ao navegar na página */
 }
 
 @media (min-width: 768px) {
     html {
-        font-size: 16px;
+        font-size: 16px; /* Aumenta o tamanho da fonte em ecrãs maiores */
     }
 }
 
-/* Body e html com altura total */
+/* Corpo e html com altura total para preencher a viewport */
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
 }
 
+/* Corpo configurado com flexbox em coluna para layout flexível */
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100vh; /* Altura mínima igual à altura da viewport */
 }
 
+/* Main expande para ocupar espaço disponível */
 main {
     flex: 1 0 auto;
 }
 
-
-
-/* Foco nos inputs e botões com cor personalizada */
+/* Estilo visual para foco em botões e inputs, realçando com borda azul e sombra */
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
@@ -39,59 +44,60 @@ main {
     border-color: #258cfb;
     outline: none;
 }
+
+/* Container flexível, cresce mas não encolhe, base automática */
 .container {
-    flex: 1 0 auto; /* cresce, não encolhe, base auto */
+    flex: 1 0 auto;
 }
 
-/* Footer fixo em baixo com sombra */
+/* Footer fixo na parte inferior da página com cor escura e sombra sutil */
 footer.footer {
     height: 60px;
-    background-color: #212529;
-    color: #e9ecef;
+    background-color: #212529; /* Cinza escuro */
+    color: #e9ecef; /* Texto claro */
     border-top: 1px solid #343a40;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Não encolher */
     width: 100%;
 }
 
-
-/* Navbar ajustes */
+/* Navbar (barra de navegação) - estilos principais */
 .navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
+    font-weight: 700; /* Negrito forte */
+    font-size: 1.5rem; /* Tamanho maior */
 }
 
 .nav-link {
-    font-weight: 500;
+    font-weight: 500; /* Peso médio */
 }
 
     .nav-link.active {
-        color: #0d6efd !important; /* bootstrap primary azul */
-        font-weight: 700;
+        color: #0d6efd !important; /* Cor azul primária do Bootstrap para link ativo */
+        font-weight: 700; /* Negrito para o link ativo */
     }
 
-/* Botões personalizados */
+/* Botões principais personalizados */
 .btn-primary {
-    background-color: #258cfb;
+    background-color: #258cfb; /* Azul GGData */
     border-color: #258cfb;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease; /* Transição suave no hover */
 }
 
     .btn-primary:hover,
     .btn-primary:focus {
-        background-color: #1c6cd9;
+        background-color: #1c6cd9; /* Azul mais escuro no hover/focus */
         border-color: #1c6cd9;
-        box-shadow: 0 0 10px #1c6cd9;
+        box-shadow: 0 0 10px #1c6cd9; /* Sombra azul suave */
     }
 
-/* Form group spacing */
+/* Espaçamento padrão para grupos de formulário */
 .form-group {
     margin-bottom: 1rem;
 }
 
-/* Table improvements */
+/* Estilo para tabelas: fundo branco, sombra suave e cantos arredondados */
 .table {
     background-color: white;
     box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
@@ -99,24 +105,22 @@ footer.footer {
     overflow: hidden;
 }
 
-/* Validation summary e mensagens */
+/* Estilo para mensagens de erro e sumário de validação */
 .text-danger {
-    font-weight: 600;
+    font-weight: 600; /* Negrito médio */
 }
 
-/* Labels */
+/* Labels com peso de fonte destacado */
 label {
     font-weight: 600;
 }
 
-/* Pequenos ajustes para o form-check */
+/* Ajuste para labels dos checkboxes - evita seleção acidental de texto */
 .form-check-label {
     user-select: none;
 }
 
-/* Espaçamento para a área principal */
+/* Espaçamento extra na parte inferior do main para evitar sobreposição */
 main.pb-4 {
     padding-bottom: 100px !important;
 }
-
-
