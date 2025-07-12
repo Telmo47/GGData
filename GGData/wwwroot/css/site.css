@@ -15,15 +15,19 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
 }
 
-/* Body com padding extra para não tapar conteúdo */
 body {
-    padding-bottom: 100px; /* espaço suficiente para não colidir com o footer */
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
+
+main {
+    flex: 1 0 auto;
+}
+
+
 
 /* Foco nos inputs e botões com cor personalizada */
 .btn:focus,
@@ -41,7 +45,6 @@ body {
 
 /* Footer fixo em baixo com sombra */
 footer.footer {
-    position: relative; /* ou remove position fixo */
     height: 60px;
     background-color: #212529;
     color: #e9ecef;
@@ -49,9 +52,10 @@ footer.footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0; /* evita encolher */
+    flex-shrink: 0;
     width: 100%;
 }
+
 
 /* Navbar ajustes */
 .navbar-brand {
