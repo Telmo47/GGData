@@ -130,7 +130,7 @@ namespace GGData.Areas.Identity.Pages.Account
                     UserName = Input.Email,
                     Email = Input.Email,
                     Nome = Input.Nome,
-                    DataRegistro = DateTime.Now,
+                    DataRegistro = DateTime.UtcNow,
                     TipoUsuario = Input.TipoUsuario,
                     Instituicao = Input.TipoUsuario == "Critico" ? Input.Instituicao : null,
                     WebsiteProfissional = Input.TipoUsuario == "Critico" ? Input.WebsiteProfissional : null,
